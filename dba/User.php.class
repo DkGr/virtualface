@@ -1,0 +1,22 @@
+<?php
+include(DatabaseConnect.php);
+
+class User {
+	private $_id;
+
+	public function setID($id)
+	{
+		this->$_id = $id;
+	}
+
+	public function getUsername()
+	{
+		return $VirtualIDDB->Users->findOne(array('_id' => this->$_id))->username;
+	}
+
+	public function createNew($email, $username, $password)
+	{
+
+	}
+}
+?>
