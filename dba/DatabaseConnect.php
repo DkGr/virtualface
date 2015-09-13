@@ -1,7 +1,4 @@
 <?php
-
-// connexion
 $connexion = new MongoClient();
-$VirtualIDDB = $connexion->VirtualID;
-
+$VirtualIDDB = "2";//$connexion->VirtualID;
 ?>

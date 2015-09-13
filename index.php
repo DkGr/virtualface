@@ -1,19 +1,13 @@
+<?php
+error_reporting(E_ALL | E_STRICT);
+ini_set('display_startup_errors',1);
+ini_set('display_errors',1);
+include "functions/login.php";
+include "functions/subscribe.php" ?>
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>VirtualID</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="css/home.css" rel="stylesheet">
+    <?php include_once "page_includes/header.php" ?>
   </head>
 
   <body>
@@ -47,7 +41,7 @@
         cookie     : true,  // enable cookies to allow the server to access
                             // the session
         xfbml      : true,  // parse social plugins on this page
-        version    : 'v2.4' // use version 2.2
+        version    : 'v2.2' // use version 2.2
       });
 
       // Now that we've initialized the JavaScript SDK, we call
@@ -121,19 +115,20 @@
           <li>Pas de revente de vos informations</li>
           <li>Pas de traçage publicitaire</li>
           <li>Toutes vos données sont cryptées (Informations personnelles, Messages privés, Photos,...)</li>
-          <li>Chacun peut héberger sont compte (et celui d'autres personnes) chez lui</li>
+          <li>Chacun peut héberger son compte (et celui d'autres personnes) chez lui</li>
         </ul>
         </p>
     </div>
-    <form class="form-signin" role="form">
+    <form action="index.php" class="form-signin" role="form" method="post">
       <h2 class="form-signin-heading">Connectez vous !</h2>
-      <input type="email" class="form-control" placeholder="Email" required autofocus>
-      <input type="password" class="form-control" placeholder="Mot de passe" required>
+      <input name="email" type="email" placeholder="E-mail" class="form-control" required autofocus>
+      <input name="password" type="password" class="form-control" placeholder="Mot de passe" required>
+      <p style="color:red;"> <?php if(isset($erreur))echo $erreur; ?> </p>
       <label class="checkbox" style="display:block;float:left;">
         <input type="checkbox" value="remember-me">Se rappeler de moi
       </label>
       <a data-toggle="modal" data-target="#myModal" href="#" style="display:block;float:right;margin-top:10px;margin-bottom:10px;">S'inscrire sans facebook</a>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+      <button name="login" value="login" class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
     </form>
     <fb:login-button style="margin-left:420px;" data-max-rows="1" data-size="xlarge" data-show-faces="true" data-auto-logout-link="true" scope="public_profile,email" onlogin="checkLoginState();">
     </fb:login-button>
@@ -149,12 +144,12 @@
       			</div>
       			<div class="modal-body">
         			<div>
-      					<form class="form-signup" role="form">
-      						<input type="username" class="form-control" placeholder="Nom d'utilisateur" required autofocus>
-        					<input type="email" class="form-control" placeholder="Email" required>
-       						<input type="password" class="form-control" placeholder="Mot de passe" required>
-        					<input type="password" class="form-control" placeholder="Vérification du mot de passe" required>
-        					<button class="btn btn-lg btn-primary btn-block" style="margin-top:10px;" type="submit">Valider</button>
+      					<form action="index.php" class="form-signup" role="form" method="post">
+      						<input name="username" type="username" class="form-control" placeholder="Nom d'utilisateur" required autofocus>
+        					<input name="email" type="email" class="form-control" placeholder="Email" required>
+       						<input name="password" type="password" class="form-control" placeholder="Mot de passe" required>
+        					<input name="passwordcheck" type="password" class="form-control" placeholder="Vérification du mot de passe" required>
+        					<button name="subscribe" value="subscribe" class="btn btn-lg btn-primary btn-block" style="margin-top:10px;" type="submit">Valider</button>
       					</form>
 					</div>
       			</div>

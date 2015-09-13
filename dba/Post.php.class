@@ -1,0 +1,42 @@
+<?php
+
+/** mongodb Post collection structure
+ * {
+ *     "_id" : ObjectId("xxxxxxxxxxxxxxxxxxxxxxxx"),
+ *		 "author" : UserID,
+ *		 "date" : "yyyy-MM-dd HH:mm:ss",
+ *     "visibility" : array { Public, VirtualID, Friends, UserID, ... },
+ *     "content" : "text",
+ *     "comments" : array{ CommentID, ... },
+ *     "likes" : array{ LikeID, ... }
+ * }
+ */
+
+class Post {
+	private $_id;
+	private $User;
+	private $VirtualIDDB;
+
+	public function __construct(){
+		$connexion = new MongoClient();
+		$this->VirtualIDDB = $connexion->VirtualID;
+  }
+
+	public static function CreateNew($user, $date, $visibility, $content)
+	{
+		$newpost = array('author' => $user->_id,
+										 'date' => $date,
+										 'visibility' => $visibility,
+										 'content' => $content,
+										 'comments' => array(),
+										 'likes' => array()
+								 );
+		$this->VirtualIDDB->Posts->insert($newpost);
+	}
+
+	public static function GetAllPosts()
+	{
+		return $this->VirtualIDDB->Posts->find();
+	}
+}
+?>

@@ -1,22 +1,128 @@
 <?php
-include(DatabaseConnect.php);
+
+/** mongodb User collection structure
+ * {
+ *     "_id" : ObjectId("xxxxxxxxxxxxxxxxxxxxxxxx"),
+ *     "infos" : {
+ *         "username" : "joe",
+ *         "password" : "PASSWORD_HASH",
+ *         "email" : "joe@email.net"
+ *     },
+ *		 "friends" : {
+ *			 User1, User2, ...
+ *		 }
+ * }
+ */
 
 class User {
 	private $_id;
+	private $VirtualIDDB;
 
-	public function setID($id)
+	public function __construct(){
+		$connexion = new MongoClient();
+		$this->VirtualIDDB = $connexion->VirtualID;
+  }
+
+	public function setId($id)
 	{
-		this->$_id = $id;
+		$this->_id = $id;
+	}
+
+	public function loginUser($email, $password)
+	{
+		$user = $this->VirtualIDDB->Users->findOne(array('infos.email' => $email));
+		if(isset($user))
+		{
+			if(password_verify($password, $user['infos']['password']))
+			{
+					$this->_id = $user['_id'];
+					return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function getIdWithFacebookEmail($fb_email)
+	{
+		$user = $this->VirtualIDDB->Users->findOne(array('infos.email' => $fb_email));
+		return $user['_id'];
+	}
+
+	public function checkPassword($password)
+	{
+		$user = $this->VirtualIDDB->Users->findOne(array('_id' => $this->_id));
+		$dbPass = $user['infos']['password'];
+		if(password_verify($password, $dbPass))
+		{
+				return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	public function getUsername()
 	{
-		return $VirtualIDDB->Users->findOne(array('_id' => this->$_id))->username;
+		$user = $this->VirtualIDDB->Users->findOne(array('_id' => $this->_id));
+		return $user['infos']['username'];
+	}
+
+	public function updateUsername($username)
+	{
+		$this->VirtualIDDB->Users->update(array('_id' => $this->_id), array('$set' => array('infos.username' => $username)));
+	}
+
+	public function getEmail()
+	{
+		$user = $this->VirtualIDDB->Users->findOne(array('_id' => $this->_id));
+		return $user['infos']['email'];
+	}
+
+	public function isFacebookLinked()
+	{
+		$user = $this->VirtualIDDB->Users->findOne(array('_id' => $this->_id));
+		return $user['fb-link'];
+	}
+
+	public function setFacebookLinked()
+	{
+		$this->VirtualIDDB->Users->update(array('_id' => $this->_id), array('$set' => array('fb-link' => true)));
+	}
+
+	public function updateEmail($email)
+	{
+		$this->VirtualIDDB->Users->update(array('_id' => $this->_id), array('$set' => array('infos.email' => $email)));
+	}
+
+	public function updatePassword($newpassword)
+	{
+		$this->VirtualIDDB->Users->update(array('_id' => $this->_id), array('$set' => array('infos.password' => password_hash($newpassword, PASSWORD_DEFAULT))));
 	}
 
 	public function createNew($email, $username, $password)
 	{
+		if ($this->VirtualIDDB->Users->findOne(array('infos.email' => $email))) {
+			return false;
+		}
+		$userInfos = array('infos' => (object)array(
+																		'username' => $username,
+																		'email' => $email,
+																		'password' => password_hash($password, PASSWORD_DEFAULT)
+																	),
+											 'fb-link' => false
+								 );
+		$this->VirtualIDDB->Users->insert($userInfos);
+		return true;
+	}
 
+	public function deleteUser($user)
+	{
+		//TODO
 	}
 }
 ?>
