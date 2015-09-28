@@ -12,26 +12,12 @@ include 'functions/validate-fb-sub.php';
 <html lang="fr">
   <head>
     <?php include_once "page_includes/header.php" ?>
-    <script src="js/jquery.js"></script>
-    <script src="js/jquery.form.js"></script>
-
-    <script>
-        // wait for the DOM to be loaded
-        $(document).ready(function() {
-            // bind 'myForm' and provide a simple callback function
-            $('#postInStream').ajaxForm(function() {
-                alert("Thank you for your comment!");
-            });
-        });
-    </script>
   </head>
 
   <body>
     <script>
     // This is called with the results from from FB.getLoginStatus().
     function statusChangeCallback(response) {
-      console.log('statusChangeCallback');
-      console.log(response);
       // The response object is returned with a status field that lets the
       // app know the current login status of the person.
       // Full docs on the response object can be found in the documentation
@@ -44,7 +30,7 @@ include 'functions/validate-fb-sub.php';
       } else {
         // The person is not logged into Facebook, so we're not sure if
         // they are logged into this app or not.
-        window.location = "index.php";
+        //window.location = "index.php";
       }
     }
 
@@ -96,8 +82,21 @@ include 'functions/validate-fb-sub.php';
     function logout() {
       FB.logout(function(response) {
         // Person is now logged out
-        window.location = "index.php";
-    });
+        $.ajax({
+          type: "GET",
+          url: "functions/logout.php",
+          complete: function(response) {
+            window.location = "index.php";
+          }
+        });
+      });
+      $.ajax({
+        type: "GET",
+        url: "functions/logout.php",
+        complete: function(response) {
+          window.location = "index.php";
+        }
+      });
     }
     </script>
   	<!-- MENU NAVIGATION BAR -->
@@ -117,8 +116,8 @@ include 'functions/validate-fb-sub.php';
             <div class="navbar-collapse collapse">
         <?php if(!$useFacebookConnect || $user->isFacebookLinked()){ ?>
 			  <ul class="nav navbar-nav navbar-left">
-  				<li class="active"><a href="#stream" data-toggle="tab">Flux</a></li>
-  				<li><a href="#messages" data-toggle="tab">Messages <span class="badge">1</span></a></li>
+  				<li class="active"><a onclick="loadPosts();" href="#stream" data-toggle="tab">Mon flux</a></li>
+  				<li><a href="#messages" data-toggle="tab">Messages privés<span class="badge">1</span></a></li>
 			  </ul>
         <?php } ?>
               <ul class="nav navbar-nav navbar-right">
@@ -129,13 +128,12 @@ include 'functions/validate-fb-sub.php';
                         <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
                         <input class="form-control" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1" onchange="">
                       </div>
-
                     </form>
                   </li>
-                  <li><a tabindex="0" class="btn" role="button" data-toggle="popover" data-trigger="focus" style="width: 250px;" data-content="<div class='list-group-item'><a href='' title='test add link'>Magnum</a> à publié un <a href='' title='test add link'>message</a> dans votre flux.</div><div class='list-group-item'>Vous avez un nouveau message.</div>">Notifications <span class="badge">2</span></a></li>
+                  <li id="notifPanel"></li>
 				        <?php } ?>
                   <li class="dropdown active" style="margin-right:50px;">
-                			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="img/no_avatar.png" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $user->getUsername() ?> <b class="caret"></b></a>
+                			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php if($useFacebookConnect)echo $userNode['picture']['url'];else echo 'img/no_avatar.png'; ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $user->getUsername() ?> <b class="caret"></b></a>
                 			<ul class="dropdown-menu">
                         <?php if(!$useFacebookConnect || $user->isFacebookLinked()){ ?>
                   			<li><a href="#">Mon compte</a></li>
@@ -154,6 +152,7 @@ include 'functions/validate-fb-sub.php';
   <?php if(!$useFacebookConnect || $user->isFacebookLinked()){ ?>
     <div class="container">
       <div class="container-fluid">
+        <!-- SIDEBAR -->
         <div style="width:20%;float:left;padding:10px;">
           <div class="panel panel-info">
             <div class="panel-heading">
@@ -164,137 +163,32 @@ include 'functions/validate-fb-sub.php';
             </div>
           </div>
         </div>
-      	<!-- CONTENUS -->
+      	<!-- Main content -->
       	<div style="width:77%;float:left;">
-    		  <!-- CONTENU FLUX -->
+    		  <!-- stream content -->
       		<div class="tab-pane fade in active" id="stream">
-            <form id="postInStream" action="functions/post_stream.php">
+            <!-- Stream post form -->
+            <div id="send-newpost-form">
+              <input value="<?php echo $user->getId() ?>" id="newpost-userid" type="hidden" >
               <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">
-                <textarea style="resize: vertical;margin:5px; width:99%;" class="form-control" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..."></textarea>
+                <textarea id="newpost-content" style="resize:vertical;margin:5px; width:99%;" class="form-control" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..."></textarea>
                 <div class="panel-footer">
-                  <button type="submit" class="btn btn-info">Publier</button>
+                  <button id="button-send-newpost" class="btn btn-info">Publier</button>
                 </div>
               </div>
-            </form>
-            <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">
-              <div class="panel-body">
-                <div class="media">
-                  <div style="text-align:center;" class="media-left">
-                    <a href="#">
-                      <img class="media-object img-rounded" style="width: 64px; height: 64px;" src="img/no_avatar.png" alt="...">
-                    </a>
-                    <a>Padman</a>
-                  </div>
-                  <div class="media-body">
-                    Post de test ! Woohoo !
-
-                  </div>
-                  <div style="float: left;margin: 10px 0 0 75px;">3 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ 2 minutes</span></div>
-                </div>
-              </div>
-              <div class="panel-footer">
-                <a>1 commentaire</a> - <a>J'aime</a>
-              </div>
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <div style="margin-left: 25px;" class="media">
-                    <div style="text-align:center;" class="media-left">
-                      <a href="#">
-                        <img class="media-object img-rounded" style="width: 32px; height: 32px; margin: auto;" src="img/no_avatar.png" alt="...">
-                      </a>
-                      <a>Padman</a>
-                    </div>
-                    <div class="media-body">
-                      Post de test ! Woohoo !
-
-                    </div>
-                    <div style="float: left;margin: 10px 0 0 75px;"><a>J'aime</a> - 3 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ 2 minutes</span></div>
-                  </div>
-                </li>
-              </ul>
             </div>
-            <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">
-              <div class="panel-body">
-                <div class="media">
-                  <div style="text-align:center;" class="media-left">
-                    <a href="#">
-                      <img class="media-object img-rounded" style="width: 64px; height: 64px;" src="img/no_avatar.png" alt="...">
-                    </a>
-                    <a>Padman</a>
-                  </div>
-                  <div class="media-body">
-                    Post de test ! Woohoo !
 
-                  </div>
-                  <div style="float: left;margin: 10px 0 0 75px;">3 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ 2 minutes</span></div>
-                </div>
-              </div>
-              <div class="panel-footer">
-                <a>1 commentaire</a> - <a>J'aime</a>
-              </div>
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <div style="margin-left: 25px;" class="media">
-                    <div style="text-align:center;" class="media-left">
-                      <a href="#">
-                        <img class="media-object img-rounded" style="width: 32px; height: 32px; margin: auto;" src="img/no_avatar.png" alt="...">
-                      </a>
-                      <a>Padman</a>
-                    </div>
-                    <div class="media-body">
-                      Post de test ! Woohoo !
-
-                    </div>
-                    <div style="float: left;margin: 10px 0 0 75px;">3 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ 2 minutes</span></div>
-                  </div>
-                </li>
-              </ul>
+            <!-- Stream posts list -->
+            <div id="posts-stream">
             </div>
-            <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">
-              <div class="panel-body">
-                <div class="media">
-                  <div style="text-align:center;" class="media-left">
-                    <a href="#">
-                      <img class="media-object img-rounded" style="width: 64px; height: 64px;" src="img/no_avatar.png" alt="...">
-                    </a>
-                    <a>Padman</a>
-                  </div>
-                  <div class="media-body">
-                    Post de test ! Woohoo !
-
-                  </div>
-                  <div style="float: left;margin: 10px 0 0 75px;">3 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ 2 minutes</span></div>
-                </div>
-              </div>
-              <div class="panel-footer">
-                <a>1 commentaire</a> - <a>J'aime</a>
-              </div>
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <div style="margin-left: 25px;" class="media">
-                    <div style="text-align:center;" class="media-left">
-                      <a href="#">
-                        <img class="media-object img-rounded" style="width: 32px; height: 32px; margin: auto;" src="img/no_avatar.png" alt="...">
-                      </a>
-                      <a>Padman</a>
-                    </div>
-                    <div class="media-body">
-                      Post de test ! Woohoo !
-
-                    </div>
-                    <div style="float: left;margin: 10px 0 0 75px;">3 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ 2 minutes</span></div>
-                  </div>
-                </li>
-              </ul>
-            </div>
+          </div>
+          <!-- Messages content -->
+        	<div style="position:absolute;top:120px;width:53%;text-align:center;" class="tab-pane fade" id="messages">
+            <p>Bientôt disponible</p>
         	</div>
-        		<!-- CONTENU MESSAGES -->
-        	<div class="tab-pane fade" id="messages">
-        	</div>
-        </div>
-      </div>
     </div>
   <?php } else { ?>
+    <!-- Facebook subscription validation -->
     <div id="login-form" class="container">
       <form action="stream.php" class="form-signin" role="form" method="post">
         <h3 class="form-signin-heading">Validez vos informations</h3>
@@ -319,9 +213,11 @@ include 'functions/validate-fb-sub.php';
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function() {
-		$('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
-	});
+      $(document).ready(function() {
+        loadPosts();
+        updateNotifications();
+    		$('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
+    	});
     </script>
   </body>
 </html>

@@ -7,7 +7,11 @@
 <title>VirtualID</title>
 
 <!-- Bootstrap core CSS -->
+<script src="js/jquery-2.1.4.js"></script>
 <link href="css/bootstrap.css" rel="stylesheet">
 
 <!-- Custom styles for this template -->
 <link href="css/home.css" rel="stylesheet">
+<link href="css/magicsuggest-min.css" rel="stylesheet">
+<script src="js/magicsuggest-min.js"></script>
+<script src="js/virtualid.js"></script>

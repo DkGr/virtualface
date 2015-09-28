@@ -19,173 +19,6 @@ include 'functions/get-identity.php';
       }
     </style>
     <?php include_once "page_includes/header.php" ?>
-    <script>
-      function escapeSpecialChars(regex) {
-         return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
-      }
-
-      function deletePost(postId)
-      {
-        var userId = $("#newpost-userid").val();
-        var dataString = 'userid='+ userId + '&postid=' + postId;
-        $.ajax({
-          type: "POST",
-          url: "functions/delete-post.php",
-          data: dataString,
-          success: function() {
-            loadPosts();
-          }
-        });
-      }
-
-      function refreshPage()
-      {
-        var userId = $("#userid").val();
-        var url = 'identity.php?userid='+userId;
-        var multipart = true;
-        var form = document.createElement("FORM");
-        form.method = "POST";
-        if(multipart) {
-          form.enctype = "multipart/form-data";
-        }
-        form.style.display = "none";
-        document.body.appendChild(form);
-        form.action = url.replace(/\?(.*)/, function(_, urlArgs) {
-              urlArgs.replace(/\+/g, " ").replace(/([^&=]+)=([^&=]*)/g, function(input, key, value) {
-              input = document.createElement("INPUT");
-              input.type = "hidden";
-              input.name = decodeURIComponent(key);
-              input.value = decodeURIComponent(value);
-              form.appendChild(input);
-            });
-          return "";
-        });
-        form.submit();
-      }
-
-      function showIdentityFromPost(postId)
-      {
-        var url = 'identity.php?postid='+postId;
-        var multipart = true;
-        var form = document.createElement("FORM");
-        form.method = "POST";
-        if(multipart) {
-          form.enctype = "multipart/form-data";
-        }
-        form.style.display = "none";
-        document.body.appendChild(form);
-        form.action = url.replace(/\?(.*)/, function(_, urlArgs) {
-              urlArgs.replace(/\+/g, " ").replace(/([^&=]+)=([^&=]*)/g, function(input, key, value) {
-              input = document.createElement("INPUT");
-              input.type = "hidden";
-              input.name = decodeURIComponent(key);
-              input.value = decodeURIComponent(value);
-              form.appendChild(input);
-            });
-          return "";
-        });
-        form.submit();
-      }
-
-      function loadPosts(){
-        var userId = $("#userid").val();
-        var dataString = 'userid='+ userId;
-        $.ajax({
-          type: "POST",
-          url: "functions/display-user-posts.php",
-          data: dataString,
-          complete: function(response) {
-            $("#posts-stream").hide();
-            $("#posts-stream").html(response.responseText);
-            $("#posts-stream").fadeIn();
-          }
-        });
-      }
-
-      function addFriend(){
-        var userId = $("#userid").val();
-        var dataString = 'friendid='+ userId;
-        $.ajax({
-          type: "POST",
-          url: "functions/add-friend.php",
-          data: dataString,
-          complete: function(response) {
-            refreshPage();
-          }
-        });
-      }
-
-      $(function() {
-        loadPosts();
-        var map = {
-               "<3": "\u2764\uFE0F",
-               "</3": "\uD83D\uDC94",
-               ":D": "\uD83D\uDE00",
-               ":)": "\uD83D\uDE03",
-               ";)": "\uD83D\uDE09",
-               ":(": "\uD83D\uDE12",
-               ":p": "\uD83D\uDE1B",
-               ":P": "\uD83D\uDE1B",
-               ";P": "\uD83D\uDE1C",
-               ";p": "\uD83D\uDE1C",
-               ":'(": "\uD83D\uDE22"
-        };
-
-        $("#newpost-content").keyup(function () {
-          for (var i in map) {
-            var regex = new RegExp(escapeSpecialChars(i), 'gim');
-            this.value = this.value = this.value.replace(regex, map[i]);
-          }
-        });
-
-        $("#button-send-newpost").click(function() {
-          //$('.error').hide();
-      	  var userid = $("#newpost-userid").val();
-      		/*if (name == "") {
-            $("label#name_error").show();
-            $("input#name").focus();
-            return false;
-          }*/
-      		var content = $("#newpost-content").val();
-      		/*if (email == "") {
-            $("label#email_error").show();
-            $("input#email").focus();
-            return false;
-          }*/
-
-          $("#newpost-content").val("");
-
-          var dataString = 'userid='+ userid + '&content=' + content;
-          //alert (dataString);return false;
-          $.ajax({
-            type: "POST",
-            url: "functions/send-newpost.php",
-            data: dataString,
-            success: function() {
-              loadPosts();
-              /*$('#contact_form').html("<div id='message'></div>");
-              $('#message').html("<h2>Contact Form Submitted!</h2>")
-              .append("<p>We will be in touch soon.</p>")
-              .hide()
-              .fadeIn(1500, function() {
-                $('#message').append("<img id='checkmark' src='images/check.png' />");
-              });*/
-            }
-          });
-          return false;
-        });
-
-        $("#btnAddFriend").click(function() {
-          addFriend();
-          return false;
-        });
-
-        $("#btnAcceptFriend").click(function() {
-          addFriend();
-          return false;
-        });
-      });
-    </script>
   </head>
 
   <body>
@@ -302,12 +135,12 @@ include 'functions/get-identity.php';
                     <form class="navbar-form navbar-right">
                       <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                        <input class="form-control" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1" onchange="">
+                        <input style="width:100%" id="searchFriendBar" class="form-control" type="text" placeholder="Rechercher des amis...">
                       </div>
                     </form>
                   </li>
-                  <li><a tabindex="0" class="btn" role="button" data-toggle="popover" data-trigger="focus" style="width: 250px;" data-content="<div class='list-group-item'><a href='' title='test add link'>Magnum</a> à publié un <a href='' title='test add link'>message</a> dans votre flux.</div><div class='list-group-item'>Vous avez un nouveau message.</div>">Notifications <span class="badge">2</span></a></li>
-  			        <?php } ?>
+                  <li id="notifPanel"></li>
+                  <?php } ?>
                 <li class="dropdown active" style="margin-right:50px;">
               			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php if($useFacebookConnect)echo $userNode['picture']['url'];else echo 'img/no_avatar.png'; ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $user->getUsername() ?> <b class="caret"></b></a>
               			<ul class="dropdown-menu">
@@ -356,43 +189,27 @@ include 'functions/get-identity.php';
                   } ?>
           </div>
           <?php } ?>
-          <input value="<?php echo $identity->getId() ?>" id="userid" type="hidden" >
+          <input value="<?php echo $identity->getId(); ?>" id="userid" type="hidden" >
           <div class="panel panel-info">
             <div class="panel-heading">
               <h3 class="panel-title">Ses amis</h3>
             </div>
             <div class="panel-body">
               <div class="row">
-                <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
-                    <a href="#">
-                         <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-                    </a>
-                </div>
-                 <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
-                    <a href="#">
-                         <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-                    </a>
-                </div>
-                 <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
-                    <a href="#">
-                         <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-                    </a>
-                </div>
-                 <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
-                    <a href="#">
-                         <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-                    </a>
-                </div>
-                 <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
-                    <a href="#">
-                         <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-                    </a>
-                </div>
-                 <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
-                    <a href="#">
-                         <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-                    </a>
-                </div>
+                <?php
+                $hisFriends = $identity->GetFriends();
+                foreach ($hisFriends as $keyid => $isFriend) {
+                    if($isFriend)
+                    {
+                      $tmpFriend = new User();
+                      $tmpFriend->setId($keyid); ?>
+                    <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
+                      <a href="identity.php?userid=<?php echo $tmpFriend->getId(); ?>">
+                        <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getUsername(); ?>" style="margin-bottom: 0px;" src="img/no_avatar.png" class="thumbnail img-responsive">
+                      </a>
+                    </div>
+              <?php }
+                } ?>
               </div>
               <!--:( <?php echo $identity->getUsername(); ?> n'a pas encore d'amis...-->
             </div>
@@ -524,21 +341,19 @@ include 'functions/get-identity.php';
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function() {
-  		$('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
-  	});
-    $('#hisStream').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    })
-    $('#hisPhotos').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    })
-    $('#hisFriends').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    })
+      loadIdentityPosts();
+      $('#hisStream').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+      })
+      $('#hisPhotos').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+      })
+      $('#hisFriends').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+      })
     </script>
   </body>
 </html>
