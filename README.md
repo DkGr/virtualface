@@ -28,7 +28,6 @@ VirtualID is a project prototype to create a decentralized social network with n
 - User search
 - VirtualID node bridge
 - Photo/Video upload
-- 
 
 ## Installation
 ... Soon ...
