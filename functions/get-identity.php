@@ -18,6 +18,9 @@ if (isset($_POST['postid']) && !empty($_POST['postid'])) {
 elseif (isset($_POST['userid']) && !empty($_POST['userid'])) {
   $identity->setId($_POST['userid']);
 }
+elseif (isset($_GET['userid']) && !empty($_GET['userid'])) {
+  $identity->setId($_GET['userid']);
+}
 else {
   header('Location: index.php');
 }

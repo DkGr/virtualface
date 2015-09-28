@@ -135,7 +135,7 @@ include 'functions/get-identity.php';
                     <form class="navbar-form navbar-right">
                       <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                        <input style="width:100%" id="searchFriendBar" class="form-control" type="text" placeholder="Rechercher des amis...">
+                        <input style="width:200px;" id="searchFriendBar" class="form-control" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1">
                       </div>
                     </form>
                   </li>
@@ -338,8 +338,6 @@ include 'functions/get-identity.php';
     </div>
   <?php } ?>
 	  <!-- BOOTSTRAP NAVIGATION SCRIPTS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
       loadIdentityPosts();
       $('#hisStream').click(function (e) {

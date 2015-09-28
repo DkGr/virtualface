@@ -2,13 +2,13 @@ $(document).ready(function() {
   var map = {
          "<3": "\u2764\uFE0F",
          "</3": "\uD83D\uDC94",
-         ":D": "\uD83D\uDE00",
+         ":D": "\uD83D\uDE01",
          ":)": "\uD83D\uDE03",
+         "xD": "\uD83D\uDE06",
+         "^^'": "\uD83D\uDE05",
          ";)": "\uD83D\uDE09",
-         ":(": "\uD83D\uDE12",
+         ":(": "\uD83D\uDE1E",
          ":p": "\uD83D\uDE1B",
-         ":P": "\uD83D\uDE1B",
-         ";P": "\uD83D\uDE1C",
          ";p": "\uD83D\uDE1C",
          ":'(": "\uD83D\uDE22"
   };
@@ -78,6 +78,15 @@ $(document).ready(function() {
 
   updateNotifications();
   $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
+
+  var searchFriendBar = $('#searchFriendBar').magicSuggest({
+      data: 'functions/get-all-users.php',
+      valueField: 'id',
+      displayField: 'username'
+  });
+  $(searchFriendBar).on('selectionchange', function(e,m){
+    showIdentity(this.getValue());
+  });
 });
 
 function escapeSpecialChars(regex) {
@@ -101,6 +110,30 @@ function deletePost(postId)
 function refreshPage()
 {
   var userId = $("#userid").val();
+  var url = 'identity.php?userid='+userId;
+  var multipart = true;
+  var form = document.createElement("FORM");
+  form.method = "POST";
+  if(multipart) {
+    form.enctype = "multipart/form-data";
+  }
+  form.style.display = "none";
+  document.body.appendChild(form);
+  form.action = url.replace(/\?(.*)/, function(_, urlArgs) {
+        urlArgs.replace(/\+/g, " ").replace(/([^&=]+)=([^&=]*)/g, function(input, key, value) {
+        input = document.createElement("INPUT");
+        input.type = "hidden";
+        input.name = decodeURIComponent(key);
+        input.value = decodeURIComponent(value);
+        form.appendChild(input);
+      });
+    return "";
+  });
+  form.submit();
+}
+
+function showIdentity(userId)
+{
   var url = 'identity.php?userid='+userId;
   var multipart = true;
   var form = document.createElement("FORM");

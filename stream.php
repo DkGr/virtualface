@@ -126,7 +126,7 @@ include 'functions/validate-fb-sub.php';
                     <form class="navbar-form navbar-right">
                       <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                        <input class="form-control" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1" onchange="">
+                        <input id="searchFriendBar" style="width:200px;" class="form-control" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1">
                       </div>
                     </form>
                   </li>
@@ -210,8 +210,6 @@ include 'functions/validate-fb-sub.php';
     </div>
   <?php } ?>
 	<!-- SCRIPTS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         loadPosts();
