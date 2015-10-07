@@ -12,8 +12,7 @@ try {
 
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
   // When validation fails or other local issues
-  echo 'Facebook SDK returned an error: ' . $e->getMessage();
-  exit;
+  fwrite(fopen('log.txt', 'a+'), "[".date("d/m/Y H:i:s")." IP:".$_SERVER['REMOTE_ADDR']."] ".'Facebook SDK returned an error: ' . $e->getMessage());
 }
 
 if (!empty($accessToken)) {
@@ -45,8 +44,7 @@ if (!empty($accessToken)) {
 
   } catch(Facebook\Exceptions\FacebookSDKException $e) {
     // When validation fails or other local issues
-    echo 'Facebook SDK returned an error: ' . $e->getMessage();
-    exit;
+    fwrite(fopen('log.txt', 'a+'), "[".date("d/m/Y H:i:s")." IP:".$_SERVER['REMOTE_ADDR']."] ".'Facebook SDK returned an error: ' . $e->getMessage());
   }
 }
 else{

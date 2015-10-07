@@ -58,12 +58,12 @@ $(document).ready(function() {
   });
 
   $("#btnAddFriend").click(function() {
-    addFriend();
+    addFriend(false);
     return false;
   });
 
   $("#btnAcceptFriend").click(function() {
-    addFriend();
+    addFriend(true);
     return false;
   });
 
@@ -72,9 +72,7 @@ $(document).ready(function() {
     return false;
   });
 
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  });
+  $('[data-toggle="tooltip"]').tooltip()
 
   updateNotifications();
   $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
@@ -208,14 +206,18 @@ function loadIdentityPosts(){
   });
 }
 
-function addFriend(){
+function addFriend(isAccepting){
   var userId = $("#userid").val();
   var dataString = 'friendid='+ userId;
   $.ajax({
     type: "POST",
     url: "functions/add-friend.php",
     data: dataString,
-    complete: function(response) {
+    success: function(data) {
+      if(isAccepting)
+      {
+        converse.user.logout();
+      }
       refreshPage();
     }
   });

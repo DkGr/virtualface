@@ -128,7 +128,7 @@ class OpenPGP_Crypt_RSA {
     return new OpenPGP_Message(array($sig, $message));
   }
 
-  /** Pass a message with a key and userid packet to sign */
+  /* Pass a message with a key and userid packet to sign */
   // TODO: merge this with the normal sign function
   function sign_key_userid($packet, $hash='SHA256', $keyid=NULL) {
     if(is_array($packet)) {
@@ -148,7 +148,7 @@ class OpenPGP_Crypt_RSA {
       if($p instanceof OpenPGP_SignaturePacket) $sig = $p;
     }
     if(!$sig) {
-      $sig = new OpenPGP_SignaturePacket($packet, 'RSA', strtoupper($hash)); 
+      $sig = new OpenPGP_SignaturePacket($packet, 'RSA', strtoupper($hash));
       $sig->signature_type = 0x13;
       $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_KeyFlagsPacket(array(0x01, 0x02));
       $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_IssuerPacket($keyid);
@@ -198,7 +198,6 @@ class OpenPGP_Crypt_RSA {
         if($r) return $r;
       }
     }
-
     return NULL; /* Failed */
   }
 
@@ -255,7 +254,6 @@ class OpenPGP_Crypt_RSA {
   static function convert_private_key($packet) {
     return self::convert_key($packet, true);
   }
-
 }
 
 ?>

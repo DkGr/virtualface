@@ -85,6 +85,12 @@ class User {
 		return $user['infos']['username'];
 	}
 
+	public function getPasswordHash()
+	{
+		$user = $this->VirtualIDDB->Users->findOne(array('_id' => new MongoId($this->_id)));
+		return $user['infos']['password'];
+	}
+
 	public function updateUsername($username)
 	{
 		$this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.username' => $username)));
@@ -126,7 +132,7 @@ class User {
 
 	public function updatePassword($newpassword)
 	{
-		$this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.password' => password_hash($newpassword, PASSWORD_DEFAULT))));
+		$this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.password' => $newpassword)));
 	}
 
 	public function createNew($email, $username, $password, $private_key, $public_key)
@@ -137,7 +143,7 @@ class User {
 		$userInfos = array('infos' => (object)array(
 																		'username' => $username,
 																		'email' => $email,
-																		'password' => password_hash($password, PASSWORD_DEFAULT)
+																		'password' => $password
 																	),
 											 'fb-link' => false,
 											 'friends' => array(),

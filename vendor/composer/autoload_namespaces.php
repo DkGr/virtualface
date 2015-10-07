@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Gidkom\\OpenFireRestApi' => array($vendorDir . '/gidkom/php-openfire-restapi/src'),
 );

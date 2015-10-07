@@ -6,6 +6,7 @@ VirtualID is a project prototype to create a decentralized social network with n
 - HTTP server with SSL/TLS
 - PHP 5.4 with phpseclib and mongo driver
 - MongoDB server
+- Openfire XMPP server with http-bind and CORS enabled
 
 ## Working features
 - Basic account Creation
@@ -15,6 +16,7 @@ VirtualID is a project prototype to create a decentralized social network with n
 - Notification system
 - OpenPGP keys generation at account creation
 - User search
+- XMPP chat
 
 ## TODO
 - Account information page
@@ -24,7 +26,6 @@ VirtualID is a project prototype to create a decentralized social network with n
 - Private message
 - Stream posts visibility system
 - OpenPGP encryption/Decryption for posts and private messages
-- XMPP chat
 - XMPP bridge to Facebook chat
 - VirtualID node bridge
 - Photo/Video upload
