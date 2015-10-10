@@ -122,7 +122,7 @@ include "functions/subscribe.php" ?>
     </div>
     <form action="index.php" class="form-signin" role="form" method="post">
       <h2 class="form-signin-heading">Connectez vous !</h2>
-      <input name="email" type="email" placeholder="E-mail" class="form-control" required autofocus>
+      <input name="username" type="username" placeholder="Nom d'utilisateur" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-zA-Z0-9]+" class="form-control" required autofocus>
       <input name="password" type="password" class="form-control" placeholder="Mot de passe" required>
       <p style="color:red;"> <?php if(isset($erreur))echo $erreur; ?> </p>
       <label class="checkbox" style="display:block;float:left;">
@@ -146,7 +146,7 @@ include "functions/subscribe.php" ?>
       			<div class="modal-body">
         			<div>
       					<form action="index.php" class="form-signup" role="form" method="post">
-      						<input name="username" type="username" class="form-control" placeholder="Nom d'utilisateur" required autofocus>
+      						<input name="username" type="username" class="form-control" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-zA-Z0-9]+" placeholder="Nom d'utilisateur" required autofocus>
         					<input name="email" type="email" class="form-control" placeholder="Email" required>
        						<input name="password" type="password" class="form-control" placeholder="Mot de passe" required>
         					<input name="passwordcheck" type="password" class="form-control" placeholder="Vérification du mot de passe" required>

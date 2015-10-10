@@ -8,10 +8,10 @@ $user = new User();
 $erreur = "";
 // on teste si le visiteur a soumis le formulaire de connexion
 if (isset($_POST['login']) && ($_POST['login'] == 'login')) {
-  if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['password']) && !empty($_POST['password']))) {
-    if ($user->loginUser($_POST['email'], $_POST['password'])) {
+  if ((isset($_POST['username']) && !empty($_POST['username'])) && (isset($_POST['password']) && !empty($_POST['password']))) {
+    if ($user->loginUser($_POST['username'], $_POST['password'])) {
       $_SESSION['_id'] = $user->getId();
-		  fwrite(fopen('log.txt', 'a+'), "[".date("d/m/Y H:i:s")." IP:".$_SERVER['REMOTE_ADDR']."] ".$_POST['email']." s'est connecté.\n");
+		  fwrite(fopen('log.txt', 'a+'), "[".date("d/m/Y H:i:s")." IP:".$_SERVER['REMOTE_ADDR']."] ".$_POST['username']." s'est connecté.\n");
       header("Location: stream.php");
     }
     else {

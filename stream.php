@@ -138,11 +138,11 @@ include 'functions/validate-fb-sub.php';
                   <li id="notifPanel"></li>
 				        <?php } ?>
                   <li class="dropdown active" style="margin-right:50px;">
-                			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php if($useFacebookConnect)echo $userNode['picture']['url'];else echo 'img/no_avatar.png'; ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $user->getUsername() ?> <b class="caret"></b></a>
+                			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php echo 'avatars/'.$user->getId(); ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $user->getUsername() ?> <b class="caret"></b></a>
                 			<ul class="dropdown-menu">
                         <?php if(!$useFacebookConnect || $user->isFacebookLinked()){ ?>
-                  			<li><a href="#">Mon compte</a></li>
-                  			<li><a href="#">Paramètres</a></li>
+                  			<li><a href="account.php">Mon compte</a></li>
+                  			<li><a href="account.php#settings">Paramètres</a></li>
                   			<li class="divider"></li>
                         <?php } ?>
                   			<li><a onclick="logout()" href="#">Déconnexion</a></li>
@@ -174,7 +174,7 @@ include 'functions/validate-fb-sub.php';
                       $tmpFriend->setId($keyid); ?>
                     <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">
                       <a href="identity.php?userid=<?php echo $tmpFriend->getId(); ?>">
-                        <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getUsername(); ?>" style="margin-bottom: 0px;" src="img/no_avatar.png" class="thumbnail img-responsive">
+                        <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getUsername(); ?>" style="margin-bottom: 0px;" src="avatars/<?php echo $tmpFriend->getId(); ?>" class="thumbnail img-responsive">
                       </a>
                     </div>
               <?php }
@@ -219,7 +219,7 @@ include 'functions/validate-fb-sub.php';
             <li> En cas de perte de votre mot de passe</li>
           </ul>
         </em></p>
-        <input value="<?php echo $user->getUsername() ?>" name="username" type="text" placeholder="Nom d'utilisateur" class="form-control" required autofocus>
+        <input value="<?php echo $user->getUsername() ?>" name="username" type="text" pattern="[a-zA-Z0-9]+" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" placeholder="Nom d'utilisateur" class="form-control" required autofocus>
         <input value="<?php echo $user->getEmail() ?>" name="email" type="email" placeholder="E-mail" class="form-control" required>
         <br/><p>Créez un mot de passe pour votre compte VirtualID.</p>
         <input name="password" type="password" class="form-control" placeholder="Mot de passe" required>
