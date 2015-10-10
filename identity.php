@@ -34,7 +34,7 @@ include 'functions/get-identity.php';
         <!-- SIDEBAR -->
         <div style="width:20%;float:left;padding:10px;">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="img-thumbnail" src="<?php echo 'avatars/'.$identity->getId(); ?>" alt="no_avatar" style="width:128px;height:128px;background-color:white;margin-top:-5px;margin-right:5px;"></a>
-          <br/><h3><?php echo $user->getDisplayname().' ('.$user->getUsername().')'; ?></h3>
+          <br/><h3><?php echo $identity->getDisplayname().' ('.$identity->getUsername().')'; ?></h3>
           <?php
           if($user->getId() != $identity->getId())
           {
@@ -75,7 +75,7 @@ include 'functions/get-identity.php';
                       $tmpFriend->setId($keyid); ?>
                     <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-4 col-sm-5 col-xs-6">
                       <a href="identity.php?userid=<?php echo $tmpFriend->getId(); ?>">
-                        <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getUsername(); ?>" style="margin-bottom: 0px;" src="<?php echo 'avatars/'.$tmpFriend->getId(); ?>" class="thumbnail img-responsive">
+                        <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getDisplayname().' ('.$tmpFriend->getUsername().')'; ?>" style="margin-bottom: 0px;" src="<?php echo 'avatars/'.$tmpFriend->getId(); ?>" class="thumbnail img-responsive">
                       </a>
                     </div>
               <?php }
@@ -191,7 +191,7 @@ include 'functions/get-identity.php';
 	<!-- SCRIPTS -->
     <script type="text/javascript">
       $(document).ready(function() {
-        loadPosts();
+        loadIdentityPosts();
         updateNotifications();
     	});
     </script>

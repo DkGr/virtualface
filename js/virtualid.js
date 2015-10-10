@@ -1,18 +1,18 @@
-$(document).ready(function() {
-  var map = {
-         "<3": "\u2764\uFE0F",
-         "</3": "\uD83D\uDC94",
-         ":D": "\uD83D\uDE01",
-         ":)": "\uD83D\uDE03",
-         "xD": "\uD83D\uDE06",
-         "^^'": "\uD83D\uDE05",
-         ";)": "\uD83D\uDE09",
-         ":(": "\uD83D\uDE1E",
-         ":p": "\uD83D\uDE1B",
-         ";p": "\uD83D\uDE1C",
-         ":'(": "\uD83D\uDE22"
-  };
+var map = {
+       "<3": "\u2764\uFE0F",
+       "</3": "\uD83D\uDC94",
+       ":D": "\uD83D\uDE01",
+       ":)": "\uD83D\uDE03",
+       "xD": "\uD83D\uDE06",
+       "^^'": "\uD83D\uDE05",
+       ";)": "\uD83D\uDE09",
+       ":(": "\uD83D\uDE1E",
+       ":p": "\uD83D\uDE1B",
+       ";p": "\uD83D\uDE1C",
+       ":'(": "\uD83D\uDE22"
+};
 
+$(document).ready(function() {
   $("#newpost-content").keyup(function () {
     for (var i in map) {
       var regex = new RegExp(escapeSpecialChars(i), 'gim');
@@ -78,12 +78,10 @@ $(document).ready(function() {
   $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
 
   var searchFriendBar = $('#searchFriendBar').magicSuggest({
+      allowFreeEntries: false,
       data: 'functions/get-all-users.php',
       valueField: 'id',
-      displayField: 'displayname',
-      renderer: function(data){
-            return data.displayname + ' (' + data.username + ')';
-        }
+      displayField: 'userresult'
   });
   $(searchFriendBar).on('selectionchange', function(e,m){
     showIdentity(this.getValue());
@@ -92,6 +90,20 @@ $(document).ready(function() {
 
 function escapeSpecialChars(regex) {
    return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+}
+
+function deleteComment(commentId)
+{
+  var userId = $("#newpost-userid").val();
+  var dataString = 'userid='+ userId + '&commentid=' + commentId;
+  $.ajax({
+    type: "POST",
+    url: "functions/delete-comment.php",
+    data: dataString,
+    success: function() {
+      loadPosts();
+    }
+  });
 }
 
 function deletePost(postId)
@@ -190,6 +202,50 @@ function loadPosts(){
       $("#posts-stream").hide();
       $("#posts-stream").html(response.responseText);
       $("#posts-stream").fadeIn();
+      $("#newcomment-content").keyup(function () {
+        for (var i in map) {
+          var regex = new RegExp(escapeSpecialChars(i), 'gim');
+          this.value = this.value = this.value.replace(regex, map[i]);
+        }
+      });
+      $(".button-send-newcomment").click(function() {
+        console.log('clicked');
+        //$('.error').hide();
+        var userid = $("#newpost-userid").val();
+        var postid = $(this).val();
+        /*if (name == "") {
+          $("label#name_error").show();
+          $("input#name").focus();
+          return false;
+        }*/
+        var content = $("#newcomment-content-"+postid).val();
+        /*if (email == "") {
+          $("label#email_error").show();
+          $("input#email").focus();
+          return false;
+        }*/
+
+        $("#newcomment-content").val("");
+
+        var dataString = 'postid=' + postid + '&userid='+ userid + '&content=' + content;
+        //alert (dataString);return false;
+        $.ajax({
+          type: "POST",
+          url: "functions/send-newcomment.php",
+          data: dataString,
+          success: function() {
+            loadPosts();
+            /*$('#contact_form').html("<div id='message'></div>");
+            $('#message').html("<h2>Contact Form Submitted!</h2>")
+            .append("<p>We will be in touch soon.</p>")
+            .hide()
+            .fadeIn(1500, function() {
+              $('#message').append("<img id='checkmark' src='images/check.png' />");
+            });*/
+          }
+        });
+        return false;
+      });
     }
   });
 }
@@ -205,6 +261,50 @@ function loadIdentityPosts(){
       $("#posts-stream").hide();
       $("#posts-stream").html(response.responseText);
       $("#posts-stream").fadeIn();
+      $("#newcomment-content").keyup(function () {
+        for (var i in map) {
+          var regex = new RegExp(escapeSpecialChars(i), 'gim');
+          this.value = this.value = this.value.replace(regex, map[i]);
+        }
+      });
+      $(".button-send-newcomment").click(function() {
+        console.log('clicked');
+        //$('.error').hide();
+        var userid = $("#newpost-userid").val();
+        var postid = $(this).val();
+        /*if (name == "") {
+          $("label#name_error").show();
+          $("input#name").focus();
+          return false;
+        }*/
+        var content = $("#newcomment-content-"+postid).val();
+        /*if (email == "") {
+          $("label#email_error").show();
+          $("input#email").focus();
+          return false;
+        }*/
+
+        $("#newcomment-content").val("");
+
+        var dataString = 'postid=' + postid + '&userid='+ userid + '&content=' + content;
+        //alert (dataString);return false;
+        $.ajax({
+          type: "POST",
+          url: "functions/send-newcomment.php",
+          data: dataString,
+          success: function() {
+            loadPosts();
+            /*$('#contact_form').html("<div id='message'></div>");
+            $('#message').html("<h2>Contact Form Submitted!</h2>")
+            .append("<p>We will be in touch soon.</p>")
+            .hide()
+            .fadeIn(1500, function() {
+              $('#message').append("<img id='checkmark' src='images/check.png' />");
+            });*/
+          }
+        });
+        return false;
+      });
     }
   });
 }
@@ -220,8 +320,13 @@ function addFriend(isAccepting){
       if(isAccepting)
       {
         converse.user.logout();
+        setTimeout(function() {
+              refreshPage();
+        }, 1000);
       }
-      refreshPage();
+      else{
+        refreshPage();
+      }
     }
   });
 }

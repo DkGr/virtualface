@@ -5,8 +5,8 @@
     <p>Ces informations proviennent de votre compte Facebook.</p>
     <p><em>Votre adresse E-mail ne sera pas visible des autres utilisateurs. Elle sera utilisée uniquement pour :<br/>
       <ul>
-        <li> Vous connecter</li>
-        <li> En cas de perte de votre mot de passe</li>
+        <li> Vous envoyer des notifications</li>
+        <li> Réinitialiser votre mot de passe</li>
       </ul>
     </em></p>
     <input name="username" type="text" pattern="[a-zA-Z0-9]+" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" placeholder="Nom d'utilisateur (identifiant)" class="form-control" required autofocus>

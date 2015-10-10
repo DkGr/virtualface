@@ -32,6 +32,7 @@ include 'functions/validate-fb-sub.php';
       <div class="container-fluid">
         <!-- SIDEBAR -->
         <div style="width:20%;float:left;padding:10px;">
+          <input value="<?php echo $user->getId() ?>" id="newpost-userid" type="hidden" >
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="img-thumbnail" src="<?php echo 'avatars/'.$user->getId(); ?>" alt="no_avatar" style="width:128px;height:128px;background-color:white;margin-top:-5px;margin-right:5px;"></a>
           <br/>
           <form enctype="multipart/form-data">
@@ -57,5 +58,10 @@ include 'functions/validate-fb-sub.php';
     <?php } else {
       include_once 'page_includes/facebook-validation.php';
     } ?>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        updateNotifications();
+    	});
+    </script>
 	  <?php include_once 'page_includes/instant-message-module.php'; ?>
 </body>

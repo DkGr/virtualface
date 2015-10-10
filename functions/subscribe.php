@@ -8,12 +8,12 @@ $suberreur = "";
 
 // on teste si le visiteur a soumis le formulaire de connexion
 if (isset($_POST['subscribe']) && ($_POST['subscribe'] == 'subscribe')) {
-  if ((isset($_POST['username']) && !empty($_POST['username'])) && (isset($_POST['password']) && !empty($_POST['password'])) && (isset($_POST['passwordcheck']) && !empty($_POST['passwordcheck']))) {
+  if ((isset($_POST['displayname']) && !empty($_POST['displayname'])) && (isset($_POST['username']) && !empty($_POST['username'])) && (isset($_POST['password']) && !empty($_POST['password'])) && (isset($_POST['passwordcheck']) && !empty($_POST['passwordcheck']))) {
     if($_POST['password'] == $_POST['passwordcheck'])
     {
       $keypair = OpenPGP_Helper::GenerateKeyPair();
       $pass_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-      if ($result = $user->createNew($_POST['email'], $_POST['username'], $pass_hash, $keypair['privatekey'], $keypair['publickey'])) {
+      if ($result = $user->createNew($_POST['email'], $_POST['displayname'],$_POST['username'], $pass_hash, $keypair['privatekey'], $keypair['publickey'])) {
         $contentOrFalseOnFailure   = file_get_contents(__DIR__.'/../img/no_avatar.png');
         $filenameOut = __DIR__.'/../avatars/'.$result;
         $byteCountOrFalseOnFailure = file_put_contents($filenameOut, $contentOrFalseOnFailure);

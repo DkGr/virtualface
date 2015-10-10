@@ -17,7 +17,7 @@ if($cursor->hasNext())
 {
   foreach ( $cursor as $currentUser )
   {
-    $userArray[] = array("id" => (string)$currentUser['_id'], "username" => $currentUser['infos']['username'], "displayname" => $currentUser['infos']['displayname']);
+    $userArray[] = array("id" => (string)$currentUser['_id'], "userresult" => $currentUser['infos']['displayname'].' ('.$currentUser['infos']['username'].')');
   }
 }
 echo json_encode($userArray);

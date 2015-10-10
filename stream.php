@@ -34,18 +34,25 @@ include 'functions/validate-fb-sub.php';
               <div class="row">
                 <?php
                 $hisFriends = $user->GetFriends();
+                $friendCount = 0;
                 foreach ($hisFriends as $keyid => $isFriend) {
                     if($isFriend)
                     {
                       $tmpFriend = new User();
                       $tmpFriend->setId($keyid); ?>
-                    <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">
-                      <a href="identity.php?userid=<?php echo $tmpFriend->getId(); ?>">
-                        <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getUsername(); ?>" style="margin-bottom: 0px;" src="avatars/<?php echo $tmpFriend->getId(); ?>" class="thumbnail img-responsive">
-                      </a>
-                    </div>
-              <?php }
-                } ?>
+                      <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">
+                        <a href="identity.php?userid=<?php echo $tmpFriend->getId(); ?>">
+                          <img data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $tmpFriend->getDisplayname().' ('.$tmpFriend->getUsername().')'; ?>" style="margin-bottom: 0px;" src="avatars/<?php echo $tmpFriend->getId(); ?>" class="thumbnail img-responsive">
+                        </a>
+                      </div>
+                      <?php
+                      $friendCount++;
+                    }
+                }
+                if($friendCount == 0){
+                  echo '<p style="margin: 15px 15px 10px;">:( Vous n\'avez pas encore d\'amis...</p>';
+                }
+                ?>
               </div>
             </div>
           </div>
