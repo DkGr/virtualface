@@ -146,8 +146,9 @@ include "functions/subscribe.php" ?>
       			<div class="modal-body">
         			<div>
       					<form action="index.php" class="form-signup" role="form" method="post">
-      						<input name="username" type="username" class="form-control" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-zA-Z0-9]+" placeholder="Nom d'utilisateur" required autofocus>
-        					<input name="email" type="email" class="form-control" placeholder="Email" required>
+      						<input name="username" type="text" class="form-control" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-zA-Z0-9]+" placeholder="Nom d'utilisateur (identifiant)" required autofocus>
+                  <input name="displayname" type="text" class="form-control" placeholder="Nom d'affichage">
+                  <input name="email" type="email" class="form-control" placeholder="Email" required>
        						<input name="password" type="password" class="form-control" placeholder="Mot de passe" required>
         					<input name="passwordcheck" type="password" class="form-control" placeholder="Vérification du mot de passe" required>
         					<button name="subscribe" value="subscribe" class="btn btn-lg btn-primary btn-block" style="margin-top:10px;" type="submit">Valider</button>

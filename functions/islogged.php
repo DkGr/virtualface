@@ -41,7 +41,7 @@ if (!empty($accessToken)) {
       {
         $fbemail = $userNode['email'];
       }
-      $userid = $user->createNew($fbemail, $userNode['name'], "fb_password", $keypair['privatekey'], $keypair['publickey']);
+      $userid = $user->createNew($fbemail, $userNode['name'], "", "fb_password", $keypair['privatekey'], $keypair['publickey']);
       $_SESSION['_id'] = $userid;
       $user->setId($_SESSION['_id']);
       $user->setFacebookId($userNode['id']);

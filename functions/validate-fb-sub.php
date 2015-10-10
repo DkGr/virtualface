@@ -4,11 +4,12 @@ $fbsuberreur = "";
 
 // on teste si le visiteur a soumis le formulaire de connexion
 if (isset($_POST['validate-fb-sub']) && ($_POST['validate-fb-sub'] == 'validate-fb-sub')) {
-  if ((isset($_POST['username']) && !empty($_POST['username'])) && (isset($_POST['password']) && !empty($_POST['password'])) && (isset($_POST['passwordcheck']) && !empty($_POST['passwordcheck']))) {
+  if ((isset($_POST['displayname']) && !empty($_POST['displayname'])) && (isset($_POST['username']) && !empty($_POST['username'])) && (isset($_POST['password']) && !empty($_POST['password'])) && (isset($_POST['passwordcheck']) && !empty($_POST['passwordcheck']))) {
     if($_POST['password'] == $_POST['passwordcheck'])
     {
       $pass_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
       $user->updateUsername($_POST['username']);
+      $user->updateDisplayname($_POST['displayname']);
       $user->updateEmail($_POST['email']);
       $user->updatePassword($pass_hash);
       $user->setFacebookLinked();

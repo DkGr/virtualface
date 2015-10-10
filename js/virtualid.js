@@ -80,7 +80,10 @@ $(document).ready(function() {
   var searchFriendBar = $('#searchFriendBar').magicSuggest({
       data: 'functions/get-all-users.php',
       valueField: 'id',
-      displayField: 'username'
+      displayField: 'displayname',
+      renderer: function(data){
+            return data.displayname + ' (' + data.username + ')';
+        }
   });
   $(searchFriendBar).on('selectionchange', function(e,m){
     showIdentity(this.getValue());

@@ -75,9 +75,9 @@ if (isset($_POST['userid']) && !empty($_POST['userid'])) {
           <div class="media">
             <div style="text-align:center;" class="media-left">
               <a href="javascript:void(0)" onclick="showIdentityFromPost(\''.$currentPost['_id'].'\');">
-                <img class="media-object img-rounded" style="width: 64px; height: 64px;" src="img/no_avatar.png" alt="...">
+                <img class="media-object img-rounded" style="width: 64px; height: 64px;" src="avatars/'.$author->getId().'" alt="...">
               </a>
-              <a href="javascript:void(0)" onclick="showIdentityFromPost(\''.$currentPost['_id'].'\');">'.$author->getUsername().'</a>
+              <a href="javascript:void(0)" onclick="showIdentityFromPost(\''.$currentPost['_id'].'\');">'.$author->getDisplayname().'</a>
             </div>
             <div class="media-body">'
             .nl2br(preg_replace('$(\s|^)(https?://[a-z0-9_./?=&-]+)(?![^<>]*>)$i', ' <a href="$2" target="_blank">$2</a> ', $currentPost['content']." ")).
