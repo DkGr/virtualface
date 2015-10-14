@@ -17,12 +17,12 @@ VirtualID is a project prototype to create a decentralized social network with n
 - OpenPGP keys generation at account creation
 - User search
 - XMPP chat
+- Comments system
+- Likes system
 
 ## TODO
 - Account information page
 - Settings page
-- Comments system
-- Likes system
 - Private message
 - Stream posts visibility system
 - OpenPGP encryption/Decryption for posts and private messages
