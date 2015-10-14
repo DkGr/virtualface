@@ -31,7 +31,7 @@ include 'functions/validate-fb-sub.php';
     <div class="container">
       <div class="container-fluid">
         <!-- SIDEBAR -->
-        <div style="width:20%;float:left;padding:10px;">
+        <div style="width:30%;float:left;padding:10px;">
           <input value="<?php echo $user->getId() ?>" id="newpost-userid" type="hidden" >
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="img-thumbnail" src="<?php echo 'avatars/'.$user->getId(); ?>" alt="no_avatar" style="width:128px;height:128px;background-color:white;margin-top:-5px;margin-right:5px;"></a>
           <br/>
@@ -43,16 +43,74 @@ include 'functions/validate-fb-sub.php';
           <input value="<?php echo $user->getId(); ?>" id="userid" type="hidden" >
           <div class="panel panel-info">
             <div class="panel-heading">
-              <h3 class="panel-title">Mon compte</h3>
+              <h3 class="panel-title">Mes informations</h3>
             </div>
             <div class="panel-body">
+              Nom d'affichage :
+              <br/>
+              Nom d'utilisateur :
+              <br/>
+              E-mail :
+              <br/>
             </div>
           </div>
         </div>
       	<!-- Main content -->
-      	<div style="width:77%;float:left;">
+      	<div style="width:77%;">
           <div id="tabContent" class="tab-content">
-
+            <h4>Qui peut ...</h4>
+            <h5>Voir mon adresse email : </h5>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off"> Mes amis
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option3" autocomplete="off"> Moi uniquement
+              </label>
+            </div>
+            <br/>
+            <h5>Voir ma liste d'amis : </h5>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off"> Mes amis
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option3" autocomplete="off"> Moi uniquement
+              </label>
+            </div>
+            <br/>
+            <h5>Voir mes photos : </h5>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off"> Mes amis
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option3" autocomplete="off"> Moi uniquement
+              </label>
+            </div>
+            <br/>
+            <h5>M'ajouter à ses amis : </h5>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option2" autocomplete="off"> Mes amis
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="options" id="option3" autocomplete="off"> Moi uniquement
+              </label>
+            </div>
+            <br/>
           </div>
     </div>
     <?php } else {

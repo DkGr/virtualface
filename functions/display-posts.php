@@ -5,6 +5,7 @@ ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 include_once '../dba/Post.php.class';
 include_once '../dba/Comment.php.class';
+include_once '../dba/Like.php.class';
 include_once '../dba/User.php.class';
 
 if(!isset($_SESSION['_id']))
@@ -70,6 +71,15 @@ if($cursor->hasNext())
           </ul>
         </div>';
     }
+    $postLikeLink = '<a href="javascript:void(0)" onclick="sendNewPostLike(\''.$currentPost['_id'].'\');">J\'aime</a>';
+    $likeCollection = new Like();
+    $postLikesCursor = $likeCollection->GetAllPostLikes((string)$currentPost['_id']);
+    $postLikes = $postLikesCursor->count();
+    $likeid = $likeCollection->HasLiked((string)$_SESSION['_id'], (string)$currentPost['_id'], 'post');
+    if($likeid)
+    {
+      $postLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''.$likeid.'\');">Je n\'aime plus</a>';
+    }
 
     $comment = new Comment();
     $commentcursor = $comment->GetAllPostComments((string)$currentPost['_id']);
@@ -82,16 +92,25 @@ if($cursor->hasNext())
       foreach ( $commentcursor as $currentComment )
       {
         $commentpair = !$commentpair;
-        $commentpaircolor = 'style="background-color: rgba(53, 53, 53, 0.03);"';
+        $commentpaircolor = 'style="border:none;background-color: rgba(53, 53, 53, 0.03);"';
         if($commentpair)
         {
-          $commentpaircolor = 'style="background-color: rgba(53, 53, 53, 0.01);"';
+          $commentpaircolor = 'style="border:none;background-color: rgba(53, 53, 53, 0.01);"';
         }
         $commentauthor = new User();
         $commentauthor->setId($currentComment['author']);
         $commentAuthorActionButton = '';
         $commentPosttime = strtotime($currentComment['date']);
         $commentPostDateStr = humanTiming($commentPosttime);
+        $likeCollection = new Like();
+        $commentLikesCursor = $likeCollection->GetAllCommentLikes((string)$currentComment['_id']);
+        $commentLikes = $commentLikesCursor->count();
+        $commentLikeLink = '<a href="javascript:void(0)" onclick="sendNewCommentLike(\''.$currentComment['_id'].'\');">J\'aime</a>';
+        if($likeCollection->HasLiked((string)$_SESSION['_id'], (string)$currentComment['_id'], 'comment'))
+        {
+          $commentLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''.$currentComment['_id'].'\');">Je n\'aime plus</a>';
+        }
+
         if($_SESSION["_id"] == $commentauthor->getId())
         {
           $commentAuthorActionButton = '<!-- Split button -->
@@ -117,7 +136,7 @@ if($cursor->hasNext())
                                         <div class="media-body">'
                                         .nl2br(preg_replace('$(\s|^)(https?://[a-z0-9_./?=&-]+)(?![^<>]*>)$i', ' <a href="$2" target="_blank">$2</a> ', $currentComment['content']." ")).
                                         '</div>'.$commentAuthorActionButton.'
-                                        <div style="float: left;margin: 10px 0 0 75px;"><a>J\'aime</a> - 0 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ '.$commentPostDateStr.'</span></div>
+                                        <div style="float: left;margin: 10px 0 0 75px;">'.$commentLikeLink.' - '.$commentLikes.' <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ '.$commentPostDateStr.'</span></div>
                                       </div>
                                     </li>';
         $commentCount++;
@@ -147,11 +166,11 @@ if($cursor->hasNext())
           <div class="media-body">'
           .nl2br(preg_replace('$(\s|^)(https?://[a-z0-9_./?=&-]+)(?![^<>]*>)$i', ' <a href="$2" target="_blank">$2</a> ', $currentPost['content']." ")).
           '</div>'.$authorActionButton.'
-          <div style="float: left;margin: 10px 0 0 75px;">0 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ '.$postDateStr.'</span></div>
+          <div style="float: left;margin: 10px 0 0 75px;">'.$postLikes.' <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span style="color:grey;">Posté il y a environ '.$postDateStr.'</span></div>
         </div>
       </div>
       <div class="panel-footer">
-        <a role="button" data-toggle="collapse" href="#comments-scroll-'.$currentPost['_id'].'" aria-expanded="false" aria-controls="comments-scroll-'.$currentPost['_id'].'">'.$commentLinkText.'</a> - <a>J\'aime</a>
+        <a role="button" data-toggle="collapse" href="#comments-scroll-'.$currentPost['_id'].'" aria-expanded="false" aria-controls="comments-scroll-'.$currentPost['_id'].'">'.$commentLinkText.'</a> - '.$postLikeLink.'
       </div>
       <div class="collapse" id="comments-scroll-'.$currentPost['_id'].'">'
         .$commentlist.

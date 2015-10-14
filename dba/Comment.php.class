@@ -2,14 +2,13 @@
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
-/** mongodb Post collection structure
+/** mongodb Comment collection structure
  * {
  *     "_id" : ObjectId("xxxxxxxxxxxxxxxxxxxxxxxx"),
- *		 "author" : UserID,
+ *		 "postid" : xxxxxxxxxxxxxxxxxxxxxxxx,
+ *     "author" : xxxxxxxxxxxxxxxxxxxxxxxx,
  *		 "date" : "yyyy-MM-dd HH:mm:ss",
- *     "visibility" : array { Public, VirtualID, Friends, UserID, ... },
  *     "content" : "text",
- *     "comments" : array{ CommentID, ... },
  *     "likes" : array{ LikeID, ... }
  * }
  */

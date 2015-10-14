@@ -21,37 +21,18 @@ $(document).ready(function() {
   });
 
   $("#button-send-newpost").click(function() {
-    //$('.error').hide();
     var userid = $("#newpost-userid").val();
-    /*if (name == "") {
-      $("label#name_error").show();
-      $("input#name").focus();
-      return false;
-    }*/
     var content = $("#newpost-content").val();
-    /*if (email == "") {
-      $("label#email_error").show();
-      $("input#email").focus();
-      return false;
-    }*/
 
     $("#newpost-content").val("");
 
     var dataString = 'userid='+ userid + '&content=' + content;
-    //alert (dataString);return false;
     $.ajax({
       type: "POST",
       url: "functions/send-newpost.php",
       data: dataString,
       success: function() {
         loadPosts();
-        /*$('#contact_form').html("<div id='message'></div>");
-        $('#message').html("<h2>Contact Form Submitted!</h2>")
-        .append("<p>We will be in touch soon.</p>")
-        .hide()
-        .fadeIn(1500, function() {
-          $('#message').append("<img id='checkmark' src='images/check.png' />");
-        });*/
       }
     });
     return false;
@@ -74,8 +55,7 @@ $(document).ready(function() {
 
   $('[data-toggle="tooltip"]').tooltip()
 
-  updateNotifications();
-  $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
+  setInterval(updateNotifications, 10000);
 
   var searchFriendBar = $('#searchFriendBar').magicSuggest({
       allowFreeEntries: false,
@@ -90,6 +70,48 @@ $(document).ready(function() {
 
 function escapeSpecialChars(regex) {
    return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+}
+
+function sendNewPostLike(postId)
+{
+  var userId = $("#newpost-userid").val();
+  var dataString = 'userid='+ userId + '&targetid=' + postId + '&targettype=post';
+  $.ajax({
+    type: "POST",
+    url: "functions/send-newlike.php",
+    data: dataString,
+    success: function() {
+      loadPosts();
+    }
+  });
+}
+
+function sendNewCommentLike(commentId)
+{
+  var userId = $("#newpost-userid").val();
+  var dataString = 'userid='+ userId + '&targetid=' + commentId + '&targettype=comment';
+  $.ajax({
+    type: "POST",
+    url: "functions/send-newlike.php",
+    data: dataString,
+    success: function() {
+      loadPosts();
+    }
+  });
+}
+
+function deleteLike(likeId)
+{
+  var userId = $("#newpost-userid").val();
+  var dataString = 'userid='+ userId + '&likeid=' + likeId;
+  $.ajax({
+    type: "POST",
+    url: "functions/delete-like.php",
+    data: dataString,
+    success: function() {
+      loadPosts();
+    }
+  });
 }
 
 function deleteComment(commentId)
@@ -210,38 +232,19 @@ function loadPosts(){
       });
       $(".button-send-newcomment").click(function() {
         console.log('clicked');
-        //$('.error').hide();
         var userid = $("#newpost-userid").val();
         var postid = $(this).val();
-        /*if (name == "") {
-          $("label#name_error").show();
-          $("input#name").focus();
-          return false;
-        }*/
         var content = $("#newcomment-content-"+postid).val();
-        /*if (email == "") {
-          $("label#email_error").show();
-          $("input#email").focus();
-          return false;
-        }*/
 
         $("#newcomment-content").val("");
 
         var dataString = 'postid=' + postid + '&userid='+ userid + '&content=' + content;
-        //alert (dataString);return false;
         $.ajax({
           type: "POST",
           url: "functions/send-newcomment.php",
           data: dataString,
           success: function() {
             loadPosts();
-            /*$('#contact_form').html("<div id='message'></div>");
-            $('#message').html("<h2>Contact Form Submitted!</h2>")
-            .append("<p>We will be in touch soon.</p>")
-            .hide()
-            .fadeIn(1500, function() {
-              $('#message').append("<img id='checkmark' src='images/check.png' />");
-            });*/
           }
         });
         return false;
@@ -269,38 +272,19 @@ function loadIdentityPosts(){
       });
       $(".button-send-newcomment").click(function() {
         console.log('clicked');
-        //$('.error').hide();
         var userid = $("#newpost-userid").val();
         var postid = $(this).val();
-        /*if (name == "") {
-          $("label#name_error").show();
-          $("input#name").focus();
-          return false;
-        }*/
         var content = $("#newcomment-content-"+postid).val();
-        /*if (email == "") {
-          $("label#email_error").show();
-          $("input#email").focus();
-          return false;
-        }*/
 
         $("#newcomment-content").val("");
 
         var dataString = 'postid=' + postid + '&userid='+ userid + '&content=' + content;
-        //alert (dataString);return false;
         $.ajax({
           type: "POST",
           url: "functions/send-newcomment.php",
           data: dataString,
           success: function() {
             loadPosts();
-            /*$('#contact_form').html("<div id='message'></div>");
-            $('#message').html("<h2>Contact Form Submitted!</h2>")
-            .append("<p>We will be in touch soon.</p>")
-            .hide()
-            .fadeIn(1500, function() {
-              $('#message').append("<img id='checkmark' src='images/check.png' />");
-            });*/
           }
         });
         return false;
@@ -341,7 +325,7 @@ function updateNotifications()
     data: dataString,
     complete: function(response) {
       $("#notifPanel").html(response.responseText);
-      $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'})
+      $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'});
     }
   });
 }
