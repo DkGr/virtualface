@@ -1,3 +1,3 @@
 log.txt
 .ftpconfig
-vendor/gidkom/*
+vendor/gidkom/php-openfire-restapi/
