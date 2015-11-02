@@ -127,6 +127,11 @@ class User {
 		return $user['private_key'];
 	}
 
+	public function saveKeys($username, $passhash, $privkey, $pubkey)
+	{
+		$this->VirtualIDDB->Users->update(array('infos.username' => $username, 'infos.password' => $passhash), array('$set' => array('private_key' => $privkey, 'public_key' => $pubkey)));
+	}
+
 	public function isFacebookLinked()
 	{
 		$user = $this->VirtualIDDB->Users->findOne(array('_id' => new MongoId($this->_id)));
@@ -153,7 +158,7 @@ class User {
 		$this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.password' => $newpassword)));
 	}
 
-	public function createNew($email, $displayname, $username, $password, $private_key, $public_key)
+	public function createNew($email, $displayname, $username, $password)
 	{
 		if ($this->VirtualIDDB->Users->findOne(array('infos.username' => $username))) {
 			return false;
@@ -167,8 +172,8 @@ class User {
 											 'fb-link' => false,
 											 'fb-id' => 0,
 											 'friends' => array(),
-                       'private_key' => (string)$private_key,
-											 'public_key' => (string)$public_key
+                       'private_key' => '',
+											 'public_key' => ''
 								 );
 		$this->VirtualIDDB->Users->insert($userInfos);
 		return (string)$userInfos['_id'];

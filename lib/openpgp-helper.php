@@ -35,7 +35,12 @@ class OpenPGP_Helper
        'u' => $rsa->coefficients[2]->toBytes()
     ));
     $wkey = new OpenPGP_Crypt_RSA($nkey);
-    $uid = new OpenPGP_UserIDPacket($userid.'@'.$_SERVER['HTTP_HOST']);
+    $domain = $_SERVER['HTTP_HOST'];
+    if(strpos($domain, 'www.') !== false)
+    {
+      $domain = substr($domain, 4, strlen($domain));
+    }
+    $uid = new OpenPGP_UserIDPacket($user->getUsername().'@'.$domain);
     $key = $wkey->sign_key_userid(array($nkey, $uid));
     return $key;
   }
@@ -49,10 +54,19 @@ class OpenPGP_Helper
     $rsa->loadKey($pub);
     $nkey = new OpenPGP_PublicKeyPacket(array(
        'n' => $rsa->modulus->toBytes(),
-       'e' => $rsa->publicExponent->toBytes()
+       'e' => $rsa->publicExponent->toBytes(),
+       'd' => $rsa->exponent->toBytes(),
+       'p' => $rsa->primes[1]->toBytes(),
+       'q' => $rsa->primes[2]->toBytes(),
+       'u' => $rsa->coefficients[2]->toBytes()
     ));
     $wkey = new OpenPGP_Crypt_RSA($nkey);
-    $uid = new OpenPGP_UserIDPacket($userid.'@'.$_SERVER['HTTP_HOST']);
+    $domain = $_SERVER['HTTP_HOST'];
+    if(strpos($domain, 'www.') !== false)
+    {
+      $domain = substr($domain, 4, strlen($domain));
+    }
+    $uid = new OpenPGP_UserIDPacket($user->getUsername().'@'.$domain);
     $key = $wkey->sign_key_userid(array($nkey, $uid));
     return $key;
   }

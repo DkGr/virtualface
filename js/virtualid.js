@@ -13,6 +13,10 @@ var map = {
 };
 
 $(document).ready(function() {
+  $("#validate-sub").click(function() {
+    subscribe();
+  });
+
   $("#newpost-content").keyup(function () {
     for (var i in map) {
       var regex = new RegExp(escapeSpecialChars(i), 'gim');
@@ -67,6 +71,106 @@ $(document).ready(function() {
     showIdentity(this.getValue());
   });
 });
+
+function subscribe()
+{
+  var displayname = $("#displayname").val();
+  var username = $("#username").val();
+  var email = $("#email").val();
+  var password = $("#password").val();
+  var passcheck = $("#passwordcheck").val();
+
+  if(password != passcheck)
+  {
+    $("#errormessage").html("Les mots de passe ne correspondent pas.");
+    return;
+  }
+
+  var dataString = 'displayname='+displayname+'&username='+username+'&email='+email+'&password='+password+'&subscribe=subscribe';
+
+  if(displayname!='' && username!='' && password!='' && passcheck!='')
+  {
+    $('#subscribingModal').modal('show');
+    $.ajax({
+      type: "POST",
+      url: "functions/subscribe.php",
+      data: dataString,
+      complete: function(response) {
+        $("#errormessage").html(response.responseText);
+        var code = $("#validationcode").val();
+        if(code != '')
+        {
+          var domain = window.location.host.replace('www.','');
+          var options = {
+              numBits: 2048,
+              userId: username+' <'+username+'@'+domain+'>',
+              passphrase: code
+          };
+
+          openpgp.generateKeyPair(options).then(function(keypair) {
+              // success
+              var privkey = keypair.privateKeyArmored;
+              var pubkey = keypair.publicKeyArmored;
+
+              // collect the form data while iterating over the inputs
+              var data = {};
+              data['username'] = username;
+              data['code'] = code;
+              data['privkey'] = privkey;
+              data['pubkey'] = pubkey;
+
+              // construct an HTTP request
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", "functions/save-keys.php", true);
+              xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+              // send the collected data as JSON
+              xhr.send(JSON.stringify(data));
+
+              xhr.onloadend = function () {
+                window.location = "stream.php";
+              };
+          }).catch(function(error) {
+              // failure
+          });
+        }
+        else
+        {
+          return;
+        }
+      }
+    });
+  }
+}
+
+function encryptPost()
+{
+  var jsonResponse;
+  var keys_str = '';
+  var data = {};
+
+  data['userid'] = username;
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "functions/save-keys.php", true);
+  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  // send the collected data as JSON
+  xhr.send(JSON.stringify(data));
+  xhr.onloadend = function () {
+     jsonResponse = xhr.responseText;
+  };
+  for(var k in jsonResponse) {
+     keys_str += jsonResponse[k];
+  }
+  var publicKey = openpgp.key.readArmored(keys_str);
+
+  openpgp.encryptMessage(publicKey.keys, 'Hello, World!').then(function(pgpMessage) {
+      // success
+      return pgpMessage;
+  }).catch(function(error) {
+      // failure
+  });
+}
 
 function escapeSpecialChars(regex) {
    return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');

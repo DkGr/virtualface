@@ -458,10 +458,4 @@ abstract class Openpgp
   $sessionKey = self::generateSessionKey();
   $message = self::encryptedDataPacket($sessionKey, $message);
   foreach($publicKeys as $publicKey)
-   $message = self::encryptedSessionKeyPacket(self::getPublicKey($publicKey), $sessionKey) . $message;
-  return self::armor($message);
- }
-
-}
-
-?>
+   $message = self::encryptedSessionKeyPacket(self::getP
