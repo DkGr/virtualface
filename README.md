@@ -21,15 +21,17 @@ VirtualID is a project prototype to create a decentralized social network with n
 - Likes system
 
 ## TODO
-- Account information page
-- Settings page
-- Private message
+- Account information page and settings page
+- Email system
 - Stream posts visibility system
-- OpenPGP encryption/Decryption for posts and private messages
+- OpenPGP encryption/Decryption for posts
+- OpenPGP encryption/Decryption for emails
 - XMPP bridge to Facebook chat
 - VirtualID node bridge
 - Photo/Video upload
 - Localization system and translation
+- Events system (creation, invites,...)
+- Geolocation sharing
 
 ## Installation
 ... Soon ...

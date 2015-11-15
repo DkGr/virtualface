@@ -5,7 +5,7 @@ ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 include_once '../vendor/autoload.php';
 require_once '../lib/openfire.php';
-include_once '../dba/User.php.class';
+include_once '../dba/User.php';
 
 if(!isset($_SESSION['_id']))
 {

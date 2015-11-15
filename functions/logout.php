@@ -1,11 +1,11 @@
 <?php
 session_start();
-include_once '../dba/User.php.class';
+/*include_once '../dba/User.php.class';
 
 $user = new User();
-$erreur = "";
+$erreur = "";*/
 
-unset($_SESSION["_id"]);
+unset($_SESSION["user"]);
 session_unset();
 session_destroy();
 ?>

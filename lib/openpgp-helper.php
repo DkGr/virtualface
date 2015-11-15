@@ -12,11 +12,32 @@ require_once dirname(__FILE__).'/openpgp_crypt_rsa.php';
  */
 class OpenPGP_Helper
 {
-  public static function GenerateKeyPair()
+  public static function GenerateKeyPair($userid)
   {
+    $user = new User();
+    $user->setId($userid);
     $rsa = new Crypt_RSA();
     $k = $rsa->createKey(512);
-    return $k;
+    $rsa->loadKey($k['privatekey']);
+    $nkey = new OpenPGP_SecretKeyPacket(array(
+       'n' => $rsa->modulus->toBytes(),
+       'e' => $rsa->publicExponent->toBytes(),
+       'd' => $rsa->exponent->toBytes(),
+       'p' => $rsa->primes[1]->toBytes(),
+       'q' => $rsa->primes[2]->toBytes(),
+       'u' => $rsa->coefficients[2]->toBytes()
+    ));
+    $domain = $_SERVER['HTTP_HOST'];
+    if(strpos($domain, 'www.') !== false)
+    {
+      $domain = substr($domain, 4, strlen($domain));
+    }
+    $uid = new OpenPGP_UserIDPacket($user->getUsername().' <'.$user->getUsername().'@'.$domain.'>');
+    $wkey = new OpenPGP_Crypt_RSA($nkey);
+    $m = $wkey->sign_key_userid(array($nkey, $uid));
+    $fp = fopen($userid.'.keys', 'wb');
+    fwrite($fp, $m->to_bytes());
+    fclose($fp);
   }
 
   public static function GetPrivateKey($userid)

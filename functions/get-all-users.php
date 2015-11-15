@@ -2,7 +2,7 @@
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
-include_once '../dba/User.php.class';
+include_once '../class/User.php';
 
 /*if(!isset($_SESSION['_id']))
 {

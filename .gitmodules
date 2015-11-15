@@ -1,3 +1,0 @@
-[submodule "vendor/gidkom/php-openfire-restapi"]
-	path = vendor/gidkom/php-openfire-restapi
-	url = git://github.com/gidkom/php-openfire-restapi.git

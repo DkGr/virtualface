@@ -1,5 +1,7 @@
 {
   "require" : {
-    "facebook/php-sdk-v4" : "~5.0"
+    "facebook/php-sdk-v4" : "~5.0",
+    "gidkom/php-openfire-restapi": "dev-master",
+    "jacwright/restserver": "dev-master"
   }
 }

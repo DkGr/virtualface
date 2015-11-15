@@ -32,7 +32,7 @@ require(['converse'], function (converse) {
         });
     })();
     converse.initialize({
-        bosh_service_url: 'https://octeau.fr:7443/http-bind/', // Please use this connection manager only for testing purposes
+        bosh_service_url: 'https://octeau.fr:7443/http-bind/',
         keepalive: true,
         message_carbons: true,
         play_sounds: true,
@@ -40,8 +40,8 @@ require(['converse'], function (converse) {
         show_controlbox_by_default: false,
         xhr_user_search: false,
         allow_registration: false,
-        jid: '<?php echo $user->getUsername(); ?>@octeau.fr',
-        password: '<?php echo md5($user->getPasswordHash()); ?>',
+        jid: '<?php echo $_SESSION['user']['infos']['username']; ?>@octeau.fr',
+        password: '<?php echo md5($_SESSION['user']['infos']['password']); ?>',
         authentication: 'login',
         auto_login: true,
         auto_reconnect: true,
