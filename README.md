@@ -12,6 +12,7 @@ VirtualID is a project prototype to create a decentralized social network with n
 - Basic account Creation
 - Account creation with Facebook link
 - Public stream post creation
+- Stream posts visibility system
 - Friendship system
 - Notification system
 - OpenPGP keys generation at account creation
@@ -23,7 +24,6 @@ VirtualID is a project prototype to create a decentralized social network with n
 ## TODO
 - Account information page and settings page
 - Email system
-- Stream posts visibility system
 - OpenPGP encryption/Decryption for posts
 - OpenPGP encryption/Decryption for emails
 - XMPP bridge to Facebook chat
