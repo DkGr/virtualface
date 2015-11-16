@@ -76,6 +76,30 @@ class UserController {
     }
     
     /**
+     * Saves a user from facebook to the database
+     *
+     * @noAuth
+     * @url POST /fbusers
+     */
+    public function saveUserFromFacebook($data)
+    {
+        $obj = new User();
+        $user = $obj->saveNew($data);
+        $obj->setId((string)$user['_id']);
+        $obj->setFacebookId($data->{'fbuserid'});
+        $contentOrFalseOnFailure   = file_get_contents($data->{'fbavatarurl'});
+        $filenameOut = __DIR__.'/../avatars/'.$obj->getId();
+        file_put_contents($filenameOut, $contentOrFalseOnFailure);
+        if($user)
+        {
+            return $user; // returning the newly created user object
+        }
+        else{
+            return array('error' => "Nom d'utilisateur indisponible");
+        }
+    }
+    
+    /**
      * Check and return friend status between authenticated user and another user
      *
      * @url GET /friends/status/$id

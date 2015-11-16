@@ -15,7 +15,11 @@
         <div class="navbar-collapse collapse">
     <?php if(isset($_SESSION['user'])){ ?>
     <ul class="nav navbar-nav navbar-left">
+      <?php  if(basename($_SERVER['PHP_SELF']) == 'stream.php'){ ?>
       <li class="active"><a onclick="loadPosts();" href="#stream" data-toggle="tab">Mon flux</a></li>
+      <?php } elseif (basename($_SERVER['PHP_SELF']) == 'identity.php') { ?>
+      <li><a href="stream.php">Mon flux</a></li>
+      <?php } ?>
       <li><a href="#emails" data-toggle="tab">Mes courriers</a></li>
     </ul>
     <?php } ?>
@@ -31,7 +35,6 @@
                 </form>
               </li>
               <li id="notifPanel"></li>
-            <?php } ?>
               <li class="dropdown active" style="margin-right:50px;">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php echo 'avatars/'.$_SESSION['user']['_id']; ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $_SESSION['user']['infos']['username']; ?> <b class="caret"></b></a>
                   <ul class="dropdown-menu">
@@ -43,6 +46,7 @@
                     <li><a onclick="logout()" href="#">Déconnexion</a></li>
                   </ul>
               </li>
+              <?php } ?>
           </ul>
         </div>
       </div>

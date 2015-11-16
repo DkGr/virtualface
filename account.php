@@ -31,6 +31,10 @@ if(!isset($_SESSION['user']))
   </head>
 
   <body>
+    <input id="myid" value="<?php echo (string)$_SESSION['user']['_id']; ?>" type="hidden" >
+    <?php 
+        include_once 'page_includes/facebook-status.php'; 
+    ?>
     <?php include_once 'page_includes/navbar.php'; ?>
     <div class="container">
       <div class="container-fluid">
@@ -43,7 +47,6 @@ if(!isset($_SESSION['user']))
               <input type="button" value="Upload" />
           </form>
           <!--<progress></progress>-->
-          <input value="<?php echo $_SESSION['user']['_id']; ?>" id="userid" type="hidden" >
           <div class="panel panel-info">
             <div class="panel-heading">
               <h3 class="panel-title">Mes informations</h3>

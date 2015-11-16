@@ -78,7 +78,7 @@ class User {
 	public function getVirtualIdWithFacebookId($fb_id)
 	{
             $user = $this->VirtualIDDB->Users->findOne(array('fb-id' => $fb_id));
-            return (string)$user['_id'];
+            return $user;
 	}
 
 	public function checkPassword($password)

@@ -3,10 +3,10 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 
-include_once dirname(__FILE__).'/Notifications.php.class';
-include_once dirname(__FILE__).'/User.php.class';
-include_once dirname(__FILE__).'/Post.php.class';
-include_once dirname(__FILE__).'/Comment.php.class';
+include_once dirname(__FILE__).'/Notifications.php';
+include_once dirname(__FILE__).'/User.php';
+include_once dirname(__FILE__).'/Post.php';
+include_once dirname(__FILE__).'/Comment.php';
 /** mongodb Like collection structure
  * {
  *     "_id" : ObjectId("xxxxxxxxxxxxxxxxxxxxxxxx"),
@@ -29,10 +29,10 @@ class Like {
 	public function CreateNew($userid, $targetType, $targetId, $date)
 	{
 		$newlike = array('author' => $userid,
-										 'targetType' => $targetType,
-										 'targetId' => $targetId,
-										 'date' => $date
-								 );
+                                'targetType' => $targetType,
+                                'targetId' => $targetId,
+                                'date' => $date
+                                );
 		$this->VirtualIDDB->Likes->insert($newlike);
 
 		//Notification

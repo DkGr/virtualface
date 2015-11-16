@@ -9,10 +9,6 @@ if(!isset($_SESSION['user']))
     header("Location: index.php");
     die();
 }
-
-//include 'functions/fb-api.php';
-//include 'functions/islogged.php';
-//include 'functions/validate-fb-sub.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -25,7 +21,8 @@ if(!isset($_SESSION['user']))
   </head>
 
   <body>
-    <?php //include_once 'page_includes/facebook-status.php'; ?>
+    <input id="myid" value="<?php echo (string)$_SESSION['user']['_id']; ?>" type="hidden" >
+    <?php include_once 'page_includes/facebook-status.php'; ?>
     <?php include_once 'page_includes/navbar.php'; ?>
   <?php //if($_SESSION['user']){ ?>
     <div class="container">
@@ -98,7 +95,7 @@ if(!isset($_SESSION['user']))
         changeNewpostVisibility();
         updateNotifications();
         //setInterval(updateNotifications, 60000);
-        showMyUserPanel();
+        showMyFriendsPanel();
         var searchFriendBar = $('#searchFriendBar').magicSuggest({
             allowFreeEntries: false,
             data: 'functions/get-all-users.php',

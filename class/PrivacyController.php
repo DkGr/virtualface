@@ -31,6 +31,7 @@ class PrivacyController {
                 $rtnUser['_id'] = $user['_id'];
                 $rtnUser['infos'] = array();
                 $rtnUser['infos']['username'] = $user['infos']['username'];
+                $rtnUser['public_key'] = $user['public_key'];
                 
                 foreach ($user['privacy_settings'] as $key => $value) {
                     if(($key == 'displayname') && (($value == VisibilityType::Friends)||($value == VisibilityType::Everybody)))
@@ -157,6 +158,56 @@ class PrivacyController {
               }
             }
             return $rtnComments;
+        }
+        else{
+            return array('error' => 'Acces forbidden');
+        }
+    }
+    
+    public static function pleaseShowMePostLikes($myUserid, $postid)
+    {
+        $obj = new Post();
+        $obj->setId($postid);
+        if(PrivacyController::getUserVisibilityTypeBetween($myUserid, (string)$obj->getAuthor()) <= $obj->GetPostVisibility())
+        {
+            $likeCollection = new Like();
+            $postLikesCursor = $likeCollection->GetAllPostLikes((string)$postid);
+            $rtnLikes = array();
+            $postLikesCursor->sort(array('date' => 1));
+            if($postLikesCursor->hasNext())
+            {
+              foreach ( $postLikesCursor as $currentLike )
+              {
+                $rtnLikes[] = $currentLike;
+              }
+            }
+            return $rtnLikes;
+        }
+        else{
+            return array('error' => 'Acces forbidden');
+        }
+    }
+    
+    public static function pleaseShowMeCommentLikes($myUserid, $commentid)
+    {
+        $obj = new Comment();
+        $obj->setId($commentid);
+        $obj2 = new Post();
+        $obj2->setId($obj->getTargetId());
+        if(PrivacyController::getUserVisibilityTypeBetween($myUserid, (string)$obj2->getAuthor()) <= $obj2->GetPostVisibility())
+        {
+            $likeCollection = new Like();
+            $postLikesCursor = $likeCollection->GetAllCommentLikes((string)$commentid);
+            $rtnLikes = array();
+            $postLikesCursor->sort(array('date' => 1));
+            if($postLikesCursor->hasNext())
+            {
+              foreach ( $postLikesCursor as $currentLike )
+              {
+                $rtnLikes[] = $currentLike;
+              }
+            }
+            return $rtnLikes;
         }
         else{
             return array('error' => 'Acces forbidden');

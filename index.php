@@ -27,8 +27,14 @@ if(isset($_SESSION['user']))
         // Full docs on the response object can be found in the documentation
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
-          // Logged into your app and Facebook.
-          //window.location = "stream.php";
+            // Logged into your app and Facebook.
+            loginfb(response.authResponse.userID);
+        } else if (response.status === 'not_authorized') {
+            // the user is logged in to Facebook, 
+            // but has not authenticated your app
+            window.location = "facebook-validation.php";
+        } else {
+            // the user isn't logged in to Facebook.
         }
       }
 
@@ -121,7 +127,7 @@ if(isset($_SESSION['user']))
     </div>
     <form class="form-signin" role="form" onsubmit="return false;">
       <h2 class="form-signin-heading">Connectez vous !</h2>
-      <input id="username" name="username" type="username" placeholder="Nom d'utilisateur" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-zA-Z0-9]+" class="form-control" required autofocus>
+      <input id="username" name="username" type="username" placeholder="Nom d'utilisateur" title="Peut contenir des caractères alpha-numériques en minuscule (0 à 9 et a à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-z0-9]+[a-z0-9._-]+[a-z0-9]+" class="form-control" required autofocus>
       <input id="password" name="password" type="password" class="form-control" placeholder="Mot de passe" required>
       <p id="login-error" style="color:red;"></p>
       
@@ -146,7 +152,7 @@ if(isset($_SESSION['user']))
         			<div>
                                     <p id="errormessage" style="color:red;"></p>
                                     <form class="form-signup" role="form" onsubmit="return false;">
-                                        <input id="sub-username" name="username" type="text" class="form-control" title="Peut contenir des caractères alpha-numériques (0 à 9 et A à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-zA-Z0-9]+" placeholder="Nom d'utilisateur (identifiant unique)" required autofocus>
+                                        <input id="sub-username" name="username" type="text" class="form-control" title="Peut contenir des caractères alpha-numériques en minuscule (0 à 9 et a à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-z0-9]+[a-z0-9._-]+[a-z0-9]+" placeholder="Nom d'utilisateur (identifiant unique)" required autofocus>
                                         <input id="sub-displayname" name="displayname" type="text" class="form-control" placeholder="Nom d'affichage">
                                         <input id="sub-email" name="email" type="email" class="form-control" placeholder="Email">
                                         <input id="sub-password" name="password" type="password" class="form-control" placeholder="Mot de passe" required>

@@ -10,6 +10,7 @@ require 'WSController.php';
 require 'UserController.php';
 require 'PostController.php';
 require 'CommentController.php';
+require 'LikeController.php';
 require 'NotificationController.php';
 
 spl_autoload_register();
@@ -18,6 +19,7 @@ $server->addClass('WSController');
 $server->addClass('UserController');
 $server->addClass('PostController');
 $server->addClass('CommentController');
+$server->addClass('LikeController');
 $server->addClass('NotificationController');
 $server->handle();
 

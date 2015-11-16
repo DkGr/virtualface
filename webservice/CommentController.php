@@ -59,4 +59,15 @@ class CommentController {
             return array('error' => "Vous n'avez pas l'autorisation de supprimer cet élément");
         }
     }
+    
+    /**
+     * Gets the comments likes by id
+     *
+     * @url GET /comments/$id/likes
+     */
+    public function getCommentLikes($id)
+    {
+        $likes = PrivacyController::pleaseShowMeCommentLikes((string)$_SESSION['user']['_id'], $id);
+        return $likes;
+    }
 }

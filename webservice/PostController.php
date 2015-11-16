@@ -41,7 +41,7 @@ class PostController {
     }
     
     /**
-     * Save the user post
+     * Delete the user post
      *
      * @url POST /posts/delete
      */
@@ -79,5 +79,16 @@ class PostController {
     {
         $comments = PrivacyController::pleaseShowMePostComments((string)$_SESSION['user']['_id'], $id);
         return $comments;
+    }
+    
+    /**
+     * Gets the posts likes by id
+     *
+     * @url GET /posts/$id/likes
+     */
+    public function getPostLikes($id)
+    {
+        $likes = PrivacyController::pleaseShowMePostLikes((string)$_SESSION['user']['_id'], $id);
+        return $likes;
     }
 }

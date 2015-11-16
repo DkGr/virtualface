@@ -32,8 +32,9 @@ if(!isset($_SESSION['user']))
   </head>
 
   <body>
+      <input id="myid" value="<?php echo (string)$_SESSION['user']['_id']; ?>" type="hidden" >
     <?php 
-        //include_once 'page_includes/facebook-status.php'; 
+        include_once 'page_includes/facebook-status.php'; 
     ?>
   	<?php 
         include_once 'page_includes/navbar.php'; 
@@ -75,7 +76,7 @@ if(!isset($_SESSION['user']))
               <h3 class="panel-title">Ses amis</h3>
             </div>
             <div class="panel-body">
-              <div class="row">
+              <div id="his-user-panel" class="row">
               </div>
             </div>
           </div>

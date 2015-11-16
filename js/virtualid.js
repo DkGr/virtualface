@@ -13,6 +13,7 @@ var map = {
 };
 var newpostVisibility = 1;
 var notifIdsUnread = [];
+var friendRequestSent = false;
 
 function prettyDate(time){
     d = new Date();
@@ -48,7 +49,8 @@ function changeNewpostVisibility()
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function() {    
+    friendRequestSent = false;
     $("#validate-sub").click(function() {
       subscribe();
     });
@@ -142,25 +144,44 @@ function login(subusername, subpassword)
     }
 }
 
-function logout() {
-  converse.user.logout();
-  /*FB.logout(function(response) {
-    // Person is now logged out
+function loginfb(fbUserID)
+{
+    var datastringLogin = "fbuserid="+fbUserID;
     $.ajax({
-      type: "GET",
-      url: "functions/logout.php",
-      complete: function(response) {
-        window.location = "index.php";
-      }
+        url: "webservice/loginfb",
+        type: "POST",
+        data: datastringLogin,
+        processData: false,
+        success: function(response) {
+            var resp = JSON.parse(response);
+            if(resp.hasOwnProperty('error'))
+            {
+                window.location = "facebook-validation.php";
+            }
+            else
+            {
+                window.location = "stream.php";
+            }
+        }
     });
-  });*/
-  $.ajax({
-    type: "GET",
-    url: "functions/logout.php",
-    complete: function(response) {
-      window.location = "index.php";
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
-  });
+    return "";
 }
 
 function subscribe()
@@ -229,6 +250,72 @@ function subscribe()
   }
 }
 
+function subscribeFromFacebook(fbUserID, fbUserAvatarURL)
+{
+  var displayname = $("#displayname").val();
+  var username = $("#username").val();
+  var email = $("#email").val();
+  var password = $("#password").val();
+  var passcheck = $("#passcheck").val();
+
+  if(password != passcheck)
+  {
+    $("#errormessage").html("Les mots de passe ne correspondent pas.");
+    return;
+  }
+
+  if(username!='' && password!='' && passcheck!='')
+  {
+    if(displayname == '')
+    {
+        displayname = username;
+    }
+    $('#subscribingModal').modal('show');
+    var domain = window.location.host.replace('www.','');
+    var options = {
+        numBits: 2048,
+        userId: username+' <'+username+'@'+domain+'>',
+        passphrase: password
+    };
+
+    var jsonUser = { 'fbuserid':fbUserID, 'fbavatarurl':fbUserAvatarURL, 'displayname':displayname, 'username':username, 'email':email, 'password':password, 'private_key':null, 'public_key':null };
+    var privkey;
+    var pubkey;
+    openpgp.generateKeyPair(options).then(function(keypair) {
+        // success
+        privkey = keypair.privateKeyArmored;
+        pubkey = keypair.publicKeyArmored;
+
+        jsonUser = { 'fbuserid':fbUserID, 'fbavatarurl':fbUserAvatarURL, 'displayname':displayname, 'username':username, 'email':email, 'password':password, 'private_key':privkey, 'public_key':pubkey };
+        $.ajax({
+            url: "webservice/fbusers",
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify(jsonUser),
+            dataType: "json",
+            processData: false,
+            success: function(response) {
+                var resp = response;
+                if(resp.hasOwnProperty('error'))
+                {
+                    $('#subscribingModal').modal('hide');
+                    $("#errormessage").html("Impossible de créer le compte :" + resp.error);
+                    return;
+                }
+                else
+                {
+                    loginfb(fbUserID);
+                }
+            }
+        });
+    }).catch(function(error) {
+        $('#subscribingModal').modal('hide');
+        $("#errormessage").html("Impossible de générer les clés de chiffrement.");
+        return;
+    });
+  }
+}
+
 function sortJson(arr, prop, asc) {
     arr = arr.sort(function(a, b) {
         if (asc) return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
@@ -249,46 +336,56 @@ function IsJsonString(str) {
 function sendPost()
 {
     var content = $("#newpost-content").val();
-    if(newpostVisibility == 1)
+    if(content)
     {
-        content = encryptPost(content);
+        if(newpostVisibility == 1)
+        {
+            content = encryptPost(content);
+        }
+
+        $("#newpost-content").val("");
+
+        var jsonPost = { 'visibility' : newpostVisibility, 'content' : content };
+        $.ajax({
+            url: "webservice/posts",
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify(jsonPost),
+            dataType: "json",
+            processData: false,
+          success: function() {
+            loadPosts();
+          }
+        });
     }
-
-    $("#newpost-content").val("");
-
-    var jsonPost = { 'visibility' : newpostVisibility, 'content' : content };
-    $.ajax({
-        url: "webservice/posts",
-        type: "POST",
-        contentType: 'application/json',
-        data: JSON.stringify(jsonPost),
-        dataType: "json",
-        processData: false,
-      success: function() {
-        loadPosts();
-      }
-    });
 }
 
-function sendComment(postid, content)
+function sendComment(postid, content, authorid)
 {
-    var jsonPost = { 'postid' : postid, 'content' : content };
+    var jsonComment = { 'postid' : postid, 'content' : content };
     $.ajax({
         url: "webservice/comments",
         type: "POST",
         contentType: 'application/json',
-        data: JSON.stringify(jsonPost),
+        data: JSON.stringify(jsonComment),
         dataType: "json",
         processData: false,
       success: function() {
-        loadPosts();
+          if(authorid)
+          {
+              loadIdentityPosts(authorid);
+          }
+          else
+          {
+              loadPosts();
+          }
       }
     });
 }
 
 function encryptPost(content)
 {
-    var openpgp = require('openpgp');
+    //var openpgp = require('openpgp');
     $.ajax({
         async: false,
         type: "GET",
@@ -325,13 +422,15 @@ function escapeSpecialChars(regex) {
 
 function sendNewPostLike(postId)
 {
-  var userId = $("#newpost-userid").val();
-  var dataString = 'userid='+ userId + '&targetid=' + postId + '&targettype=post';
+  var jsonLike = { 'targetid' : postId, 'targettype' : 'post' };
   $.ajax({
+    url: "webservice/likes",
     type: "POST",
-    url: "functions/send-newlike.php",
-    data: dataString,
-    success: function() {
+    contentType: 'application/json',
+    data: JSON.stringify(jsonLike),
+    dataType: "json",
+    processData: false,
+    complete: function() {
       loadPosts();
     }
   });
@@ -339,13 +438,15 @@ function sendNewPostLike(postId)
 
 function sendNewCommentLike(commentId)
 {
-  var userId = $("#newpost-userid").val();
-  var dataString = 'userid='+ userId + '&targetid=' + commentId + '&targettype=comment';
+  var jsonLike = { 'targetid' : commentId, 'targettype' : 'comment' };
   $.ajax({
+    url: "webservice/likes",
     type: "POST",
-    url: "functions/send-newlike.php",
-    data: dataString,
-    success: function() {
+    contentType: 'application/json',
+    data: JSON.stringify(jsonLike),
+    dataType: "json",
+    processData: false,
+    complete: function() {
       loadPosts();
     }
   });
@@ -353,13 +454,15 @@ function sendNewCommentLike(commentId)
 
 function deleteLike(likeId)
 {
-  var userId = $("#newpost-userid").val();
-  var dataString = 'userid='+ userId + '&likeid=' + likeId;
+  var data = { 'likeid' : likeId };
   $.ajax({
     type: "POST",
-    url: "functions/delete-like.php",
-    data: dataString,
-    success: function() {
+    url: "webservice/likes/delete",
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+    dataType: "json",
+    processData: false,
+    complete: function() {
       loadPosts();
     }
   });
@@ -375,7 +478,7 @@ function deleteComment(commentId)
     data: JSON.stringify(data),
     dataType: "json",
     processData: false,
-    success: function() {
+    complete: function() {
       loadPosts();
     }
   });
@@ -460,7 +563,47 @@ function loadPosts(){
         var content = $("#newcomment-content-"+postid).val();
 
         $("#newcomment-content").val("");
-        sendComment(postid, content);
+        sendComment(postid, content, null);
+        return false;
+      });
+    }
+  });
+}
+
+function loadIdentityPosts(userid){
+  $.ajax({
+    type: "GET",
+    url: "webservice/users/"+userid+"/posts",
+    complete: function(response) {
+      $("#posts-stream").hide();
+      var jsonPosts = JSON.parse(response.responseText);
+      jsonPosts = sortJson(jsonPosts, 'date', false);
+      var htmlStream = '';
+      jsonPosts.forEach(function(entry) {
+        var htmlPostRenderer = renderPost(entry);
+        htmlStream += htmlPostRenderer;
+      });
+      if(htmlStream.length == 0)
+      {
+          $("#posts-stream").html("<p style=\"text-align:center;\">Il n'y a rien à afficher pour l'instant</p>");
+      }
+      else{
+          $("#posts-stream").html(htmlStream);
+      }
+      
+      $("#posts-stream").fadeIn();
+      $("#newcomment-content").keyup(function () {
+        for (var i in map) {
+          var regex = new RegExp(escapeSpecialChars(i), 'gim');
+          this.value = this.value = this.value.replace(regex, map[i]);
+        }
+      });
+      $(".button-send-newcomment").click(function() {
+        var postid = $(this).val();
+        var content = $("#newcomment-content-"+postid).val();
+
+        $("#newcomment-content").val("");
+        sendComment(postid, content, userid);
         return false;
       });
     }
@@ -510,17 +653,33 @@ function renderComment(jsonComment, commentpair)
             {
               commentpaircolor = 'style="border:none;background-color: rgba(53, 53, 53, 0.01);"';
             }
-            
-            var commentLikeLink = '<a href="javascript:void(0)" onclick="sendNewPostLike(\''+jsonComment['_id']['$id']+'\');">J\'aime</a>';
-            /*$likeCollection = new Like();
-            $commentLikesCursor = $likeCollection->GetAllCommentLikes((string)$currentComment['_id']);
-            $commentLikes = $commentLikesCursor->count();
-            $commentLikeLink = '<a href="javascript:void(0)" onclick="sendNewCommentLike(\''.$currentComment['_id'].'\');">J\'aime</a>';
-            if($likeCollection->HasLiked((string)$_SESSION['_id'], (string)$currentComment['_id'], 'comment'))
-            {
-              $commentLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''.$currentComment['_id'].'\');">Je n\'aime plus</a>';
-            }*/
+            var myid = $("#myid").val();
+            var jsonCommentLikes;
             var commentLikes = 0;
+            var hasLiked = false;
+            var likeId = '';
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "webservice/comments/"+jsonComment['_id']['$id']+"/likes",
+                complete: function(response) {
+                    jsonCommentLikes = JSON.parse(response.responseText);
+                }
+            });
+            jsonCommentLikes.forEach(function(entry) {
+                commentLikes++;
+                if(entry.author.$id == myid)
+                {
+                    hasLiked = true;
+                    likeId = entry._id.$id;
+                }
+            });
+            var commentLikeLink = '<a href="javascript:void(0)" onclick="sendNewCommentLike(\''+jsonComment['_id']['$id']+'\');">J\'aime</a>';
+            if(hasLiked)
+            {
+              commentLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''+likeId+'\');">Je n\'aime plus</a>';
+            }
+            
             var displayname = author.infos.username;
             if(author.infos.hasOwnProperty('displayname'))
             {
@@ -569,17 +728,33 @@ function renderPost(jsonPost)
                   '</ul>'+
                 '</div>';
             }
+            
+            var myid = $("#myid").val();
+            var jsonPostLikes;
+            var pLikes = 0;
+            var hasLiked = false;
+            var likeId = '';
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "webservice/posts/"+jsonPost['_id']['$id']+"/likes",
+                complete: function(response) {
+                    jsonPostLikes = JSON.parse(response.responseText);
+                }
+            });
+            jsonPostLikes.forEach(function(entry) {
+                pLikes++;
+                if(entry.author.$id == myid)
+                {
+                    hasLiked = true;
+                    likeId = entry._id.$id;
+                }
+            });
             var postLikeLink = '<a href="javascript:void(0)" onclick="sendNewPostLike(\''+jsonPost['_id']['$id']+'\');">J\'aime</a>';
-            /*
-            $postLikeLink = '<a href="javascript:void(0)" onclick="sendNewPostLike(\''.$currentPost['_id'].'\');">J\'aime</a>';
-            $likeCollection = new Like();
-            $postLikesCursor = $likeCollection->GetAllPostLikes((string)$currentPost['_id']);
-            $postLikes = $postLikesCursor->count();
-            $likeid = $likeCollection->HasLiked((string)$_SESSION['_id'], (string)$currentPost['_id'], 'post');
-            if($likeid)
+            if(hasLiked)
             {
-              $postLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''.$likeid.'\');">Je n\'aime plus</a>';
-            }*/
+              postLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''+likeId+'\');">Je n\'aime plus</a>';
+            }
             
             var jsonComments = loadPostComments(jsonPost['_id']['$id']);
             var htmlComments = '';
@@ -637,7 +812,7 @@ function renderPost(jsonPost)
                   '<div class="media-body">'+
                   findURL(jsonPost['content']) + ' ' +
                   '</div>' + authorActionButton +
-                  '<div style="float: left;margin: 10px 0 0 75px;">'+ postLikes + ' <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span class="p-date" style="font-size: 12px;color:grey;">Publié ' + postedTimeStr + '</span> - <span style="font-size: 12px;color:grey;">visibilité : ' + postVisibilityStr + '</span></div>'+
+                  '<div style="float: left;margin: 10px 0 0 75px;">'+ pLikes + ' <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span class="p-date" style="font-size: 12px;color:grey;">Publié ' + postedTimeStr + '</span> - <span style="font-size: 12px;color:grey;">visibilité : ' + postVisibilityStr + '</span></div>'+
                 '</div>'+
               '</div>'+
               '<div class="panel-footer" style="border-bottom-right-radius:5px;border-bottom-left-radius:5px;">'+
@@ -658,69 +833,32 @@ function renderPost(jsonPost)
     return htmlPost;
 }
 
-function loadIdentityPosts(){
-  var userId = $("#userid").val();
-  var dataString = 'userid='+ userId;
-  $.ajax({
-    type: "POST",
-    url: "functions/display-user-posts.php",
-    data: dataString,
-    complete: function(response) {
-      $("#posts-stream").hide();
-      $("#posts-stream").html(response.responseText);
-      $("#posts-stream").fadeIn();
-      $("#newcomment-content").keyup(function () {
-        for (var i in map) {
-          var regex = new RegExp(escapeSpecialChars(i), 'gim');
-          this.value = this.value = this.value.replace(regex, map[i]);
-        }
-      });
-      $(".button-send-newcomment").click(function() {
-        console.log('clicked');
-        var userid = $("#newpost-userid").val();
-        var postid = $(this).val();
-        var content = $("#newcomment-content-"+postid).val();
-
-        $("#newcomment-content").val("");
-
-        var dataString = 'postid=' + postid + '&userid='+ userid + '&content=' + content;
-        $.ajax({
-          type: "POST",
-          url: "functions/send-newcomment.php",
-          data: dataString,
-          success: function() {
-            loadPosts();
-          }
-        });
-        return false;
-      });
-    }
-  });
-}
-
 function addFriend(isAccepting){
-  var userid = $("#identity-id").val();
-  var data = { 'userid' : userid };
-  $.ajax({
-    type: "POST",
-    url: "webservice/friends/add",
-    contentType: 'application/json',
-    data: JSON.stringify(data),
-    dataType: "json",
-    processData: false,
-    success: function() {
-      if(isAccepting)
-      {
-        converse.user.logout();
-        setTimeout(function() {
-              refreshIdentityPage();
-        }, 1000);
+  if(!friendRequestSent){
+    var userid = $("#identity-id").val();
+    var data = { 'userid' : userid };
+    $.ajax({
+      type: "POST",
+      url: "webservice/friends/add",
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      dataType: "json",
+      processData: false,
+      complete: function() {
+        if(isAccepting)
+        {
+          converse.user.logout();
+          setTimeout(function() {
+                refreshIdentityPage();
+          }, 1000);
+        }
+        else{
+          refreshIdentityPage();
+        }
       }
-      else{
-        refreshIdentityPage();
-      }
-    }
-  });
+    });
+  }
+  friendRequestSent = true;
 }
 
 function updateNotifications()
@@ -806,7 +944,7 @@ function setNotifRead(notifId){
   });
 }
 
-function showMyUserPanel()
+function showMyFriendsPanel()
 {
     $.ajax({
         type: "GET",
@@ -816,44 +954,81 @@ function showMyUserPanel()
             var me = JSON.parse(response.responseText);
             var myFriends = me['friends'];
             var friendCount = 0;
-            myFriends.forEach(function(entry) {
-                if(myFriends[entry])
-                {
-                    friendCount++;
-                }
-                /*var test = '<div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">'+
-                  '<a href="identity.php?userid='.$tmpFriend->getId().'">'+
-                    '<img data-toggle="tooltip" data-placement="top" data-original-title="'.$tmpFriend->getDisplayname().' ('.$tmpFriend->getUsername().')" style="margin-bottom: 0px;" src="avatars/'.$tmpFriend->getId().'" class="thumbnail img-responsive">'+
-                  '</a>'+
-                '</div>';*/
-            });
+            for(var k in myFriends) {
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "webservice/users/"+k,
+                    complete: function(response) {
+                        var friend = JSON.parse(response.responseText);
+                        var displayname = friend.infos.username;
+                        if(friend.infos.hasOwnProperty('displayname'))
+                        {
+                            displayname = friend.infos.displayname +' ('+friend.infos.username+')';
+                        }
+                        if(myFriends[k])
+                        {
+                            friendCount++;
+                        }
+                        htmlUserList += '<div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">'+
+                          '<a href="identity.php?userid='+k+'">'+
+                            '<img data-toggle="tooltip" data-placement="top" data-original-title="'+displayname+'" style="margin-bottom: 0px;" src="avatars/'+k+'" class="thumbnail img-responsive">'+
+                          '</a>'+
+                        '</div>';
+                    }
+                });
+            }
             if(friendCount == 0){
                 htmlUserList = '<p style="margin: 15px 15px 10px;">:( Vous n\'avez pas encore d\'amis...</p>';
             }
             $('#my-user-panel').html(htmlUserList);
+            $('[data-toggle="tooltip"]').tooltip();
         }
     });
-//    <?php
-//                $hisFriends = $user->GetFriends();
-//                $friendCount = 0;
-//                foreach ($hisFriends as $keyid => $isFriend) {
-//                    if($isFriend)
-//                    {
-//                      $tmpFriend = new User();
-//                      $tmpFriend->setId($keyid); ?>
-//<!--                      <div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">
-//                        <a href="identity.php?userid=//<?php //echo $tmpFriend->getId(); ?>">
-//                          <img data-toggle="tooltip" data-placement="top" data-original-title="//<?php //echo $tmpFriend->getDisplayname().' ('.$tmpFriend->getUsername().')'; ?>" style="margin-bottom: 0px;" src="avatars/<?php //echo $tmpFriend->getId(); ?>" class="thumbnail img-responsive">
-//                        </a>
-//                      </div>-->
-//                      <?php
-//                      $friendCount++;
-//                    }
-//                }
-//                if($friendCount == 0){
-//                  echo '<p style="margin: 15px 15px 10px;">:( Vous n\'avez pas encore d\'amis...</p>';
-//                }
-//                ?>
+}
+
+function showHisFriendsPanel(userid)
+{
+    $.ajax({
+        type: "GET",
+        url: "webservice/users/"+userid,
+        complete: function(response) {
+            var htmlUserList = '';
+            var me = JSON.parse(response.responseText);
+            var myFriends = me['friends'];
+            console.log(myFriends);
+            var friendCount = 0;
+            for(var k in myFriends) {
+                $.ajax({
+                    async: false,
+                    type: "GET",
+                    url: "webservice/users/"+k,
+                    complete: function(response) {
+                        var friend = JSON.parse(response.responseText);
+                        var displayname = friend.infos.username;
+                        if(friend.infos.hasOwnProperty('displayname'))
+                        {
+                            displayname = friend.infos.displayname +' ('+friend.infos.username+')';
+                        }
+                        if(myFriends[k])
+                        {
+                            friendCount++;
+                        }
+                        htmlUserList += '<div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">'+
+                          '<a href="identity.php?userid='+k+'">'+
+                            '<img data-toggle="tooltip" data-placement="top" data-original-title="'+displayname+'" style="margin-bottom: 0px;" src="avatars/'+k+'" class="thumbnail img-responsive">'+
+                          '</a>'+
+                        '</div>';
+                    }
+                });
+            }
+            if(friendCount == 0){
+                htmlUserList = '<p style="margin: 15px 15px 10px;">:( Vous n\'avez pas encore d\'amis...</p>';
+            }
+            $('#his-user-panel').html(htmlUserList);
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
 }
 
 function loadIdentity()
@@ -906,6 +1081,8 @@ function loadIdentity()
             }
         }
     });
+    loadIdentityPosts(userid);
+    showHisFriendsPanel(userid);
 }
 
 var __urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;

@@ -34,11 +34,33 @@ class WSController {
         if($obj->loginUser($username, $password))
         {
             $_SESSION['user'] = PrivacyController::pleaseShowMeUserInformation($obj->getId(), $obj->getId());
-            return array("success" => "Logged in " . $username);
+            return array("success" => "Logged in " . $username, "myid" => (string)$obj->getId());
         }
         else
         {
             return array("error" => "Nom d'utilisateur ou mot de passe incorrect");
+        }
+    }
+    
+    /**
+     * Logs in a user with the given username and password POSTed. Though true
+     * REST doesn't believe in sessions, it is often desirable for an AJAX server.
+     *
+     * @url POST /loginfb
+     */
+    public function loginWithFacebook()
+    {
+        $fbuserid = $_POST['fbuserid'];
+        $obj = new User();
+        $user = $obj->getVirtualIdWithFacebookId($fbuserid);
+        if($user)
+        {
+            $_SESSION['user'] = $user;
+            return array("success" => "Logged in " . $obj->getUsername(), "myid" => (string)$obj->getId());
+        }
+        else
+        {
+            return array("error" => "Utilisateur inconnu");
         }
     }
 

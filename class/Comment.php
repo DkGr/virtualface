@@ -50,10 +50,16 @@ class Comment {
 		$this->_id = (string)$id;
 	}
 
+        public function getTargetId()
+	{
+		$comment = $this->VirtualIDDB->Comments->findOne(array('_id' => new MongoId($this->_id)));
+		return $comment['postid'];
+	}
+        
 	public function getAuthor()
 	{
-		$post = $this->VirtualIDDB->Comments->findOne(array('_id' => new MongoId($this->_id)));
-		return $post['author'];
+		$comment = $this->VirtualIDDB->Comments->findOne(array('_id' => new MongoId($this->_id)));
+		return $comment['author'];
 	}
 
 	public function GetAllPostComments($postid)

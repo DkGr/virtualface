@@ -53,6 +53,27 @@ FB.getLoginStatus(function(response) {
 
 };
 
+function logout() {
+  converse.user.logout();
+  FB.logout(function(response) {
+    // Person is now logged out
+    $.ajax({
+      type: "GET",
+      url: "functions/logout.php",
+      complete: function(response) {
+        window.location = "index.php";
+      }
+    });
+  });
+  $.ajax({
+    type: "GET",
+    url: "functions/logout.php",
+    complete: function(response) {
+      window.location = "index.php";
+    }
+  });
+}
+
 // Load the SDK asynchronously
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
