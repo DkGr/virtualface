@@ -1,6 +1,6 @@
 <?php
 include_once dirname(__FILE__).'/../config/config.php';
-include_once '/var/www/virtualid/vendor/autoload.php';
+include_once dirname(__FILE__).'/../vendor/autoload.php';
 
 function AddOpenfireUser($api, $username, $passhash, $displayName)
 {
