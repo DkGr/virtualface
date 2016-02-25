@@ -1,7 +1,7 @@
 <script type="text/javascript">
 require(['converse'], function (converse) {
     converse.initialize({
-        bosh_service_url: 'https://www.octeau.fr:7443/http-bind/',
+        bosh_service_url: '<?php echo $openfire_bosh_service_url; ?>',
         keepalive: true,
         message_carbons: true,
         play_sounds: true,
@@ -9,7 +9,7 @@ require(['converse'], function (converse) {
         show_controlbox_by_default: false,
         xhr_user_search: false,
         allow_registration: false,
-        jid: '<?php echo $_SESSION['user']['infos']['username']; ?>@octeau.fr',
+        jid: '<?php echo $_SESSION['user']['infos']['username'].$VIDdomain; ?>',
         password: '<?php echo md5($_SESSION['user']['infos']['password']); ?>',
         authentication: 'login',
         auto_login: true,

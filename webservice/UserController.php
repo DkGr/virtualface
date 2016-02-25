@@ -1,5 +1,5 @@
 <?php
-
+include_once dirname(__FILE__).'/../config/config.php';
 require_once __DIR__ . '/../lib/openfire.php';
 require_once __DIR__ . '/../class/User.php';
 require_once __DIR__ . '/../class/PrivacyController.php';
@@ -169,7 +169,7 @@ class UserController {
 
         // Set the required config parameters
         $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
-        $OpenfireAPI->host = "www.octeau.fr";
+        $OpenfireAPI->host = $VIDdomain;
         $OpenfireAPI->port = "9091";  // default 9090
 
         // Optional parameters (showing default values)

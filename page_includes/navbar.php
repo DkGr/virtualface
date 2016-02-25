@@ -1,4 +1,5 @@
 <!-- MENU NAVIGATION BAR -->
+<?php include_once dirname(__FILE__).'/../config/config.php'; ?>
 <div class="navbar-wrapper">
   <div class="container">
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">

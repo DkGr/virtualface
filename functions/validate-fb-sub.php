@@ -1,4 +1,5 @@
 <?php
+include_once dirname(__FILE__).'/../config/config.php';
 include_once 'lib/openfire.php';
 $fbsuberreur = "";
 
@@ -19,7 +20,7 @@ if (isset($_POST['validate-fb-sub']) && ($_POST['validate-fb-sub'] == 'validate-
 
       // Set the required config parameters
       $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
-      $OpenfireAPI->host = "www.octeau.fr";
+      $OpenfireAPI->host = $VIDdomain;
       $OpenfireAPI->port = "9091";  // default 9090
 
       // Optional parameters (showing default values)
