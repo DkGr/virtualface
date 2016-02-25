@@ -122,6 +122,10 @@
             null,
             "Privát kulcs cseréje..."
          ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             "Személyes üzenet"
@@ -233,10 +237,6 @@
          "Insert a smiley": [
             null,
             ""
-         ],
-         "Hide the list of participants": [
-            null,
-            "A jelenlevők listájának elrejtése"
          ],
          "Refresh encrypted conversation": [
             null,
@@ -437,6 +437,10 @@
          "Error: could not execute the command": [
             null,
             "Hiba: A parancs nem értelmezett"
+         ],
+         "Error: the \"": [
+            null,
+            ""
          ],
          "Change user's affiliation to admin": [
             null,
@@ -765,10 +769,6 @@
          "Return": [
             null,
             "Visza"
-         ],
-         "The provider rejected your registration attempt. ": [
-            null,
-            "A szolgáltató visszautasította a regisztrációs kérelmet."
          ],
          "XMPP Username:": [
             null,

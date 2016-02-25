@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL ^ E_DEPRECATED);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 ?>
@@ -103,7 +103,7 @@ ini_set('display_errors',1);
     <?php include_once 'page_includes/navbar.php'; ?>
       <!-- Facebook subscription validation -->
         <div id="login-form" class="container">
-          <form action="stream.php" class="form-signin" role="form" method="post">
+          <form class="form-signin" role="form" onsubmit="return false;">
             <h3 class="form-signin-heading">Validez vos informations</h3>
             <p>Ces informations proviennent de votre compte Facebook.</p>
             <p><em>Votre adresse E-mail ne sera pas visible des autres utilisateurs. Elle sera utilisée uniquement pour :<br/>
@@ -119,7 +119,7 @@ ini_set('display_errors',1);
             <input id="email" value="" name="email" type="email" placeholder="E-mail" class="form-control" required>
             <br/><p>Créez un mot de passe pour votre compte VirtualID.</p>
             <input id="password" name="password" type="password" class="form-control" placeholder="Mot de passe" required>
-            <input id="passcheck" name="passwordcheck" type="password" class="form-control" placeholder="Vérification mot de passe" required>
+            <input id="passcheck" name="passcheck" type="password" class="form-control" placeholder="Vérification mot de passe" required>
             <p id="errormessage" style="color:red;"></p>
             <button id="validate-fb-sub" name="validate-fb-sub" value="validate-fb-sub" class="btn btn-lg btn-primary btn-block" type="submit">Valider</button>
           </form>

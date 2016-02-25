@@ -71,6 +71,17 @@ class PostController {
     }
     
     /**
+     * Gets the user stream posts
+     *
+     * @url GET /posts/$id/
+     */
+    public function getPost($id)
+    {
+        $post = PrivacyController::pleaseShowMePost((string)$_SESSION['user']['_id'], $id);
+        return $post;
+    }
+    
+    /**
      * Gets the posts comment by id
      *
      * @url GET /posts/$id/comments

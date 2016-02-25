@@ -140,6 +140,23 @@ class PrivacyController {
         return $rtnPosts;
     }
     
+    public static function pleaseShowMePost($myUserid, $postid)
+    {
+        $obj = new User();
+        $obj->setId($myUserid);
+        $post = new Post();
+        $post->setId($postid);
+        $rtnPost = null;
+        if($post->GetPost() != null)
+        {
+            if(PrivacyController::getUserVisibilityTypeBetween($myUserid, (string)$post->getAuthor()) <= $post->GetPostVisibility())
+            {
+                $rtnPost = $post->GetPost();
+            }
+        }
+        return $rtnPost;
+    }
+    
     public static function pleaseShowMePostComments($myUserid, $postid)
     {
         $obj = new Post();

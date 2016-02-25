@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL ^ E_DEPRECATED);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 
@@ -36,8 +36,7 @@ class User {
 	private $VirtualIDDB;
 
 	public function __construct(){
-            $connexion = new MongoClient();
-            $this->VirtualIDDB = $connexion->VirtualID;
+            include 'DatabaseConnect.php';
         }
         
         public function load($id)
@@ -121,6 +120,16 @@ class User {
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.displayname' => $displayname)));
 	}
+        
+        public function updateEmail($email)
+	{
+            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.email' => $email)));
+	}
+        
+        public function updatePassword($newpassword)
+	{
+            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.password' => $newpassword)));
+	}
 
 	public function getEmail()
 	{
@@ -140,9 +149,9 @@ class User {
             return $user['private_key'];
 	}
 
-	public function saveKeys($username, $passhash, $privkey, $pubkey)
+	public function saveKeys($privkey, $pubkey)
 	{
-            $this->VirtualIDDB->Users->update(array('infos.username' => $username, 'infos.password' => $passhash), array('$set' => array('private_key' => $privkey, 'public_key' => $pubkey)));
+            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('private_key' => $privkey, 'public_key' => $pubkey)));
 	}
 
 	public function isFacebookLinked()
@@ -159,16 +168,7 @@ class User {
 	public function setFacebookId($fb_id)
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('fb-id' => $fb_id)));
-	}
-
-	public function updateEmail($email)
-	{
-            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.email' => $email)));
-	}
-
-	public function updatePassword($newpassword)
-	{
-            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.password' => $newpassword)));
+            $this->setFacebookLinked();
 	}
 
 	public function createNew($email, $displayname, $username, $password)
@@ -208,8 +208,8 @@ class User {
                                 'fb-link' => false,
                                 'fb-id' => 0,
                                 'friends' => array(),
-                                'private_key' => $newuser->{'private_key'},
-                                'public_key' => $newuser->{'public_key'},
+                                'private_key' => '',
+                                'public_key' => '',
                                 'privacy_settings' => PrivacySettings::getDefaultPrivacySettings()
                             );
             $this->VirtualIDDB->Users->insert($userInfos);
@@ -223,7 +223,7 @@ class User {
 
             // Set the required config parameters
             $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
-            $OpenfireAPI->host = "octeau.fr";
+            $OpenfireAPI->host = "www.octeau.fr";
             $OpenfireAPI->port = "9091";  // default 9090
 
             // Optional parameters (showing default values)
@@ -251,13 +251,13 @@ class User {
                 $friendsFriends[$this->_id] = true;
                 $friend->UpdateFriends($friendsFriends);
                 $notif = new Notification();
-                $notif->CreateNew($friendid, date("Y/m/d H:i:s"), 'Vous êtes maintenant ami avec <a href="identity.php?userid='.$this->_id.'">'.$this->getUsername().'</a>');
+                $notif->CreateNew((string)$friendid, date("Y/m/d H:i:s"), 'Vous êtes maintenant ami avec <a href="identity.php?userid='.$this->_id.'">'.$this->getUsername().'</a>');
                 $notif = new Notification();
-                $notif->CreateNew($this->_id, date("Y/m/d H:i:s"), 'Vous êtes maintenant ami avec <a href="identity.php?userid='.$friendid.'">'.$friend->getUsername().'</a>');
+                $notif->CreateNew((string)$this->_id, date("Y/m/d H:i:s"), 'Vous êtes maintenant ami avec <a href="identity.php?userid='.$friendid.'">'.$friend->getUsername().'</a>');
             }
             else {
                 $notif = new Notification();
-                $notif->CreateNew($friendid, date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$this->_id.'">'.$this->getUsername().'</a> veut être votre ami');
+                $notif->CreateNew((string)$friendid, date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$this->_id.'">'.$this->getUsername().'</a> veut être votre ami');
                 $friends[$friendid] = false;
             }
             $this->UpdateFriends($friends);

@@ -123,6 +123,14 @@
             null,
             ""
          ],
+         "Close this chat box": [
+            null,
+            ""
+         ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             ""
@@ -247,7 +255,7 @@
             null,
             ""
          ],
-         "Hide the list of participants": [
+         "Hide the list of occupants": [
             null,
             ""
          ],
@@ -459,6 +467,10 @@
             null,
             ""
          ],
+         "Error: the \"": [
+            null,
+            ""
+         ],
          "Change user's affiliation to admin": [
             null,
             ""
@@ -467,7 +479,7 @@
             null,
             ""
          ],
-         "Change user role to participant": [
+         "Change user role to occupant": [
             null,
             ""
          ],
@@ -795,7 +807,7 @@
             null,
             ""
          ],
-         "The provider rejected your registration attempt. ": [
+         "The provider rejected your registration attempt. Please check the values you entered for correctness.": [
             null,
             ""
          ],
@@ -809,7 +821,7 @@
          ],
          "Click here to log in anonymously": [
             null,
-            "This room is not anonymous"
+            "Click here to log in anonymously"
          ],
          "Log In": [
             null,

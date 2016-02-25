@@ -22,9 +22,8 @@ class Like {
 	private $VirtualIDDB;
 
 	public function __construct(){
-		$connexion = new MongoClient();
-		$this->VirtualIDDB = $connexion->VirtualID;
-  }
+            include 'DatabaseConnect.php';
+        }
 
 	public function CreateNew($userid, $targetType, $targetId, $date)
 	{
@@ -42,15 +41,21 @@ class Like {
 		{
 			$target = new Post();
 			$target->setId($targetId);
-			$notif = new Notification();
-			$notif->CreateNew($target->getAuthor(), date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$liker->getId().'">'.$liker->getUsername().'</a> aime votre post');
-		}
+                        if($userid != (string)$target->getAuthor())
+                        {
+                            $notif = new Notification();
+                            $notif->CreateNew((string)$target->getAuthor(), date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$liker->getId().'">'.$liker->getUsername().'</a> aime votre <a href="postview.php?postid='.$targetId.'">publication</a>');
+                        }
+                }
 		elseif ($targetType == "comment") {
 			$target = new Comment();
 			$target->setId($targetId);
-			$notif = new Notification();
-			$notif->CreateNew($target->getAuthor(), date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$liker->getId().'">'.$liker->getUsername().'</a> aime votre commentaire');
-		}
+                        if($userid != (string)$target->getAuthor())
+                        {
+                            $notif = new Notification();
+                            $notif->CreateNew((string)$target->getAuthor(), date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$liker->getId().'">'.$liker->getUsername().'</a> aime votre <a href="postview.php?postid='.$target->getTargetId().'">commentaire</a>');
+                        }
+                    }
 	}
 
 	public function setId($id)

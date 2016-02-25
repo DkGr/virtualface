@@ -123,6 +123,10 @@
             null,
             "Tausche private Schlüssel mit Kontakt aus."
          ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             "Persönliche Nachricht"
@@ -242,10 +246,6 @@
          "Insert a smiley": [
             null,
             ""
-         ],
-         "Hide the list of participants": [
-            null,
-            "Teilnehmerliste ausblenden"
          ],
          "Refresh encrypted conversation": [
             null,
@@ -455,6 +455,10 @@
             null,
             "Fehler: Konnte den Befehl nicht ausführen"
          ],
+         "Error: the \"": [
+            null,
+            ""
+         ],
          "Change user's affiliation to admin": [
             null,
             ""
@@ -462,10 +466,6 @@
          "Ban user from room": [
             null,
             "Verbanne einen Benutzer aus dem Raum."
-         ],
-         "Change user role to participant": [
-            null,
-            "Benutzerrolle zu Teilnehmer ändern"
          ],
          "Kick user from room": [
             null,
@@ -791,7 +791,7 @@
             null,
             "Zurück"
          ],
-         "The provider rejected your registration attempt. ": [
+         "The provider rejected your registration attempt. Please check the values you entered for correctness.": [
             null,
             ""
          ],

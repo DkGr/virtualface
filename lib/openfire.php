@@ -18,7 +18,7 @@ function AddOpenfireUser($api, $username, $passhash, $displayName)
 
 function SetFriends($api, $username1, $username2)
 {
-  $result = $api->addToRoster($username1, $username2.'@octeau.fr', $username2, 3);
+  $result = $api->addToRoster($username1, $username2.'@www.octeau.fr', $username2, 3);
   // Check result if command is succesful
   if($result['status']) {
       return true;

@@ -14,18 +14,17 @@ class Notification {
 	private $VirtualIDDB;
 
 	public function __construct(){
-		$connexion = new MongoClient();
-		$this->VirtualIDDB = $connexion->VirtualID;
-  }
+            include 'DatabaseConnect.php';
+        }
 
 	public function CreateNew($userid, $date, $content)
 	{
-		$newpost = array('recipient' => $userid,
-										 'date' => $date,
-										 'content' => $content,
-										 'read' => false
-								 );
-		$this->VirtualIDDB->Notifications->insert($newpost);
+            $newnotif = array('recipient' => $userid,
+                            'date' => $date,
+                            'content' => $content,
+                            'read' => false
+            );
+            $this->VirtualIDDB->Notifications->insert($newnotif);
 	}
 
 	public function GetUserNotifications($userid)

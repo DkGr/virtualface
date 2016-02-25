@@ -123,6 +123,10 @@
             null,
             "Bytter private nøkler med kontakt"
          ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             "Personlig melding"
@@ -234,10 +238,6 @@
          "Insert a smiley": [
             null,
             ""
-         ],
-         "Hide the list of participants": [
-            null,
-            "Skjul deltakerlisten"
          ],
          "Refresh encrypted conversation": [
             null,
@@ -442,6 +442,10 @@
          "Error: could not execute the command": [
             null,
             "Feil: kunne ikke utføre kommandoen"
+         ],
+         "Error: the \"": [
+            null,
+            ""
          ],
          "Change user's affiliation to admin": [
             null,
@@ -770,10 +774,6 @@
          "Return": [
             null,
             "Tilbake"
-         ],
-         "The provider rejected your registration attempt. ": [
-            null,
-            "Tilbyderen avviste ditt registreringsforsøk."
          ],
          "XMPP Username:": [
             null,

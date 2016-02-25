@@ -19,9 +19,8 @@ class Post {
 	private $VirtualIDDB;
 
 	public function __construct(){
-		$connexion = new MongoClient();
-		$this->VirtualIDDB = $connexion->VirtualID;
-  }
+            include 'DatabaseConnect.php';
+        }
 
 	public function CreateNew($userid, $date, $visibility, $content)
 	{
@@ -67,5 +66,11 @@ class Post {
 		$post = $this->VirtualIDDB->Posts->findOne(array('_id' => new MongoId($this->_id)));
 		return $post['visibility'];
 	}
+        
+        public function GetPost()
+        {
+            $post = $this->VirtualIDDB->Posts->findOne(array('_id' => new MongoId($this->_id)));
+            return $post;
+        }
 }
 ?>

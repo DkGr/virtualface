@@ -18,9 +18,8 @@ class Comment {
 	private $VirtualIDDB;
 
 	public function __construct(){
-		$connexion = new MongoClient();
-		$this->VirtualIDDB = $connexion->VirtualID;
-  }
+            include 'DatabaseConnect.php';
+        }
 
 	public function CreateNew($userid, $postid, $date, $content)
 	{
@@ -40,7 +39,7 @@ class Comment {
                 $commentAuthor = new User();
                 $commentAuthor->setId($userid);
                 $notif = new Notification();
-                $notif->CreateNew($postAuthor->getId(), date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$userid.'">'.$commentAuthor->getUsername().'</a> a commenté votre publication');
+                $notif->CreateNew((string)$postAuthor->getId(), date("Y/m/d H:i:s"), '<a href="identity.php?userid='.$userid.'">'.$commentAuthor->getUsername().'</a> a commenté votre <a href="postview.php?postid='.$postid.'">publication</a>');
             }
             return $newcomment;
 	}

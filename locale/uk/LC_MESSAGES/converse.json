@@ -123,6 +123,10 @@
             null,
             "Обмін приватним ключем з контактом."
          ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             "Персональна вісточка"
@@ -246,10 +250,6 @@
          "Insert a smiley": [
             null,
             ""
-         ],
-         "Hide the list of participants": [
-            null,
-            "Сховати список учасників"
          ],
          "Refresh encrypted conversation": [
             null,
@@ -459,6 +459,10 @@
             null,
             "Помилка: Не можу виконати команду"
          ],
+         "Error: the \"": [
+            null,
+            ""
+         ],
          "Change user's affiliation to admin": [
             null,
             "Призначити користувача адміністратором"
@@ -466,10 +470,6 @@
          "Ban user from room": [
             null,
             "Заблокувати і викинути з кімнати"
-         ],
-         "Change user role to participant": [
-            null,
-            "Зробити користувача учасником"
          ],
          "Kick user from room": [
             null,
@@ -794,10 +794,6 @@
          "Return": [
             null,
             "Вернутися"
-         ],
-         "The provider rejected your registration attempt. ": [
-            null,
-            "Провайдер відхилив Вашу спробу реєстрації."
          ],
          "XMPP Username:": [
             null,

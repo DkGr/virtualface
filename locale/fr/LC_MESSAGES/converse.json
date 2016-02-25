@@ -123,6 +123,10 @@
             null,
             "Échange de clé privée avec le contact"
          ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             "Message personnel"
@@ -246,10 +250,6 @@
          "Insert a smiley": [
             null,
             ""
-         ],
-         "Hide the list of participants": [
-            null,
-            "Cacher la liste des participants"
          ],
          "Refresh encrypted conversation": [
             null,
@@ -459,6 +459,10 @@
             null,
             "Erreur: la commande ne peut pas être exécutée"
          ],
+         "Error: the \"": [
+            null,
+            ""
+         ],
          "Change user's affiliation to admin": [
             null,
             "Changer le rôle  de l'utilisateur en administrateur"
@@ -466,10 +470,6 @@
          "Ban user from room": [
             null,
             "Bannir l'utilisateur du salon"
-         ],
-         "Change user role to participant": [
-            null,
-            "Changer le rôle  de l'utilisateur en participant"
          ],
          "Kick user from room": [
             null,
@@ -794,10 +794,6 @@
          "Return": [
             null,
             "Retourner"
-         ],
-         "The provider rejected your registration attempt. ": [
-            null,
-            "Le fournisseur a rejeté votre demande d'enregistrement. "
          ],
          "XMPP Username:": [
             null,

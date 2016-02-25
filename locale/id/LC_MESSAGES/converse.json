@@ -114,6 +114,10 @@
             null,
             ""
          ],
+         "Minimize this chat box": [
+            null,
+            ""
+         ],
          "Personal message": [
             null,
             "Pesan pribadi"
@@ -190,7 +194,7 @@
             null,
             ""
          ],
-         "Hide the list of participants": [
+         "Hide the list of occupants": [
             null,
             ""
          ],
@@ -390,11 +394,15 @@
             null,
             ""
          ],
+         "Error: the \"": [
+            null,
+            ""
+         ],
          "Change user's affiliation to admin": [
             null,
             ""
          ],
-         "Change user role to participant": [
+         "Change user role to occupant": [
             null,
             ""
          ],
@@ -674,7 +682,7 @@
             null,
             ""
          ],
-         "The provider rejected your registration attempt. ": [
+         "The provider rejected your registration attempt. Please check the values you entered for correctness.": [
             null,
             ""
          ],

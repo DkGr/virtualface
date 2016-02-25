@@ -1,4 +1,4 @@
-var map = {
+var emotmap = {
        "<3": "\u2764\uFE0F",
        "</3": "\uD83D\uDC94",
        ":D": "\uD83D\uDE01",
@@ -11,9 +11,40 @@ var map = {
        ";p": "\uD83D\uDE1C",
        ":'(": "\uD83D\uDE22"
 };
+var openpgp = window.openpgp;
+var converse = window.converse;
+openpgp.initWorker({ path:'js/openpgp.worker.min.js' }); // set the relative web worker path
 var newpostVisibility = 1;
 var notifIdsUnread = [];
 var friendRequestSent = false;
+
+var createCookie = function(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    }
+    else {
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = document.cookie.length;
+            }
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
 
 function prettyDate(time){
     d = new Date();
@@ -58,11 +89,15 @@ $(document).ready(function() {
     $("#login-btn").click(function() {
       login(null, null);
     });
+    
+    $("#saveAccountInfosBtn").click(function() {
+      saveInfosSettings();
+    });
 
     $("#newpost-content").keyup(function () {
-      for (var i in map) {
+      for (var i in emotmap) {
         var regex = new RegExp(escapeSpecialChars(i), 'gim');
-        this.value = this.value = this.value.replace(regex, map[i]);
+        this.value = this.value = this.value.replace(regex, emotmap[i]);
       }
     });
 
@@ -166,6 +201,27 @@ function loginfb(fbUserID)
     });
 }
 
+function logout() {
+  converse.user.logout();
+  FB.logout(function(response) {
+    // Person is now logged out
+    $.ajax({
+      type: "GET",
+      url: "functions/logout.php",
+      complete: function(response) {
+        window.location = "index.php";
+      }
+    });
+  });
+  $.ajax({
+    type: "GET",
+    url: "functions/logout.php",
+    complete: function(response) {
+      window.location = "index.php";
+    }
+   });
+}
+
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -204,48 +260,59 @@ function subscribe()
     {
         displayname = username;
     }
-    $('#subscribingModal').modal('show');
-    var domain = window.location.host.replace('www.','');
-    var options = {
-        numBits: 2048,
-        userId: username+' <'+username+'@'+domain+'>',
-        passphrase: password
-    };
-
-    var jsonUser = { 'displayname':displayname, 'username':username, 'email':email, 'password':password, 'private_key':null, 'public_key':null };
-    var privkey;
-    var pubkey;
-    openpgp.generateKeyPair(options).then(function(keypair) {
-        // success
-        privkey = keypair.privateKeyArmored;
-        pubkey = keypair.publicKeyArmored;
-
-        jsonUser = { 'displayname':displayname, 'username':username, 'email':email, 'password':password, 'private_key':privkey, 'public_key':pubkey };
-        $.ajax({
-            url: "webservice/users",
-            type: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify(jsonUser),
-            dataType: "json",
-            processData: false,
-            success: function(response) {
-                var resp = response;
-                if(resp.hasOwnProperty('error'))
-                {
-                    $('#subscribingModal').modal('hide');
-                    $("#errormessage").html("Impossible de créer le compte :" + resp.error);
-                    return;
-                }
-                else
-                {
-                    login(username, password);
-                }
+    $('#subscribingModal').modal('show');   
+    var jsonUser = { 'displayname':displayname, 'username':username, 'email':email, 'password':password };
+    $.ajax({
+        url: "webservice/users",
+        type: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(jsonUser),
+        dataType: "json",
+        processData: false,
+        success: function(response) {
+            var resp = response;
+            if(resp.hasOwnProperty('error'))
+            {
+                $('#subscribingModal').modal('hide');
+                $("#errormessage").html("Impossible de créer le compte :" + resp.error);
+                return;
             }
-        });
-    }).catch(function(error) {
-        $('#subscribingModal').modal('hide');
-        $("#errormessage").html("Impossible de générer les clés de chiffrement.");
-        return;
+            else
+            {
+                var domain = window.location.host;
+                var options = {
+                    numBits: 2048,
+                    userIds: [{name:username, email:username+'@'+domain}],
+                    passphrase: resp.infos.password,
+                    unlocked: false
+                };
+
+                var privkey;
+                var pubkey;
+                
+                openpgp.generateKey(options).then(function(keypair) {
+                    // success
+                    privkey = keypair.privateKeyArmored;
+                    pubkey = keypair.publicKeyArmored;
+                    var jsonKeys = { 'private_key' : privkey, 'public_key' : pubkey };
+                    $.ajax({
+                        url: "webservice/users/savekeys",
+                        type: "POST",
+                        contentType: 'application/json',
+                        data: JSON.stringify(jsonKeys),
+                        dataType: "json",
+                        processData: false,
+                        success: function(response) {
+                            login(username, password);
+                        }
+                    });
+                }).catch(function(error) {
+                    $('#subscribingModal').modal('hide');
+                    $("#errormessage").html("Impossible de générer les clés de chiffrement.");
+                    return;
+                });
+            }
+        }
     });
   }
 }
@@ -271,47 +338,59 @@ function subscribeFromFacebook(fbUserID, fbUserAvatarURL)
         displayname = username;
     }
     $('#subscribingModal').modal('show');
-    var domain = window.location.host.replace('www.','');
-    var options = {
-        numBits: 2048,
-        userId: username+' <'+username+'@'+domain+'>',
-        passphrase: password
-    };
-
-    var jsonUser = { 'fbuserid':fbUserID, 'fbavatarurl':fbUserAvatarURL, 'displayname':displayname, 'username':username, 'email':email, 'password':password, 'private_key':null, 'public_key':null };
-    var privkey;
-    var pubkey;
-    openpgp.generateKeyPair(options).then(function(keypair) {
-        // success
-        privkey = keypair.privateKeyArmored;
-        pubkey = keypair.publicKeyArmored;
-
-        jsonUser = { 'fbuserid':fbUserID, 'fbavatarurl':fbUserAvatarURL, 'displayname':displayname, 'username':username, 'email':email, 'password':password, 'private_key':privkey, 'public_key':pubkey };
-        $.ajax({
-            url: "webservice/fbusers",
-            type: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify(jsonUser),
-            dataType: "json",
-            processData: false,
-            success: function(response) {
-                var resp = response;
-                if(resp.hasOwnProperty('error'))
-                {
-                    $('#subscribingModal').modal('hide');
-                    $("#errormessage").html("Impossible de créer le compte :" + resp.error);
-                    return;
-                }
-                else
-                {
-                    loginfb(fbUserID);
-                }
+    
+    var jsonUser = { 'fbuserid':fbUserID, 'fbavatarurl':fbUserAvatarURL, 'displayname':displayname, 'username':username, 'email':email, 'password':password };
+    $.ajax({
+        url: "webservice/fbusers",
+        type: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(jsonUser),
+        dataType: "json",
+        processData: false,
+        success: function(response) {
+            var resp = response;
+            if(resp.hasOwnProperty('error'))
+            {
+                $('#subscribingModal').modal('hide');
+                $("#errormessage").html("Impossible de créer le compte :" + resp.error);
+                return;
             }
-        });
-    }).catch(function(error) {
-        $('#subscribingModal').modal('hide');
-        $("#errormessage").html("Impossible de générer les clés de chiffrement.");
-        return;
+            else
+            {
+                var domain = window.location.host;
+                var options = {
+                    numBits: 2048,
+                    userIds: [{name:username, email:username+'@'+domain}],
+                    passphrase: resp.infos.password,
+                    unlocked: false
+                };
+
+                var privkey;
+                var pubkey;
+                
+                openpgp.generateKey(options).then(function(keypair) {
+                    // success
+                    privkey = keypair.privateKeyArmored;
+                    pubkey = keypair.publicKeyArmored;
+                    var jsonKeys = { 'private_key' : privkey, 'public_key' : pubkey };
+                    $.ajax({
+                        url: "webservice/users/savekeys",
+                        type: "POST",
+                        contentType: 'application/json',
+                        data: JSON.stringify(jsonKeys),
+                        dataType: "json",
+                        processData: false,
+                        success: function(response) {
+                            loginfb(fbUserID);
+                        }
+                    });
+                }).catch(function(error) {
+                    $('#subscribingModal').modal('hide');
+                    $("#errormessage").html("Impossible de générer les clés de chiffrement.");
+                    return;
+                });
+            }
+        }
     });
   }
 }
@@ -340,27 +419,28 @@ function sendPost()
     {
         if(newpostVisibility == 1)
         {
-            content = encryptPost(content);
+            sendEncryptedPost(content);
         }
-
+        else
+        {
+            var jsonPost = { 'visibility' : newpostVisibility, 'content' : content };
+            $.ajax({
+                url: "webservice/posts",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(jsonPost),
+                dataType: "json",
+                processData: false,
+              success: function() {
+                loadPosts();
+              }
+            });
+        }
         $("#newpost-content").val("");
-
-        var jsonPost = { 'visibility' : newpostVisibility, 'content' : content };
-        $.ajax({
-            url: "webservice/posts",
-            type: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify(jsonPost),
-            dataType: "json",
-            processData: false,
-          success: function() {
-            loadPosts();
-          }
-        });
     }
 }
 
-function sendComment(postid, content, authorid)
+function sendComment(postid, content, authorid, isPostView)
 {
     var jsonComment = { 'postid' : postid, 'content' : content };
     $.ajax({
@@ -371,21 +451,13 @@ function sendComment(postid, content, authorid)
         dataType: "json",
         processData: false,
       success: function() {
-          if(authorid)
-          {
-              loadIdentityPosts(authorid);
-          }
-          else
-          {
-              loadPosts();
-          }
+          refreshPageContent();
       }
     });
 }
 
-function encryptPost(content)
+function sendEncryptedPost(content)
 {
-    //var openpgp = require('openpgp');
     $.ajax({
         async: false,
         type: "GET",
@@ -394,26 +466,71 @@ function encryptPost(content)
             var keys_str = '';
             var sender = JSON.parse(response.responseText);
             keys_str = sender.public_key;
-            $.each(sender.friends, function(k, v) {
+            var publicKeys = openpgp.key.readArmored(keys_str);
+            for(var k in sender.friends) {
                 $.ajax({
                     async: false,
                     type: "GET",
                     url: "webservice/users/"+k,
                     complete: function(response) {
                         var recipient = JSON.parse(response.responseText);
-                        keys_str += recipient.public_key;
+                        keys_str = recipient.public_key;
+                        publicKeys.keys.push(openpgp.key.readArmored(keys_str).keys[0]);
                     }
                 });
-            });
-            var publicKey = openpgp.key.readArmored(keys_str);
-            return openpgp.encryptMessage(publicKey.keys, content).then(function(pgpMessage) {
+            }     
+            console.log(publicKeys);
+            var options;
+            options = {
+                data: content,
+                publicKeys: publicKeys.keys,
+                armor: true
+            };            
+            openpgp.encrypt(options).then(function(pgpMessage) {
                 // success
-                return pgpMessage;
+                var jsonPost = { 'visibility' : newpostVisibility, 'content' : pgpMessage.data };
+                $.ajax({
+                    url: "webservice/posts",
+                    type: "POST",
+                    contentType: 'application/json',
+                    data: JSON.stringify(jsonPost),
+                    dataType: "json",
+                    processData: false,
+                  success: function() {
+                    loadPosts();
+                  }
+                });
             }).catch(function(error) {
-                // failure
+                console.log(error);
             });
         }
     });
+}
+
+function decryptMessage(message)
+{
+    if(!getCookie('vidcrypt'))
+    {
+        
+    }
+    var dmessage = message;
+    $.ajax({
+        async: false,
+        type: "GET",
+        url: "webservice/users/current",
+        contentType: 'application/json',
+        dataType: "json",
+        processData: false,
+        success: function(response) {
+            var currentUser = response;
+            var privateKey = openpgp.key.readArmored(currentUser.private_key).keys[0];
+            var unlockedKey = privateKey.decrypt(currentUser.infos.password);
+            var pgpMessage = openpgp.message.readArmored(message);
+            var decryptedMessage = pgpMessage.decrypt(privateKey);
+            dmessage = decryptedMessage.getText();
+        }
+    });
+    return dmessage;
 }
 
 function escapeSpecialChars(regex) {
@@ -431,7 +548,7 @@ function sendNewPostLike(postId)
     dataType: "json",
     processData: false,
     complete: function() {
-      loadPosts();
+      refreshPageContent();
     }
   });
 }
@@ -447,7 +564,7 @@ function sendNewCommentLike(commentId)
     dataType: "json",
     processData: false,
     complete: function() {
-      loadPosts();
+      refreshPageContent();
     }
   });
 }
@@ -463,7 +580,7 @@ function deleteLike(likeId)
     dataType: "json",
     processData: false,
     complete: function() {
-      loadPosts();
+        refreshPageContent();
     }
   });
 }
@@ -479,7 +596,7 @@ function deleteComment(commentId)
     dataType: "json",
     processData: false,
     complete: function() {
-      loadPosts();
+        refreshPageContent();
     }
   });
 }
@@ -495,7 +612,7 @@ function deletePost(postId)
     dataType: "json",
     processData: false,
     success: function() {
-      loadPosts();
+      refreshPageContent();
     }
   });
 }
@@ -553,9 +670,9 @@ function loadPosts(){
       
       $("#posts-stream").fadeIn();
       $("#newcomment-content").keyup(function () {
-        for (var i in map) {
+        for (var i in emotmap) {
           var regex = new RegExp(escapeSpecialChars(i), 'gim');
-          this.value = this.value = this.value.replace(regex, map[i]);
+          this.value = this.value = this.value.replace(regex, emotmap[i]);
         }
       });
       $(".button-send-newcomment").click(function() {
@@ -564,6 +681,51 @@ function loadPosts(){
 
         $("#newcomment-content").val("");
         sendComment(postid, content, null);
+        return false;
+      });
+    }
+  });
+}
+
+function loadPost(){
+    var postid = $("#post-id").val();
+  $.ajax({
+    type: "GET",
+    url: "webservice/posts/"+postid,
+    complete: function(response) {
+      $("#posts-stream").hide();
+      var htmlStream = '';
+      var jsonPost;
+      if(response.responseText == '')
+      {
+          htmlStream = '<p style="text-align:center;">Erreur 404 : Contenu introuvable</p>'
+      }
+      else{
+          jsonPost = JSON.parse(response.responseText); 
+          var htmlPostRenderer = renderPost(jsonPost);
+          htmlStream += htmlPostRenderer;
+      }
+      if(htmlStream.length == 0)
+      {
+          $("#posts-stream").html("<p style=\"text-align:center;\">Il n'y a rien à afficher pour l'instant</p>");
+      }
+      else{
+          $("#posts-stream").html(htmlStream);
+      }
+      
+      $("#posts-stream").fadeIn();
+      $("#newcomment-content").keyup(function () {
+        for (var i in emotmap) {
+          var regex = new RegExp(escapeSpecialChars(i), 'gim');
+          this.value = this.value = this.value.replace(regex, emotmap[i]);
+        }
+      });
+      $(".button-send-newcomment").click(function() {
+        var postid = $(this).val();
+        var content = $("#newcomment-content-"+postid).val();
+
+        $("#newcomment-content").val("");
+        sendComment(postid, content, null, true);
         return false;
       });
     }
@@ -593,9 +755,9 @@ function loadIdentityPosts(userid){
       
       $("#posts-stream").fadeIn();
       $("#newcomment-content").keyup(function () {
-        for (var i in map) {
+        for (var i in emotmap) {
           var regex = new RegExp(escapeSpecialChars(i), 'gim');
-          this.value = this.value = this.value.replace(regex, map[i]);
+          this.value = this.value = this.value.replace(regex, emotmap[i]);
         }
       });
       $(".button-send-newcomment").click(function() {
@@ -703,6 +865,24 @@ function renderComment(jsonComment, commentpair)
     });
     return htmlComment;
 }
+
+function refreshPageContent()
+{
+    var currentWebPage = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+    if(currentWebPage === "stream.php")
+    {
+        loadPosts();
+    }
+    else if(currentWebPage === "identity.php")
+    {
+        loadIdentityPosts();
+    }
+    else if(currentWebPage === "postview.php")
+    {
+        loadPost();
+    }
+}
+
 function renderPost(jsonPost)
 {
     var htmlPost;
@@ -787,19 +967,28 @@ function renderPost(jsonPost)
                 displayname = author.infos.displayname;
             }
             var postVisibilityStr = '';
+            var postContent = '';
+            var cryptedGlyph = '';
             switch(jsonPost['visibility'])
             {
                 case 0:
                     postVisibilityStr = '<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Moi uniquement';
+                    cryptedGlyph = '<div style="float: right;margin: 15px 0 0 75px;font-size:12px;color:grey;">Message crypté <span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>';
+                    postContent = decryptMessage(jsonPost['content']);
                     break;
                 case 1:
                     postVisibilityStr = '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Amis';
+                    cryptedGlyph = '<div style="float: right;margin: 15px 0 0 75px;font-size:12px;color:grey;">Message chiffré <span style="color: green;" class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>';
+                    postContent = decryptMessage(jsonPost['content']);
                     break;
                 case 2:
                     postVisibilityStr = '<span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Tout le monde';
                     break;
             }
-            
+            if(postContent == '')
+            {
+                postContent = jsonPost['content'];
+            }
             htmlPost = '<div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">'+
               '<div class="panel-body" style="border-radius: 5px;">'+
                 '<div class="media">'+
@@ -810,9 +999,10 @@ function renderPost(jsonPost)
                     '<a href="javascript:void(0)" onclick="showIdentity(\''+jsonPost['author']['$id']+'\');">'+displayname+'</a>'+
                   '</div>'+
                   '<div class="media-body">'+
-                  findURL(jsonPost['content']) + ' ' +
+                  findURL(postContent) + ' ' +
                   '</div>' + authorActionButton +
                   '<div style="float: left;margin: 10px 0 0 75px;">'+ pLikes + ' <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> - <span class="p-date" style="font-size: 12px;color:grey;">Publié ' + postedTimeStr + '</span> - <span style="font-size: 12px;color:grey;">visibilité : ' + postVisibilityStr + '</span></div>'+
+                  cryptedGlyph+
                 '</div>'+
               '</div>'+
               '<div class="panel-footer" style="border-bottom-right-radius:5px;border-bottom-left-radius:5px;">'+
@@ -845,16 +1035,16 @@ function addFriend(isAccepting){
       dataType: "json",
       processData: false,
       complete: function() {
-        if(isAccepting)
+        /*if(isAccepting)
         {
           converse.user.logout();
           setTimeout(function() {
                 refreshIdentityPage();
           }, 1000);
         }
-        else{
+        else{*/
           refreshIdentityPage();
-        }
+        //}
       }
     });
   }
@@ -884,7 +1074,7 @@ function updateNotifications()
       if(!hasNotifications)
       {
         notifContent = 'Il n\'y a rien à afficher ici pour l\'instant';
-        htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="' + notifContent + '">Notifications</a>';
+        htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="' + notifContent + '"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications</a>';
       }
       else{
         notifContent += '</div>';
@@ -892,10 +1082,10 @@ function updateNotifications()
         {
           htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+ 
                 htmlEntities('<p style="text-align: center;"><a href="javascript:void(0)" onclick="setAllNotifRead();">Tout marquer comme lu</a></p>'+notifContent)+
-                '">Notifications <span class="badge">'+notifCountUnread+'</span></a>';
+                '"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications <span class="badge">'+notifCountUnread+'</span></a>';
         }
         else {
-          htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+htmlEntities(notifContent)+'">Notifications</a>';
+          htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+htmlEntities(notifContent)+'"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications</a>';
         }
       }
       $("#notifPanel").html(htmlNotifications);
@@ -1083,6 +1273,92 @@ function loadIdentity()
     });
     loadIdentityPosts(userid);
     showHisFriendsPanel(userid);
+}
+
+function loadPrivacySettings()
+{
+    $.ajax({
+        type: "GET",
+        url: "webservice/users/current",
+        complete: function(response) {
+            var me = JSON.parse(response.responseText);
+            var meHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
+            var frHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
+            var tlmHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
+            //Email settings
+            switch(me.privacy_settings.email)
+            {
+                case 0:
+                    meHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
+                    break;
+                case 1:
+                    frHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
+                    break;
+                case 2:
+                    tlmHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
+                    break;
+            }
+            $("#emailPrivacySettings").html(tlmHtml+frHtml+meHtml);
+            //Friends list settings
+            meHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
+            frHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
+            tlmHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
+            switch(me.privacy_settings.friends)
+            {
+                case 0:
+                    meHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
+                    break;
+                case 1:
+                    frHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
+                    break;
+                case 2:
+                    tlmHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
+                    break;
+            }
+            $("#friendsPrivacySettings").html(tlmHtml+frHtml+meHtml);
+            //Friends list settings
+            meHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
+            frHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
+            tlmHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
+            switch(me.privacy_settings.displayname)
+            {
+                case 0:
+                    meHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
+                    break;
+                case 1:
+                    frHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
+                    break;
+                case 2:
+                    tlmHtml = '<label class="btn btn-primary active"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
+                    break;
+            }
+            $("#displaynamePrivacySettings").html(tlmHtml+frHtml+meHtml);
+            
+            $("#username").text(me.infos.username);
+            $("#displayname").val(me.infos.displayname);
+            $("#email").val(me.infos.email);
+            $("#publicKey").val(me.public_key);
+        }
+    });
+}
+
+function saveInfosSettings()
+{
+    var displayname = $("#displayname").val();
+    var email = $("#email").val();
+    var jsonUser = { 'displayname':displayname, 'email':email };
+    $.ajax({
+        url: "webservice/users/update",
+        type: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify(jsonUser),
+        dataType: "json",
+        processData: false,
+        success: function(response) {
+            loadPrivacySettings();
+            $("#saveAccountInfosBtn").html('Valider <span style="color: green;" class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+        }
+    });
 }
 
 var __urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;

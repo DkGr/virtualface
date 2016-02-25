@@ -7,6 +7,7 @@
 <title>VirtualID</title>
 
 <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
-<link href="css/home.css"type="text/css" rel="stylesheet">
+<link href="css/home.css" type="text/css" rel="stylesheet">
 <link href="css/magicsuggest-min.css" type="text/css" rel="stylesheet">
+
 

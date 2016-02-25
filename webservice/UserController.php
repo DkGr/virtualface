@@ -68,11 +68,39 @@ class UserController {
         $user = $obj->saveNew($data);
         if($user)
         {
-            return $user; // returning the newly created user object
+            $_SESSION['user'] = PrivacyController::pleaseShowMeUserInformation((string)$user['_id'], (string)$user['_id']);
+            return $_SESSION['user']; // returning the newly created user object
         }
         else{
             return array('error' => "Nom d'utilisateur indisponible");
         }
+    }
+    
+    /**
+     * Saves the user keys to the database
+     *
+     * @url POST /users/savekeys
+     */
+    public function saveUserKeys($data)
+    {
+        $obj = new User();
+        $obj->setId((string)$_SESSION['user']['_id']);
+        $obj->saveKeys($data->{'private_key'}, $data->{'public_key'});
+        return $this->getUser();
+    }
+    
+    /**
+     * Saves the user keys to the database
+     *
+     * @url POST /users/update
+     */
+    public function updateUser($data)
+    {
+        $obj = new User();
+        $obj->setId((string)$_SESSION['user']['_id']);
+        $obj->updateDisplayname($data->{'displayname'});
+        $obj->updateEmail($data->{'email'});
+        return $this->getUser();
     }
     
     /**
@@ -92,7 +120,8 @@ class UserController {
         file_put_contents($filenameOut, $contentOrFalseOnFailure);
         if($user)
         {
-            return $user; // returning the newly created user object
+            $_SESSION['user'] = PrivacyController::pleaseShowMeUserInformation((string)$user['_id'], (string)$user['_id']);
+            return $_SESSION['user']; // returning the newly created user object
         }
         else{
             return array('error' => "Nom d'utilisateur indisponible");
@@ -140,7 +169,7 @@ class UserController {
 
         // Set the required config parameters
         $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
-        $OpenfireAPI->host = "octeau.fr";
+        $OpenfireAPI->host = "www.octeau.fr";
         $OpenfireAPI->port = "9091";  // default 9090
 
         // Optional parameters (showing default values)
