@@ -223,7 +223,7 @@ class User {
             $OpenfireAPI = new Gidkom\OpenFireRestApi\OpenFireRestApi;
 
             // Set the required config parameters
-            $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
+            $OpenfireAPI->secret = $GLOBALS['openfire_api_key'];
             $OpenfireAPI->host = $GLOBALS['VIDdomain'];
             $OpenfireAPI->port = "9091";  // default 9090
 
