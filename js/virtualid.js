@@ -124,6 +124,14 @@ $(document).ready(function() {
       setNotifRead();
       return false;
     });
+    
+    $("#username").change(function() {
+        $("#username").val($("#username").val().toLowerCase());
+    });
+    
+    $("#sub-username").change(function() {
+        $("#sub-username").val($("#sub-username").val().toLowerCase());
+    });
 
     $('[data-toggle="tooltip"]').tooltip();
 });

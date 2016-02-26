@@ -20,7 +20,7 @@ if (isset($_POST['validate-fb-sub']) && ($_POST['validate-fb-sub'] == 'validate-
 
       // Set the required config parameters
       $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
-      $OpenfireAPI->host = $VIDdomain;
+      $OpenfireAPI->host = $GLOBALS['VIDdomain'];
       $OpenfireAPI->port = "9091";  // default 9090
 
       // Optional parameters (showing default values)

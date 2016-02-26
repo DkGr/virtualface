@@ -3,7 +3,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 
-include_once dirname(__FILE__).'/../config/config.php';
+//require_once dirname(__FILE__).'/../config/config.php';
 require_once dirname(__FILE__).'/../lib/openfire.php';
 require_once dirname(__FILE__).'/PrivacySettings.php';
 require_once dirname(__FILE__).'/Notifications.php';
@@ -224,7 +224,7 @@ class User {
 
             // Set the required config parameters
             $OpenfireAPI->secret = "m8D6vTN7L0QVwUq4";
-            $OpenfireAPI->host = $VIDdomain;
+            $OpenfireAPI->host = $GLOBALS['VIDdomain'];
             $OpenfireAPI->port = "9091";  // default 9090
 
             // Optional parameters (showing default values)
