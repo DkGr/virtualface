@@ -5,5 +5,6 @@ $GLOBALS['database_url'] = '';
 $GLOBALS['database_username'] = '';
 $GLOBALS['database_password'] = '';
 $GLOBALS['openfire_api_key'] = 'sYF48DiDiC7vbPBA';
+$GLOBALS['facebook_app_id'] = '117561025264451';
 ?>
 
