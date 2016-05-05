@@ -120,5 +120,7 @@ if(!isset($_SESSION['user']))
       });
     </script>    
   </body>
-  <?php include_once 'page_includes/instant-message-module.php'; ?>
+  <?php 
+  include_once 'page_includes/instant-message-module.php'; 
+  ?>
 </html>

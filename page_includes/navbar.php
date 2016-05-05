@@ -44,7 +44,7 @@
               </li>
               <li id="notifPanel"></li>
               <li class="dropdown active" style="margin-right:50px;">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php echo 'avatars/'.$_SESSION['user']['_id']; ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $_SESSION['user']['infos']['username']; ?> <b class="caret"></b></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object" src="<?php echo 'avatars/'.$_SESSION['user']['_id']."?".date("YmdHis"); ?>" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;"><?php echo $_SESSION['user']['infos']['username']; ?> <b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <?php if(isset($_SESSION['user'])){ ?>
                     <li><a href="<?php echo 'identity.php?userid='.$_SESSION['user']['_id']; ?>">Voir ma page</a></li>

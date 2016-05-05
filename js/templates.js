@@ -233,9 +233,13 @@ __p += '<form class="pure-form set-xmpp-status" action="" method="post">\n    <s
 ((__t = (label_busy)) == null ? '' : __t) +
 '</option>\n            <option value="away">' +
 ((__t = (label_away)) == null ? '' : __t) +
-'</option>\n            <option value="offline">' +
+'</option>\n            ';
+ if (include_offline_state)  { ;
+__p += '\n            <option value="offline">' +
 ((__t = (label_offline)) == null ? '' : __t) +
 '</option>\n            ';
+ } ;
+__p += '\n            ';
  if (allow_logout)  { ;
 __p += '\n            <option value="logout">' +
 ((__t = (label_logout)) == null ? '' : __t) +
@@ -1057,6 +1061,17 @@ __p += '\n<li class="toggle-clear"><a class="icon-remove" title="' +
 '"></a></li>\n';
  } ;
 __p += '\n';
+
+}
+return __p
+};
+
+this["templates"]["toolbar_otr"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
  if (allow_otr)  { ;
 __p += '\n    <li class="toggle-otr ' +
 ((__t = (otr_status_class)) == null ? '' : __t) +

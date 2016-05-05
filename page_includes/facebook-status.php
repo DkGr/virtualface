@@ -9,7 +9,9 @@ function statusChangeCallback(response) {
     // Logged into your app and Facebook.
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
-    window.location = "index.php";
+    <?php if(!isset($_SESSION['user'])){ ?>
+        window.location = "index.php";
+    <?php } ?>
   } else {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
@@ -28,11 +30,11 @@ function checkLoginState() {
 
 window.fbAsyncInit = function() {
 FB.init({
-  appId      : '117561025264451',
+  appId      : '<?php echo $GLOBALS['facebook_app_id']; ?>',
   cookie     : true,  // enable cookies to allow the server to access
                       // the session
   xfbml      : true,  // parse social plugins on this page
-  version    : 'v2.2' // use version 2.2
+  version    : 'v2.4' // use version 2.4
 });
 
 // Now that we've initialized the JavaScript SDK, we call

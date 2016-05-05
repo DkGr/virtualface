@@ -6,3 +6,4 @@ $GLOBALS['database_username'] = '';
 $GLOBALS['database_password'] = '';
 $GLOBALS['openfire_api_key'] = 'sYF48DiDiC7vbPBA';
 ?>
+

@@ -14,7 +14,8 @@ require_once dirname(__FILE__).'/Notifications.php';
  *         "username" : "joe",
  *         "displayname" : "Joe Danger",
  *         "password" : "PASSWORD_HASH",
- *         "email" : "joe@email.net"
+ *         "email" : "joe@email.net",
+ *         "avatar": IMG_FILENAME
  *     },
  *		 "fb-link" : true,
  *               "fb-id" : xxxxxxxx,
@@ -116,6 +117,11 @@ class User {
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.username' => $username)));
 	}
+        
+        public function updateAvatar($avatar_filename)
+	{
+            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.avatar' => $avatar_filename)));
+	}
 
 	public function updateDisplayname($displayname)
 	{
@@ -181,7 +187,8 @@ class User {
                                     'username' => $username,
                                     'displayname' => $displayname,
                                     'email' => $email,
-                                    'password' => $password
+                                    'password' => $password,
+                                    'avatar' => ''
                                 ),
                                 'fb-link' => false,
                                 'fb-id' => 0,
@@ -204,7 +211,8 @@ class User {
                                     'username' => $newuser->{'username'},
                                     'displayname' => $newuser->{'displayname'},
                                     'email' => $newuser->{'email'},
-                                    'password' => password_hash($newuser->{'password'}, PASSWORD_DEFAULT)
+                                    'password' => password_hash($newuser->{'password'}, PASSWORD_DEFAULT),
+                                    'avatar' => ''
                                 ),
                                 'fb-link' => false,
                                 'fb-id' => 0,

@@ -30,7 +30,7 @@ if(isset($_SESSION['user']))
             // Logged into your app and Facebook.
             loginfb(response.authResponse.userID);
         } else if (response.status === 'not_authorized') {
-            // the user is logged in to Facebook, 
+            // the user is logged in to Facebook,
             // but has not authenticated your app
             //window.location = "facebook-validation.php";
         } else {
@@ -49,11 +49,11 @@ if(isset($_SESSION['user']))
 
       window.fbAsyncInit = function() {
       FB.init({
-        appId      : '117561025264451',
+        appId      : '<?php echo $GLOBALS['facebook_app_id']; ?>',
         cookie     : true,  // enable cookies to allow the server to access
                             // the session
         xfbml      : true,  // parse social plugins on this page
-        version    : 'v2.2' // use version 2.2
+        version    : 'v2.4' // use version 2.4
       });
 
       // Now that we've initialized the JavaScript SDK, we call
@@ -114,7 +114,7 @@ if(isset($_SESSION['user']))
     <div id="login-form" class="container">
       <div class="jumbotron" style="max-width:800px;margin:auto;padding:10px;">
           <h1>VirtualID</h1>
-          <p class="lead">Le réseau social décentralisé qui respecte votre vie privée !
+          <p class="lead">Le réseau social libre et décentralisé qui respecte votre vie privée !
           <ul>
             <li>Pas de revente de vos informations</li>
             <li>Pas de traçage publicitaire</li>

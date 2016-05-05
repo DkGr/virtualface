@@ -10,7 +10,7 @@ require_once __DIR__ . '/../class/PrivacyController.php';
  * @author padman
  */
 class UserController {
-    
+
     public function authorize()
     {
         if(isset($_SESSION['user']))
@@ -22,7 +22,7 @@ class UserController {
             return false;
         }
     }
-    
+
     /**
      * Gets the user by id or current user
      *
@@ -39,7 +39,7 @@ class UserController {
         }
         return $user;
     }
-    
+
     /**
      * Gets the user posts by id or current user
      *
@@ -75,7 +75,7 @@ class UserController {
             return array('error' => "Nom d'utilisateur indisponible");
         }
     }
-    
+
     /**
      * Saves the user keys to the database
      *
@@ -88,7 +88,7 @@ class UserController {
         $obj->saveKeys($data->{'private_key'}, $data->{'public_key'});
         return $this->getUser();
     }
-    
+
     /**
      * Saves the user keys to the database
      *
@@ -102,7 +102,18 @@ class UserController {
         $obj->updateEmail($data->{'email'});
         return $this->getUser();
     }
-    
+
+    /**
+     * Saves the user keys to the database
+     *
+     * @url POST /users/avatar
+     */
+    public function updateUserAvatar($data)
+    {
+        move_uploaded_file($_FILES["croppedImage"]["tmp_name"], __DIR__.'/../avatars/'.(string)$_SESSION['user']['_id']);
+        return array('status' => 'file saved');
+    }
+
     /**
      * Saves a user from facebook to the database
      *
@@ -116,7 +127,8 @@ class UserController {
         $obj->setId((string)$user['_id']);
         $obj->setFacebookId($data->{'fbuserid'});
         $contentOrFalseOnFailure   = file_get_contents($data->{'fbavatarurl'});
-        $filenameOut = __DIR__.'/../avatars/'.$obj->getId();
+        $filename = $obj->getId()."-".date("YmdHis");
+        $filenameOut = __DIR__.'/../avatars/'.$filename;
         file_put_contents($filenameOut, $contentOrFalseOnFailure);
         if($user)
         {
@@ -127,7 +139,7 @@ class UserController {
             return array('error' => "Nom d'utilisateur indisponible");
         }
     }
-    
+
     /**
      * Check and return friend status between authenticated user and another user
      *
@@ -152,7 +164,7 @@ class UserController {
         }
         return array('friendStatus' => $friendStatus);
     }
-    
+
     /**
      * Update friend status between two users
      *

@@ -65,11 +65,11 @@ ini_set('display_errors',1);
 
       window.fbAsyncInit = function() {
       FB.init({
-        appId      : '117561025264451',
+        appId      : '<?php echo $GLOBALS['facebook_app_id']; ?>',
         cookie     : true,  // enable cookies to allow the server to access
                             // the session
         xfbml      : true,  // parse social plugins on this page
-        version    : 'v2.2' // use version 2.2
+        version    : 'v2.4' // use version 2.4
       });
 
       // Now that we've initialized the JavaScript SDK, we call

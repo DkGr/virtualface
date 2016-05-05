@@ -34,6 +34,7 @@ class RestFormat
 	const HTML  = 'text/html';
 	const JSON  = 'application/json';
 	const XML   = 'application/xml';
+  const FORM_DATA = 'multipart/form-data';
 
     /** @var array */
 	static public $formats = array(
@@ -42,5 +43,6 @@ class RestFormat
 		'html'  => RestFormat::HTML,
 		'json'  => RestFormat::JSON,
 		'xml'   => RestFormat::XML,
+                'form-data' => RestFormat::FORM_DATA,
 	);
 }

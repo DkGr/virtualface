@@ -1,5 +1,5 @@
 <script type="text/javascript">
-require(['converse'], function (converse) {
+var converse = require(['converse'], function (converse) {
     converse.initialize({
         bosh_service_url: '<?php echo $GLOBALS['openfire_bosh_service_url']; ?>',
         keepalive: true,

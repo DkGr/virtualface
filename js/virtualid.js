@@ -11,9 +11,6 @@ var emotmap = {
        ";p": "\uD83D\uDE1C",
        ":'(": "\uD83D\uDE22"
 };
-var openpgp = window.openpgp;
-var converse = window.converse;
-openpgp.initWorker({ path:'js/openpgp.worker.min.js' }); // set the relative web worker path
 var newpostVisibility = 1;
 var notifIdsUnread = [];
 var friendRequestSent = false;
@@ -132,8 +129,6 @@ $(document).ready(function() {
     $("#sub-username").change(function() {
         $("#sub-username").val($("#sub-username").val().toLowerCase());
     });
-
-    $('[data-toggle="tooltip"]').tooltip();
 });
 
 function login(subusername, subpassword)
