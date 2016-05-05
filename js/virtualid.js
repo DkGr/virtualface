@@ -77,7 +77,7 @@ function changeNewpostVisibility()
     }
 }
 
-$(document).ready(function() {    
+$(document).ready(function() {
     friendRequestSent = false;
     $("#validate-sub").click(function() {
       subscribe();
@@ -86,7 +86,7 @@ $(document).ready(function() {
     $("#login-btn").click(function() {
       login(null, null);
     });
-    
+
     $("#saveAccountInfosBtn").click(function() {
       saveInfosSettings();
     });
@@ -121,11 +121,11 @@ $(document).ready(function() {
       setNotifRead();
       return false;
     });
-    
+
     $("#username").change(function() {
         $("#username").val($("#username").val().toLowerCase());
     });
-    
+
     $("#sub-username").change(function() {
         $("#sub-username").val($("#sub-username").val().toLowerCase());
     });
@@ -135,7 +135,7 @@ function login(subusername, subpassword)
 {
     var username = $("#username").val();
     var password = $("#password").val();
-    
+
     if(username!='' && password!='')
     {
         var datastringLogin = "username="+username+"&password="+password;
@@ -263,7 +263,7 @@ function subscribe()
     {
         displayname = username;
     }
-    $('#subscribingModal').modal('show');   
+    $('#subscribingModal').modal('show');
     var jsonUser = { 'displayname':displayname, 'username':username, 'email':email, 'password':password };
     $.ajax({
         url: "webservice/users",
@@ -292,7 +292,7 @@ function subscribe()
 
                 var privkey;
                 var pubkey;
-                
+
                 openpgp.generateKey(options).then(function(keypair) {
                     // success
                     privkey = keypair.privateKeyArmored;
@@ -341,7 +341,7 @@ function subscribeFromFacebook(fbUserID, fbUserAvatarURL)
         displayname = username;
     }
     $('#subscribingModal').modal('show');
-    
+
     var jsonUser = { 'fbuserid':fbUserID, 'fbavatarurl':fbUserAvatarURL, 'displayname':displayname, 'username':username, 'email':email, 'password':password };
     $.ajax({
         url: "webservice/fbusers",
@@ -370,7 +370,7 @@ function subscribeFromFacebook(fbUserID, fbUserAvatarURL)
 
                 var privkey;
                 var pubkey;
-                
+
                 openpgp.generateKey(options).then(function(keypair) {
                     // success
                     privkey = keypair.privateKeyArmored;
@@ -481,14 +481,14 @@ function sendEncryptedPost(content)
                         publicKeys.keys.push(openpgp.key.readArmored(keys_str).keys[0]);
                     }
                 });
-            }     
+            }
             console.log(publicKeys);
             var options;
             options = {
                 data: content,
                 publicKeys: publicKeys.keys,
                 armor: true
-            };            
+            };
             openpgp.encrypt(options).then(function(pgpMessage) {
                 // success
                 var jsonPost = { 'visibility' : newpostVisibility, 'content' : pgpMessage.data };
@@ -514,7 +514,7 @@ function decryptMessage(message)
 {
     if(!getCookie('vidcrypt'))
     {
-        
+
     }
     var dmessage = message;
     $.ajax({
@@ -670,7 +670,7 @@ function loadPosts(){
       else{
           $("#posts-stream").html(htmlStream);
       }
-      
+
       $("#posts-stream").fadeIn();
       $("#newcomment-content").keyup(function () {
         for (var i in emotmap) {
@@ -704,7 +704,7 @@ function loadPost(){
           htmlStream = '<p style="text-align:center;">Erreur 404 : Contenu introuvable</p>'
       }
       else{
-          jsonPost = JSON.parse(response.responseText); 
+          jsonPost = JSON.parse(response.responseText);
           var htmlPostRenderer = renderPost(jsonPost);
           htmlStream += htmlPostRenderer;
       }
@@ -715,7 +715,7 @@ function loadPost(){
       else{
           $("#posts-stream").html(htmlStream);
       }
-      
+
       $("#posts-stream").fadeIn();
       $("#newcomment-content").keyup(function () {
         for (var i in emotmap) {
@@ -755,7 +755,7 @@ function loadIdentityPosts(userid){
       else{
           $("#posts-stream").html(htmlStream);
       }
-      
+
       $("#posts-stream").fadeIn();
       $("#newcomment-content").keyup(function () {
         for (var i in emotmap) {
@@ -844,17 +844,18 @@ function renderComment(jsonComment, commentpair)
             {
               commentLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''+likeId+'\');">Je n\'aime plus</a>';
             }
-            
+
             var displayname = author.infos.username;
             if(author.infos.hasOwnProperty('displayname'))
             {
                 displayname = author.infos.displayname;
             }
+            var d = new Date();
             htmlComment = '<li ' + commentpaircolor + ' class="list-group-item">'+
                             '<div class="media">'+
                               '<div style="text-align:center;width: 12%;" class="media-left">'+
                                 '<a href="identity.php?userid=' + jsonComment['author']['$id'] + '">'+
-                                  '<img class="media-object img-rounded" style="width: 32px; height: 32px; margin: auto;" src="avatars/' + jsonComment['author']['$id'] + '" alt="...">'+
+                                  '<img class="media-object img-rounded" style="width: 32px; height: 32px; margin: auto;" src="avatars/' + jsonComment['author']['$id'] + '?' + d.getTime() + '" alt="...">'+
                                 '</a>'+
                                 '<a href="identity.php?userid=' + jsonComment['author']['$id'] + '">' + displayname + '</a>'+
                               '</div>'+
@@ -911,7 +912,7 @@ function renderPost(jsonPost)
                   '</ul>'+
                 '</div>';
             }
-            
+
             var myid = $("#myid").val();
             var jsonPostLikes;
             var pLikes = 0;
@@ -938,7 +939,7 @@ function renderPost(jsonPost)
             {
               postLikeLink = '<a href="javascript:void(0)" onclick="deleteLike(\''+likeId+'\');">Je n\'aime plus</a>';
             }
-            
+
             var jsonComments = loadPostComments(jsonPost['_id']['$id']);
             var htmlComments = '';
             var commentpair = false;
@@ -950,7 +951,7 @@ function renderPost(jsonPost)
             });
 
             var commentlist = '';
-            
+
             commentlist = '<ul class="list-group">';
             commentlist += htmlComments;
             commentlist = commentlist + '</ul>';
@@ -992,12 +993,13 @@ function renderPost(jsonPost)
             {
                 postContent = jsonPost['content'];
             }
+            var d = new Date();
             htmlPost = '<div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">'+
               '<div class="panel-body" style="border-radius: 5px;">'+
                 '<div class="media">'+
                   '<div style="text-align:center;" class="media-left">'+
                     '<a href="javascript:void(0)" onclick="showIdentity(\''+jsonPost['author']['$id']+'\');">'+
-                      '<img class="media-object img-rounded" style="width: 64px; height: 64px;" src="avatars/'+jsonPost['author']['$id']+'" alt="...">'+
+                      '<img class="media-object img-rounded" style="width: 64px; height: 64px;" src="avatars/'+jsonPost['author']['$id']+ '?' + d.getTime() + '" alt="...">'+
                     '</a>'+
                     '<a href="javascript:void(0)" onclick="showIdentity(\''+jsonPost['author']['$id']+'\');">'+displayname+'</a>'+
                   '</div>'+
@@ -1083,7 +1085,7 @@ function updateNotifications()
         notifContent += '</div>';
         if(notifCountUnread > 0)
         {
-          htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+ 
+          htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+
                 htmlEntities('<p style="text-align: center;"><a href="javascript:void(0)" onclick="setAllNotifRead();">Tout marquer comme lu</a></p>'+notifContent)+
                 '"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications <span class="badge">'+notifCountUnread+'</span></a>';
         }
@@ -1120,7 +1122,7 @@ function setAllNotifRead(){
         type: "POST",
         url: "webservice/notifications/"+entry,
         complete: function(response) {
-          
+
         }
       });
   });
@@ -1163,9 +1165,10 @@ function showMyFriendsPanel()
                         {
                             friendCount++;
                         }
+                        var d = new Date();
                         htmlUserList += '<div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">'+
                           '<a href="identity.php?userid='+k+'">'+
-                            '<img data-toggle="tooltip" data-placement="top" data-original-title="'+displayname+'" style="margin-bottom: 0px;" src="avatars/'+k+'" class="thumbnail img-responsive">'+
+                            '<img data-toggle="tooltip" data-placement="top" data-original-title="'+displayname+'" style="margin-bottom: 0px;" src="avatars/'+k+'?'+d.getTime()+'" class="thumbnail img-responsive">'+
                           '</a>'+
                         '</div>';
                     }
@@ -1207,16 +1210,17 @@ function showHisFriendsPanel(userid)
                         {
                             friendCount++;
                         }
+                        var d = new Date();
                         htmlUserList += '<div style="padding-right: 5px;padding-left: 5px;" class="col-lg-3 col-sm-4 col-xs-5">'+
                           '<a href="identity.php?userid='+k+'">'+
-                            '<img data-toggle="tooltip" data-placement="top" data-original-title="'+displayname+'" style="margin-bottom: 0px;" src="avatars/'+k+'" class="thumbnail img-responsive">'+
+                            '<img data-toggle="tooltip" data-placement="top" data-original-title="'+displayname+'" style="margin-bottom: 0px;" src="avatars/'+k+'?'+d.getTime()+'" class="thumbnail img-responsive">'+
                           '</a>'+
                         '</div>';
                     }
                 });
             }
             if(friendCount == 0){
-                htmlUserList = '<p style="margin: 15px 15px 10px;">:( Vous n\'avez pas encore d\'amis...</p>';
+                htmlUserList = '<p style="margin: 15px 15px 10px;">:( Aucun ami à afficher...</p>';
             }
             $('#his-user-panel').html(htmlUserList);
             $('[data-toggle="tooltip"]').tooltip();
@@ -1234,7 +1238,8 @@ function loadIdentity()
             var user = JSON.parse(response.responseText);
             var avatar_path = "avatars/"+userid;
             $("#identity-avatar").attr("src", function() {
-                return "avatars/" + userid;
+                var d = new Date();
+                return "avatars/" + userid + "?" + d.getTime();
             });
             var displayname = user.infos.username;
             if(user.infos.hasOwnProperty('displayname'))
@@ -1336,7 +1341,7 @@ function loadPrivacySettings()
                     break;
             }
             $("#displaynamePrivacySettings").html(tlmHtml+frHtml+meHtml);
-            
+
             $("#username").text(me.infos.username);
             $("#displayname").val(me.infos.displayname);
             $("#email").val(me.infos.email);
