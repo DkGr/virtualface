@@ -206,23 +206,27 @@ function loginfb(fbUserID)
 
 function logout() {
   converse.user.logout();
-  FB.logout(function(response) {
-    // Person is now logged out
+  if (typeof FB !== 'undefined') {
+    FB.logout(function(response) {
+      // Person is now logged out
+      $.ajax({
+        type: "GET",
+        url: "functions/logout.php",
+        complete: function(response) {
+          window.location = "index.php";
+        }
+      });
+    });
+  }
+  else{
     $.ajax({
       type: "GET",
       url: "functions/logout.php",
       complete: function(response) {
         window.location = "index.php";
       }
-    });
-  });
-  $.ajax({
-    type: "GET",
-    url: "functions/logout.php",
-    complete: function(response) {
-      window.location = "index.php";
-    }
-   });
+     });
+   }
 }
 
 function setCookie(cname, cvalue, exdays) {
