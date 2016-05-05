@@ -1,4 +1,5 @@
 <script>
+var connectedWithFacebook = false;
 // This is called with the results from from FB.getLoginStatus().
 function statusChangeCallback(response) {
   // The response object is returned with a status field that lets the
@@ -7,15 +8,17 @@ function statusChangeCallback(response) {
   // for FB.getLoginStatus().
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
+    connectedWithFacebook = true;
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
+    connectedWithFacebook = false;
     <?php if(!isset($_SESSION['user'])){ ?>
         window.location = "index.php";
     <?php } ?>
   } else {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
-    //window.location = "index.php";
+    connectedWithFacebook = false;
   }
 }
 
@@ -54,27 +57,6 @@ FB.getLoginStatus(function(response) {
 });
 
 };
-
-function logout() {
-  converse.user.logout();
-  FB.logout(function(response) {
-    // Person is now logged out
-    $.ajax({
-      type: "GET",
-      url: "functions/logout.php",
-      complete: function(response) {
-        window.location = "index.php";
-      }
-    });
-  });
-  $.ajax({
-    type: "GET",
-    url: "functions/logout.php",
-    complete: function(response) {
-      window.location = "index.php";
-    }
-  });
-}
 
 // Load the SDK asynchronously
 (function(d, s, id) {

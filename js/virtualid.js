@@ -206,7 +206,7 @@ function loginfb(fbUserID)
 
 function logout() {
   converse.user.logout();
-  if (typeof FB !== 'undefined') {
+  if ((typeof FB !== 'undefined') && connectedWithFacebook) {
     FB.logout(function(response) {
       // Person is now logged out
       $.ajax({
