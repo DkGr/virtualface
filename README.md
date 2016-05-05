@@ -35,6 +35,7 @@ VirtualID is a project prototype to create an open-source and decentralized soci
 - Geolocation sharing
 - Cross-post to Facebook
 - Facebook wall integration
+- VirtualID inter-node bridge system
 
 ## Installation
 ... Soon ...
