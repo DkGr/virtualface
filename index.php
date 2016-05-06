@@ -20,8 +20,6 @@ if(isset($_SESSION['user']))
     <script>
       // This is called with the results from from FB.getLoginStatus().
       function statusChangeCallback(response) {
-        console.log('statusChangeCallback');
-        console.log(response);
         // The response object is returned with a status field that lets the
         // app know the current login status of the person.
         // Full docs on the response object can be found in the documentation
@@ -53,7 +51,7 @@ if(isset($_SESSION['user']))
         cookie     : true,  // enable cookies to allow the server to access
                             // the session
         xfbml      : true,  // parse social plugins on this page
-        version    : 'v2.4' // use version 2.4
+        version    : 'v2.6' // use version 2.4
       });
 
       // Now that we've initialized the JavaScript SDK, we call
@@ -89,21 +87,10 @@ if(isset($_SESSION['user']))
         <div class="navbar navbar-inverse navbar-static-top" style="border-radius: 4px;" role="navigation">
           <div class="container">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#">VirtualID</a>
+              <a class="navbar-brand" style="color: #fff;font-size: 20px;padding: initial;" href="#"><img style="height: inherit;" alt="VirtualID" src="img/virtualid-white.png"></img></a>
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav navbar-right">
-              	<!--<li class="active" style="margin-right:50px;"><a href="#">Se connecter</a></li>
-                <li class="dropdown">
-          			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-          			<ul class="dropdown-menu">
-            			<li><a href="#">Action</a></li>
-            			<li><a href="#">Another action</a></li>
-            			<li><a href="#">Something else here</a></li>
-            			<li class="divider"></li>
-            			<li><a href="#">Separated link</a></li>
-          			</ul>
-                </li>-->
               </ul>
             </div>
           </div>
@@ -113,7 +100,7 @@ if(isset($_SESSION['user']))
     <!-- CONNEXION -->
     <div id="login-form" class="container">
       <div class="jumbotron" style="max-width:800px;margin:auto;padding:10px;">
-          <h1>VirtualID</h1>
+          <img style="margin-left: -20px;" alt="VirtualID" src="img/virtualid-black.png"></img>
           <p class="lead">Le réseau social libre et décentralisé qui respecte votre vie privée !
           <ul>
             <li>Pas de revente de vos informations</li>

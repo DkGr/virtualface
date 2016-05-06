@@ -1,6 +1,6 @@
 # VirtualID
 
-VirtualID is a project prototype to create an open-source and decentralized social network with no personal datas violation. He also had an encryption/decryption feature with OpenPGP.
+VirtualID is a project prototype to create a decentralized social network with no personal datas violation. He can be a parallel social network of Facebook because of its Facebook bridge features (Cross chat, Cross message publication,...). He also had an encryption/decryption feature with OpenPGP.
 
 ## Requirements
 - HTTP server with SSL/TLS
@@ -11,7 +11,6 @@ VirtualID is a project prototype to create an open-source and decentralized soci
 ## Working features
 - Basic account Creation
 - Account creation with Facebook link
-- Account information page
 - Public stream post creation
 - Stream posts visibility system
 - OpenPGP encryption/Decryption for posts
@@ -24,18 +23,15 @@ VirtualID is a project prototype to create an open-source and decentralized soci
 - Likes system
 
 ## TODO
-- Privacy settings
-- Encryption settings
+- Account information page and settings page
 - Email system
 - OpenPGP encryption/Decryption for emails
+- XMPP bridge to Facebook chat
 - VirtualID node bridge
 - Photo/Video upload
 - Localization system and translation
 - Events system (creation, invites,...)
 - Geolocation sharing
-- Cross-post to Facebook
-- Facebook wall integration
-- VirtualID inter-node bridge system
 
 ## Installation
 ... Soon ...

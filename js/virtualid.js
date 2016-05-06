@@ -77,6 +77,15 @@ function changeNewpostVisibility()
     }
 }
 
+//let's define some variables for stylish stuff:
+var radius = 50;
+var arrowStrength = 18;
+var triangleSide = 20;
+var distanceArrows = 0.3; //this is the distance ( n * pi) between the arrows, do not exagerate
+var colorBody = '#313131';
+var colorTriangle = '#000000';
+var pi = Math.PI;
+
 $(document).ready(function() {
     friendRequestSent = false;
     $("#validate-sub").click(function() {
@@ -200,6 +209,42 @@ function loginfb(fbUserID)
             {
                 window.location = "stream.php";
             }
+        }
+    });
+}
+
+function linktofb(fbUserID)
+{
+    var datastringLogin = "fbuserid="+fbUserID;
+    $.ajax({
+        url: "webservice/linktofb",
+        type: "POST",
+        data: datastringLogin,
+        processData: false,
+        success: function(response) {
+            var resp = JSON.parse(response);
+            if(resp.hasOwnProperty('error'))
+            {
+                $("#fblinked").html('Désactivé <a style="color:red;">('+resp.error+')</a>');
+            }
+            else
+            {
+                $("#fblinked").html('Activé');
+            }
+        }
+    });
+}
+
+function unlinktofb()
+{
+    var datastringLogin = "";
+    $.ajax({
+        url: "webservice/unlinktofb",
+        type: "POST",
+        data: datastringLogin,
+        processData: false,
+        success: function(response) {
+            location.reload();
         }
     });
 }
@@ -1287,13 +1332,18 @@ function loadIdentity()
     showHisFriendsPanel(userid);
 }
 
-function loadPrivacySettings()
+function loadAccountSettings()
 {
     $.ajax({
         type: "GET",
         url: "webservice/users/current",
         complete: function(response) {
             var me = JSON.parse(response.responseText);
+            linkedToFacebook = me["fb-link"];
+            if(linkedToFacebook)
+            {
+              $("#revocateFBDiv").html('<a href="javascript: void(0);" data-placement="right" data-toggle="popover" title="Qu\'est ce que c\'est ?" data-content="En cliquant sur ce bouton vous allez supprimer la possibilité de vous connecter à VirtualID avec votre compte Facebook."><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a> <button id="revocateFB" type="button" class="btn btn-danger">Révoquer le lien Facebook</button>');
+            }
             var meHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option3" autocomplete="off" checked> Moi uniquement</label>';
             var frHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option2" autocomplete="off" checked> Mes amis</label>';
             var tlmHtml = '<label class="btn btn-primary"><input type="radio" name="options" id="option1" autocomplete="off" checked> Tout le monde</label>';
@@ -1350,6 +1400,14 @@ function loadPrivacySettings()
             $("#displayname").val(me.infos.displayname);
             $("#email").val(me.infos.email);
             $("#publicKey").val(me.public_key);
+            if(linkedToFacebook)
+            {
+              $("#fblinked").html("Activé");
+            }
+            else
+            {
+              $("#fblinked").html("Désactivé");
+            }
         }
     });
 }
@@ -1367,7 +1425,7 @@ function saveInfosSettings()
         dataType: "json",
         processData: false,
         success: function(response) {
-            loadPrivacySettings();
+            loadAcountSettings();
             $("#saveAccountInfosBtn").html('Valider <span style="color: green;" class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
         }
     });
@@ -1389,4 +1447,89 @@ function findURL(text){
             }
         }
     );
+}
+
+//This little script will draw two curved arrows into a canvas, the CSS3 will make it rotating.
+//It's very verbose because of learning purpose. Feel free to share it!
+//Author: Edoardo Odorico and some help from Baldarn (2013)  - Licensed Under Creative Commons CC-BY-SA
+
+
+function showLoadingAnimation(distanceArrows, arrowStrength){
+
+    //From here I will call two functions, for body and for triangle, twice.
+
+    //But first of all let's calculate the angle of the arc (for arrow body)
+    var lengthArrow = 1 - distanceArrows;
+    var startAngle = 0;
+    var endAngle = lengthArrow ;
+
+    //draw it!
+    drawArrowBody( startAngle * pi, endAngle * pi, arrowStrength );
+
+    //and now draw the triangle:
+    drawTriangle( endAngle * pi );
+
+    //math for the other arrow and...
+    startAngle = endAngle + distanceArrows;
+    endAngle = startAngle + lengthArrow ;
+
+    //...draw them!
+    drawArrowBody( startAngle * pi, endAngle * pi, arrowStrength );
+    drawTriangle( endAngle * pi);
+
+}
+function drawArrowBody( startAngle, endAngle, arrowStrength ){
+    //In this function we draw the body of the arrow, which is just an arc
+
+	var counterClockwise = false;
+
+	context.beginPath();
+    //draw it!
+	context.arc( x, y, radius, startAngle, endAngle, counterClockwise );
+    //stroke it!
+	context.lineWidth = arrowStrength;
+	context.strokeStyle = colorBody;
+	context.stroke();
+	context.closePath();
+
+
+}
+function drawTriangle(endAngle){
+
+    //The bloody part: draw the triangle.
+    //A lot of old trigos tricks:
+
+    //First the center of the triangle base (where we start to draw the triangle)
+	var canterBaseArrowX = x + radius * Math.cos( endAngle );
+	var canterBaseArrowY = y + radius * Math.sin( endAngle );
+
+	context.beginPath();
+
+    //We move to the center of the base
+	context.moveTo( canterBaseArrowX, canterBaseArrowY );
+
+    //Let's calculate the first point, easy!
+	var ax = canterBaseArrowX + (triangleSide / 2 ) * Math.cos( endAngle );
+	var ay = canterBaseArrowY + (triangleSide / 2 ) * Math.sin( endAngle );
+	context.lineTo ( ax, ay );
+
+    //Now time to get mad: the farest triangle point from the arrow body
+	var bx = canterBaseArrowX + ( Math.sqrt( 3 ) / 2 ) * triangleSide * ( Math.sin( -endAngle ));
+	var by = canterBaseArrowY + ( Math.sqrt( 3 ) / 2 ) * triangleSide * ( Math.cos( -endAngle ));
+	context.lineTo(bx,by);
+
+    //Easy , like the a point
+	var cx = canterBaseArrowX - ( triangleSide / 2 ) * Math.cos( endAngle );
+	var cy = canterBaseArrowY - ( triangleSide / 2 ) * Math.sin( endAngle );
+	context.lineTo( cx,cy );
+
+    //and back to the origin, the center of the triangle base.
+	context.lineTo( canterBaseArrowX, canterBaseArrowY );
+
+    context.lineWidth = arrowStrength;
+
+    //Stroke it with color!
+    context.strokeStyle = colorTriangle;
+	context.stroke();
+	context.closePath();
 }

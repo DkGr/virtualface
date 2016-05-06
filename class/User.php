@@ -40,9 +40,9 @@ class User {
 	public function __construct(){
             include 'DatabaseConnect.php';
         }
-        
+
         public function load($id)
-        {     
+        {
             return $this->VirtualIDDB->Users->findOne(array('_id' => new MongoId((string)$id)));
         }
 
@@ -117,7 +117,7 @@ class User {
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.username' => $username)));
 	}
-        
+
         public function updateAvatar($avatar_filename)
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.avatar' => $avatar_filename)));
@@ -127,12 +127,12 @@ class User {
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.displayname' => $displayname)));
 	}
-        
+
         public function updateEmail($email)
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.email' => $email)));
 	}
-        
+
         public function updatePassword($newpassword)
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('infos.password' => $newpassword)));
@@ -172,6 +172,12 @@ class User {
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('fb-link' => true)));
 	}
 
+	public function setFacebookUnlinked()
+	{
+            $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('fb-link' => false)));
+						$this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('fb-id' => '')));
+	}
+
 	public function setFacebookId($fb_id)
 	{
             $this->VirtualIDDB->Users->update(array('_id' => new MongoId($this->_id)), array('$set' => array('fb-id' => $fb_id)));
@@ -200,7 +206,7 @@ class User {
             $this->VirtualIDDB->Users->insert($userInfos);
             return (string)$userInfos['_id'];
 	}
-        
+
         public function saveNew($newuser)
 	{
             if ($this->VirtualIDDB->Users->findOne(array('infos.username' => $newuser->{'username'}))) {
@@ -222,7 +228,7 @@ class User {
                                 'privacy_settings' => PrivacySettings::getDefaultPrivacySettings()
                             );
             $this->VirtualIDDB->Users->insert($userInfos);
-            
+
             $contentOrFalseOnFailure   = file_get_contents(__DIR__.'/../img/no_avatar.png');
             $filenameOut = __DIR__.'/../avatars/'.$userInfos['_id'];
             $byteCountOrFalseOnFailure = file_put_contents($filenameOut, $contentOrFalseOnFailure);

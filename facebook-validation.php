@@ -12,6 +12,9 @@ ini_set('display_errors',1);
 
   <body>
       <script>
+      var accessToken;
+      var fbUID;
+
       // This is called with the results from from FB.getLoginStatus().
       function statusChangeCallback(response) {
         console.log('statusChangeCallback');
@@ -22,6 +25,8 @@ ini_set('display_errors',1);
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
           // Logged into your app and Facebook.
+          fbUID = response.authResponse.userID;
+          accessToken = response.authResponse.accessToken;
             FB.api(
                 "/me?fields=id,name,email,picture.type(large)",
                 function (response) {
@@ -35,13 +40,13 @@ ini_set('display_errors',1);
                         }
                         var fbUserName = response.name;
                         var fbUserAvatarURL = response.picture.data.url;
-                        
+
                         $("#displayname").val(fbUserName);
                         $("#email").val(fbUserEmail);
                         $("#avatar").attr("src", function() {
                             return fbUserAvatarURL;
                         });
-                        
+
                         $("#validate-fb-sub").click(function() {
                             subscribeFromFacebook(fbUserID, $("#avatar").attr("src"));
                         });
@@ -52,6 +57,16 @@ ini_set('display_errors',1);
         else{
             window.location = "index.php";
         }
+      }
+
+      function revocateFacebookLink(){
+        FB.api('/'+fbUID+'/permissions', 'delete', { access_token : accessToken }, function(response) {
+          if (!response || response.error) {
+            alert('Impossible de supprimer le lien');
+          } else {
+            window.location = "index.php";
+          }
+        });
       }
 
       // This function is called when someone finishes with the Login
@@ -123,6 +138,7 @@ ini_set('display_errors',1);
             <p id="errormessage" style="color:red;"></p>
             <button id="validate-fb-sub" name="validate-fb-sub" value="validate-fb-sub" class="btn btn-lg btn-primary btn-block" type="submit">Valider</button>
           </form>
+          <button id="cancel-fb-sub" style="margin: 0 auto; width: initial;" class="btn btn-lg btn-danger btn-block">Annuler</button>
         </div>
       <div class="modal fade" id="subscribingModal" tabindex="-1" role="dialog" aria-labelledby="subscribingModalLabel" aria-hidden="true">
   		<div class="modal-dialog modal-sm">
@@ -142,7 +158,14 @@ ini_set('display_errors',1);
     		</div>
             </div>
 	</div>
-    <!-- SCRIPTS -->
     <?php include_once 'page_includes/footer.php'; ?>
+    <!-- SCRIPTS -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $("#cancel-fb-sub").click(function() {
+            revocateFacebookLink();
+          });
+        });
+    </script>
   </body>
 </html>

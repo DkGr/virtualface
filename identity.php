@@ -71,6 +71,7 @@ if(!isset($_SESSION['user']))
               </div>-->
               <!-- Stream posts list -->
               <div id="posts-stream">
+                <div id="loadingAnimation"><canvas id="c"></canvas></div>
               </div>
             </div>
             <!-- Messages content -->
@@ -151,7 +152,13 @@ if(!isset($_SESSION['user']))
     <!-- SCRIPTS -->
     <?php require_once 'page_includes/footer.php'; ?>
     <script type="text/javascript">
+        //now some variables for canvas and math
+        var canvas = document.getElementById('c');
+        var context = canvas.getContext('2d');
+        var x = canvas.width / 2; //the center on X axis
+        var y = canvas.height / 2; //the center on Y axis
         $(document).ready(function() {
+        showLoadingAnimation( distanceArrows, arrowStrength );
         setTimeout(function(){
             var searchFriendBar = $('#searchFriendBar').magicSuggest({
                 allowFreeEntries: false,
@@ -163,14 +170,14 @@ if(!isset($_SESSION['user']))
               showIdentity(this.getValue());
             });
             $('[data-toggle="tooltip"]').tooltip();
-        }, 500);   
+        }, 500);
         loadIdentity();
         changeNewpostVisibility();
         updateNotifications();
         setInterval(updateNotifications, 30000);
         showMyFriendsPanel();
       });
-    </script>    
+    </script>
   </body>
   <?php include_once 'page_includes/instant-message-module.php'; ?>
 </html>

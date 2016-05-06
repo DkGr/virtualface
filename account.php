@@ -27,7 +27,97 @@ if(!isset($_SESSION['user']))
 
   <body>
       <input id="myid" value="<?php echo (string)$_SESSION['user']['_id']; ?>" type="hidden" >
-    <?php include_once 'page_includes/facebook-status.php'; ?>
+      <script>
+      var linkedToFacebook = true;
+      var connectedWithFacebook = false;
+      var accessToken;
+      var fbUID;
+      // This is called with the results from from FB.getLoginStatus().
+      function statusChangeCallback(response) {
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+          // Logged into your app and Facebook.
+          connectedWithFacebook = true;
+          fbUID = response.authResponse.userID;
+          accessToken = response.authResponse.accessToken;
+          if(!linkedToFacebook)
+          {
+            linktofb(fbUID);
+          }
+          console.log("Connecté avec Facebook");
+        } else if (response.status === 'not_authorized') {
+          // The person is logged into Facebook, but not your app.
+          connectedWithFacebook = false;
+          console.log("Connecté à Facebook sans liaison activée");
+          <?php if(!isset($_SESSION['user'])){ ?>
+              window.location = "index.php";
+          <?php } ?>
+        } else {
+          // The person is not logged into Facebook, so we're not sure if
+          // they are logged into this app or not.
+          connectedWithFacebook = false;
+          console.log("Déconnecté de Facebook");
+        }
+      }
+
+      // This function is called when someone finishes with the Login
+      // Button.  See the onlogin handler attached to it in the sample
+      // code below.
+      function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+          statusChangeCallback(response);
+        });
+      }
+
+      function revocateFacebookLink(){
+        FB.api('/'+fbUID+'/permissions', 'delete', { access_token : accessToken }, function(response) {
+          if (!response || response.error) {
+            alert('Impossible de supprimer le lien');
+          } else {
+            unlinktofb();
+          }
+        });
+      }
+
+      window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '<?php echo $GLOBALS['facebook_app_id']; ?>',
+        cookie     : true,  // enable cookies to allow the server to access
+                            // the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.6'
+      });
+
+      // Now that we've initialized the JavaScript SDK, we call
+      // FB.getLoginStatus().  This function gets the state of the
+      // person visiting this page and can return one of three states to
+      // the callback you provide.  They can be:
+      //
+      // 1. Logged into your app ('connected')
+      // 2. Logged into Facebook, but not your app ('not_authorized')
+      // 3. Not logged into Facebook and can't tell if they are logged into
+      //    your app or not.
+      //
+      // These three cases are handled in the callback function.
+
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+
+      };
+
+      // Load the SDK asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/fr_FR/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+      </script>
     <?php include_once 'page_includes/navbar.php'; ?>
     <div class="container" style="position:relative;top:50px;">
       <div class="container-fluid">
@@ -85,6 +175,25 @@ if(!isset($_SESSION['user']))
                   </div>
                   <br/>
                 </div>
+              </form>
+            </div>
+          </div>
+          <br/>
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Paramètres Facebook</h3>
+            </div>
+            <div class="panel-body">
+              <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="fblinked" class="col-sm-3 control-label">Compte lié à Facebook :</label><div class="col-sm-9" style="text-align: left;"><p id="fblinked" class="form-control-static"></p></div>
+                </div>
+                <br/>
+                <div class="form-group">
+                    <label for="fbconnexion" class="col-sm-3 control-label">Connexion à mon compte Facebook :</label><div class="col-sm-9"><fb:login-button id="fbconnexion" data-max-rows="1" data-size="xlarge" data-show-faces="true" data-auto-logout-link="true" scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button></div>
+                </div>
+                <br/>
+                <div id="revocateFBDiv" style="text-align: center;"></div>
               </form>
             </div>
           </div>
@@ -216,8 +325,12 @@ if(!isset($_SESSION['user']))
                     });
                 }
             });
+
+            $("#revocateFB").click(function() {
+              revocateFacebookLink();
+            });
         }, 500);
-        loadPrivacySettings();
+        loadAccountSettings();
         updateNotifications();
         setInterval(updateNotifications, 30000);
       });

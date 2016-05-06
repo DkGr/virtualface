@@ -50,6 +50,7 @@ if(!isset($_SESSION['user']))
           <div id="stream">
             <!-- Stream posts list -->
             <div id="posts-stream">
+              <div id="loadingAnimation"><canvas id="c"></canvas></div>
             </div>
           </div>
         </div>
@@ -64,7 +65,7 @@ if(!isset($_SESSION['user']))
                     <div class="modal-body">
                             <div>
                                 <p id="errormessage" style="color:red;"></p>
-                                <p>Entrez votre mot de passe afin de déchiffrer les informations privées de votre session. 
+                                <p>Entrez votre mot de passe afin de déchiffrer les informations privées de votre session.
                                     Si vous refusez, vous ne pourrez pas utiliser la messagerie instantanée et vous ne pourrez voir que les messages publics.
                                 </p>
                                 <form class="form-signup" role="form" onsubmit="return false;">
@@ -78,26 +79,32 @@ if(!isset($_SESSION['user']))
     </div>-->
     <?php require_once 'page_includes/footer.php'; ?>
     <script type="text/javascript">
+        //now some variables for canvas and math
+        var canvas = document.getElementById('c');
+        var context = canvas.getContext('2d');
+        var x = canvas.width / 2; //the center on X axis
+        var y = canvas.height / 2; //the center on Y axis
         $(document).ready(function() {
-        setTimeout(function(){
-            var searchFriendBar = $('#searchFriendBar').magicSuggest({
-                allowFreeEntries: false,
-                data: 'functions/get-all-users.php',
-                valueField: 'id',
-                displayField: 'userresult'
-            });
-            $(searchFriendBar).on('selectionchange', function(e,m){
-              showIdentity(this.getValue());
-            });
-            $('[data-toggle="tooltip"]').tooltip();
-        }, 500);   
-        loadPost();
-        changeNewpostVisibility();
-        updateNotifications();
-        setInterval(updateNotifications, 30000);
-        showMyFriendsPanel();
-      });
-    </script>    
+          showLoadingAnimation( distanceArrows, arrowStrength );
+          setTimeout(function(){
+              var searchFriendBar = $('#searchFriendBar').magicSuggest({
+                  allowFreeEntries: false,
+                  data: 'functions/get-all-users.php',
+                  valueField: 'id',
+                  displayField: 'userresult'
+              });
+              $(searchFriendBar).on('selectionchange', function(e,m){
+                showIdentity(this.getValue());
+              });
+              $('[data-toggle="tooltip"]').tooltip();
+          }, 500);
+          loadPost();
+          changeNewpostVisibility();
+          updateNotifications();
+          setInterval(updateNotifications, 30000);
+          showMyFriendsPanel();
+        });
+    </script>
   </body>
   <?php include_once 'page_includes/instant-message-module.php'; ?>
 </html>

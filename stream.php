@@ -52,7 +52,7 @@ if(!isset($_SESSION['user']))
               <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;" class="panel panel-default" style="border-radius: 5px;">
                 <textarea id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" class="form-control" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..."></textarea>
                 <div style="border: 1px solid rgb(221, 221, 221);" class="panel-footer" style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;">
-                  
+
                   <div class="btn-group" role="group" aria-label="...">
                       <button id="button-send-newpost" style="font-weight: bold;font-size: 12px;" class="btn btn-info">Publier <span class="glyphicon glyphicon-send"></span></button>
                     <div class="btn-group" role="group">
@@ -71,6 +71,7 @@ if(!isset($_SESSION['user']))
 
             <!-- Stream posts list -->
             <div id="posts-stream">
+              <div id="loadingAnimation"><canvas id="c"></canvas></div>
             </div>
           </div>
         </div>
@@ -85,7 +86,7 @@ if(!isset($_SESSION['user']))
                     <div class="modal-body">
                             <div>
                                 <p id="errormessage" style="color:red;"></p>
-                                <p>Entrez votre mot de passe afin de déchiffrer les informations privées de votre session. 
+                                <p>Entrez votre mot de passe afin de déchiffrer les informations privées de votre session.
                                     Si vous refusez, vous ne pourrez pas utiliser la messagerie instantanée et vous ne pourrez voir que les messages publics.
                                 </p>
                                 <form class="form-signup" role="form" onsubmit="return false;">
@@ -99,7 +100,14 @@ if(!isset($_SESSION['user']))
     </div>-->
     <?php require_once 'page_includes/footer.php'; ?>
     <script type="text/javascript">
+        //now some variables for canvas and math
+        var canvas = document.getElementById('c');
+        var context = canvas.getContext('2d');
+        var x = canvas.width / 2; //the center on X axis
+        var y = canvas.height / 2; //the center on Y axis
+
         $(document).ready(function() {
+        showLoadingAnimation( distanceArrows, arrowStrength );
         setTimeout(function(){
             var searchFriendBar = $('#searchFriendBar').magicSuggest({
                 allowFreeEntries: false,
@@ -111,16 +119,16 @@ if(!isset($_SESSION['user']))
               showIdentity(this.getValue());
             });
             $('[data-toggle="tooltip"]').tooltip();
-        }, 500);   
+        }, 500);
         loadPosts();
         changeNewpostVisibility();
         updateNotifications();
         setInterval(updateNotifications, 30000);
         showMyFriendsPanel();
       });
-    </script>    
+    </script>
   </body>
-  <?php 
-  include_once 'page_includes/instant-message-module.php'; 
+  <?php
+  include_once 'page_includes/instant-message-module.php';
   ?>
 </html>

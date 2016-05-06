@@ -90,3 +90,23 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+#c{
+    height:100%;
+    width:100%;
+    position:relative;
+    -webkit-animation: rotate-left 2s linear infinite;
+
+}
+#loadingAnimation{
+    margin: 0 auto;
+    position:relative;
+    width:70px;
+}
+@-webkit-keyframes rotate-left
+{
+
+/*let's do the magic: rotate!*/
+  from { -webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}
+}

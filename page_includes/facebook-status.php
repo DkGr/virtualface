@@ -9,9 +9,11 @@ function statusChangeCallback(response) {
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
     connectedWithFacebook = true;
+    console.log("Connecté avec Facebook");
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
     connectedWithFacebook = false;
+    console.log("Connecté à Facebook sans liaison activée");
     <?php if(!isset($_SESSION['user'])){ ?>
         window.location = "index.php";
     <?php } ?>
@@ -19,6 +21,7 @@ function statusChangeCallback(response) {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
     connectedWithFacebook = false;
+    console.log("Déconnecté de Facebook");
   }
 }
 
@@ -37,7 +40,7 @@ FB.init({
   cookie     : true,  // enable cookies to allow the server to access
                       // the session
   xfbml      : true,  // parse social plugins on this page
-  version    : 'v2.4' // use version 2.4
+  version    : 'v2.6' // use version 2.6
 });
 
 // Now that we've initialized the JavaScript SDK, we call

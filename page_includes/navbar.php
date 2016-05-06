@@ -11,7 +11,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-            <a class="navbar-brand" style="color: #fff;font-size: 20px;" href="stream.php">VirtualID</a>
+            <a class="navbar-brand" style="color: #fff;font-size: 20px;padding: initial;" href="stream.php"><img style="height: inherit;" alt="VirtualID" src="img/virtualid-white.png"></img></a>
         </div>
         <div class="navbar-collapse collapse">
     <?php if(isset($_SESSION['user'])){ ?>

@@ -115,6 +115,40 @@ class UserController {
     }
 
     /**
+     * Link Facebook account into VirtualID
+     *
+     * @url POST /linktofb
+     */
+    public function linkToFacebook()
+    {
+        $fbuserid = $_POST['fbuserid'];
+        $obj = new User();
+        $obj->setId((string)$_SESSION['user']['_id']);
+        $user = $obj->getVirtualIdWithFacebookId($fbuserid);
+        if($user)
+        {
+            return array("error" => "Ce compte Facebook est déjà lié à un compte VirtualID");
+        }
+        else
+        {
+            $obj->setFacebookId($fbuserid);
+            return array("success" => "Compte Facebook lié");
+        }
+    }
+
+    /**
+     * Unlink Facebook account into VirtualID
+     *
+     * @url POST /unlinktofb
+     */
+    public function unlinkToFacebook()
+    {
+        $obj = new User();
+        $obj->setId((string)$_SESSION['user']['_id']);
+        $obj->setFacebookUnlinked();
+    }
+
+    /**
      * Saves a user from facebook to the database
      *
      * @noAuth
