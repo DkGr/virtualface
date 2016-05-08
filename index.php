@@ -173,13 +173,13 @@ if(isset($_SESSION['user']))
         Ce projet est distribué sous licence GNU GPL v2.
         <br/>
         Le code source est disponible sur <a href="https://github.com/DkGr/virtualid">Github</a>
-        <a href="https://github.com/DkGr/virtualid"><img style="width: 32px;" src="img/mark-github-512.png"/></a>
+        <a href="https://github.com/DkGr/virtualid"><img style="width: 32px;" alt="github-icon" src="img/mark-github-512.png"/></a>
       </div>
     </footer>
     <!-- SCRIPTS -->
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/openpgp.min.js"></script>
-    <script type="text/javascript" alt="github-icon" src="js/virtualid.js"></script>
+    <script type="text/javascript" src="js/virtualid.js"></script>
   </body>
 </html>
