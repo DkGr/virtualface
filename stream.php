@@ -51,6 +51,7 @@ if(!isset($_SESSION['user']))
             <div id="send-newpost-form">
               <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;" class="panel panel-default" style="border-radius: 5px;">
                 <textarea id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" class="form-control" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..."></textarea>
+                <div id=postPreview></div>
                 <div style="border: 1px solid rgb(221, 221, 221);" class="panel-footer" style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;">
 
                   <div class="btn-group" role="group" aria-label="...">

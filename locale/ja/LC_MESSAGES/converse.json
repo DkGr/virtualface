@@ -567,4 +567,146 @@
             null,
             "%1$s が話題を設定しました: %2$s"
          ],
-         "%1$
+         "%1$s has invited you to join a chat room: %2$s": [
+            null,
+            ""
+         ],
+         "%1$s has invited you to join a chat room: %2$s, and left the following reason: \"%3$s\"": [
+            null,
+            ""
+         ],
+         "Minimized": [
+            null,
+            ""
+         ],
+         "Click to remove this contact": [
+            null,
+            "クリックしてこの相手先を削除"
+         ],
+         "Click to chat with this contact": [
+            null,
+            "クリックしてこの相手先とチャット"
+         ],
+         "Name": [
+            null,
+            ""
+         ],
+         "Sorry, there was an error while trying to remove ": [
+            null,
+            ""
+         ],
+         "Sorry, there was an error while trying to add ": [
+            null,
+            ""
+         ],
+         "This client does not allow presence subscriptions": [
+            null,
+            ""
+         ],
+         "Type to filter": [
+            null,
+            ""
+         ],
+         "I am %1$s": [
+            null,
+            "私はいま %1$s"
+         ],
+         "Click here to write a custom status message": [
+            null,
+            "状況メッセージを入力するには、ここをクリック"
+         ],
+         "Click to change your chat status": [
+            null,
+            "クリックして、在席状況を変更"
+         ],
+         "Custom status": [
+            null,
+            "独自の在席状況"
+         ],
+         "online": [
+            null,
+            "在席"
+         ],
+         "busy": [
+            null,
+            "取り込み中"
+         ],
+         "away for long": [
+            null,
+            "不在"
+         ],
+         "away": [
+            null,
+            "離席中"
+         ],
+         "Your XMPP provider's domain name:": [
+            null,
+            ""
+         ],
+         "Fetch registration form": [
+            null,
+            ""
+         ],
+         "Tip: A list of public XMPP providers is available": [
+            null,
+            ""
+         ],
+         "here": [
+            null,
+            ""
+         ],
+         "Register": [
+            null,
+            ""
+         ],
+         "Sorry, the given provider does not support in band account registration. Please try with a different provider.": [
+            null,
+            ""
+         ],
+         "Requesting a registration form from the XMPP server": [
+            null,
+            ""
+         ],
+         "Something went wrong while establishing a connection with \"%1$s\". Are you sure it exists?": [
+            null,
+            ""
+         ],
+         "Now logging you in": [
+            null,
+            ""
+         ],
+         "Registered successfully": [
+            null,
+            ""
+         ],
+         "Return": [
+            null,
+            ""
+         ],
+         "The provider rejected your registration attempt. Please check the values you entered for correctness.": [
+            null,
+            ""
+         ],
+         "Password:": [
+            null,
+            "パスワード:"
+         ],
+         "Log In": [
+            null,
+            "ログイン"
+         ],
+         "user@server": [
+            null,
+            ""
+         ],
+         "Sign in": [
+            null,
+            "サインイン"
+         ],
+         "Toggle chat": [
+            null,
+            ""
+         ]
+      }
+   }
+}

@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="VirtualID : Le réseau social libre qui respecte votre vie privée">
+<meta name="description" content="VirtualID : Le réseau social libre qui respecte votre vie privée en utilisant le chiffrement OpenPGP. Ce projet est sous licence GNU GPL v2.">
 <meta name="author" content="">
 
 <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png">
@@ -22,7 +22,7 @@
 <meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
 
-<title>VirtualID</title>
+<title>VirtualID - Le réseau social libre qui respecte votre vie privée</title>
 
 <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
 <link href="css/home.css" type="text/css" rel="stylesheet">

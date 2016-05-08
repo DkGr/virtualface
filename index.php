@@ -101,12 +101,12 @@ if(isset($_SESSION['user']))
     <div id="login-form" class="container">
       <div class="jumbotron" style="max-width:800px;margin:auto;padding:10px;">
           <img style="margin-left: -20px;" alt="VirtualID" src="img/virtualid-black.png"></img>
-          <p class="lead">Le réseau social libre et décentralisé qui respecte votre vie privée !
+          <p class="lead">Le réseau social <b>libre</b> et <b>décentralisé</b> qui respecte votre vie privée !
           <ul>
-            <li>Pas de revente de vos informations</li>
-            <li>Pas de traçage publicitaire</li>
-            <li>Toutes vos données privées sont cryptées (Informations personnelles, Messages privés, Photos,...)</li>
-            <li>Chacun peut héberger son compte (et celui d'autres personnes) chez lui</li>
+            <li><b>Pas de revente</b> de vos informations</li>
+            <li><b>Pas de traçage</b> publicitaire</li>
+            <li>Toutes vos <b>données privées</b> sont <b>cryptées</b> (Informations personnelles, Messages privés, Photos,...)</li>
+            <li>Chacun peut <b>héberger son compte</b> (et celui d'autres personnes) chez lui</li>
           </ul>
           </p>
       </div>
@@ -166,6 +166,15 @@ if(isset($_SESSION['user']))
             </div>
         </div>
     </div>
+    <hr style="border-top: 1px solid #DADADA;"/>
+    <footer class="footer">
+      <div style="float: left;width: 20%;margin: 25px;">
+        Ce projet est distribué sous licence GNU GPL v2.
+        <br/>
+        Le code source est disponible sur <a href="https://github.com/DkGr/virtualid">Github</a>
+        <a href="https://github.com/DkGr/virtualid"><img style="width: 32px;" src="img/mark-github-512.png"/></a>
+      </div>
+    </footer>
     <!-- SCRIPTS -->
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

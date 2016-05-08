@@ -701,4 +701,267 @@ msgstr "<strong>%1$s</strong> удалён потому что не участн
 
 #: converse.js:3414
 #, fuzzy
-msgid "Your nickname has been automatical
+msgid "Your nickname has been automatically changed to: <strong>%1$s</strong>"
+msgstr "Ваш псевдоним уже используется другим пользователем"
+
+#: converse.js:3415
+#, fuzzy
+msgid "Your nickname has been changed to: <strong>%1$s</strong>"
+msgstr "Ваш псевдоним уже используется другим пользователем"
+
+#: converse.js:3463 converse.js:3472
+msgid "The reason given is: \""
+msgstr ""
+
+#: converse.js:3485
+msgid "You are not on the member list of this room"
+msgstr "Вас нет в списке этой конференции"
+
+#: converse.js:3491
+msgid "No nickname was specified"
+msgstr "Вы не указали псевдоним"
+
+#: converse.js:3495
+msgid "You are not allowed to create new rooms"
+msgstr "Вы не имеете права создавать конфер."
+
+#: converse.js:3497
+msgid "Your nickname doesn't conform to this room's policies"
+msgstr "Псевдоним не согласуется с правилами конфер."
+
+#: converse.js:3501
+msgid "Your nickname is already taken"
+msgstr "Ваш ник уже используется другим пользователем"
+
+#: converse.js:3503
+msgid "This room does not (yet) exist"
+msgstr "Эта комната не существует"
+
+#: converse.js:3505
+msgid "This room has reached it's maximum number of occupants"
+msgstr "Конференция достигла максимального количества участников"
+
+#: converse.js:3555
+msgid "Topic set by %1$s to: %2$s"
+msgstr "Тема %2$s устатновлена %1$s"
+
+#: converse.js:3638
+msgid "%1$s has invited you to join a chat room: %2$s"
+msgstr ""
+
+#: converse.js:3642
+msgid ""
+"%1$s has invited you to join a chat room: %2$s, and left the following "
+"reason: \"%3$s\""
+msgstr ""
+
+#: converse.js:3916
+#, fuzzy
+msgid "Click to restore this chat"
+msgstr "Удалить контакт"
+
+#: converse.js:4058
+msgid "Minimized"
+msgstr ""
+
+#: converse.js:4257 converse.js:4278
+msgid "Click to remove this contact"
+msgstr "Удалить контакт"
+
+#: converse.js:4265
+#, fuzzy
+msgid "Click to accept this contact request"
+msgstr "Удалить контакт"
+
+#: converse.js:4266
+#, fuzzy
+msgid "Click to decline this contact request"
+msgstr "Удалить контакт"
+
+#: converse.js:4277
+msgid "Click to chat with this contact"
+msgstr "Начать общение"
+
+#: converse.js:4279
+msgid "Name"
+msgstr ""
+
+#: converse.js:4295
+#, fuzzy
+msgid "Are you sure you want to remove this contact?"
+msgstr "Удалить контакт"
+
+#: converse.js:4306
+msgid "Sorry, there was an error while trying to remove "
+msgstr ""
+
+#: converse.js:4325
+#, fuzzy
+msgid "Are you sure you want to decline this contact request?"
+msgstr "Удалить контакт"
+
+#: converse.js:4424
+msgid "Sorry, there was an error while trying to add "
+msgstr ""
+
+#: converse.js:4596
+msgid "This client does not allow presence subscriptions"
+msgstr ""
+
+#: converse.js:4912
+msgid "Type to filter"
+msgstr ""
+
+#. For translators: the %1$s part gets replaced with the status
+#. Example, I am online
+#: converse.js:5327 converse.js:5402
+msgid "I am %1$s"
+msgstr "%1$s"
+
+#: converse.js:5329 converse.js:5407
+msgid "Click here to write a custom status message"
+msgstr "Редактировать произвольный статус"
+
+#: converse.js:5330 converse.js:5408
+msgid "Click to change your chat status"
+msgstr "Изменить ваш статус"
+
+#: converse.js:5355
+msgid "Custom status"
+msgstr "Произвольный статус"
+
+#: converse.js:5384 converse.js:5394
+msgid "online"
+msgstr "на связи"
+
+#: converse.js:5386
+msgid "busy"
+msgstr "занят"
+
+#: converse.js:5388
+msgid "away for long"
+msgstr "отошёл на долго"
+
+#: converse.js:5390
+msgid "away"
+msgstr "отошёл"
+
+#: converse.js:5392
+#, fuzzy
+msgid "offline"
+msgstr "Не в сети"
+
+#: converse.js:5569
+msgid "Your XMPP provider's domain name:"
+msgstr ""
+
+#: converse.js:5570
+msgid "Fetch registration form"
+msgstr ""
+
+#: converse.js:5571
+msgid "Tip: A list of public XMPP providers is available"
+msgstr ""
+
+#: converse.js:5572
+msgid "here"
+msgstr ""
+
+#: converse.js:5577 converse.js:5795
+msgid "Register"
+msgstr ""
+
+#: converse.js:5623
+msgid ""
+"Sorry, the given provider does not support in band account registration. "
+"Please try with a different provider."
+msgstr ""
+
+#: converse.js:5683
+msgid "Requesting a registration form from the XMPP server"
+msgstr ""
+
+#: converse.js:5718
+msgid ""
+"Something went wrong while establishing a connection with \"%1$s\". Are you "
+"sure it exists?"
+msgstr ""
+
+#: converse.js:5737
+msgid "Now logging you in"
+msgstr ""
+
+#: converse.js:5741
+msgid "Registered successfully"
+msgstr ""
+
+#: converse.js:5800
+msgid "Return"
+msgstr ""
+
+#: converse.js:5832
+msgid ""
+"The provider rejected your registration attempt. Please check the values you "
+"entered for correctness."
+msgstr ""
+
+#: converse.js:5988
+#, fuzzy
+msgid "XMPP Username:"
+msgstr "JID:"
+
+#: converse.js:5989
+msgid "Password:"
+msgstr "Пароль:"
+
+#: converse.js:5990
+#, fuzzy
+msgid "Click here to log in anonymously"
+msgstr "Эта комната не анонимная"
+
+#: converse.js:5991
+msgid "Log In"
+msgstr "Войти"
+
+#: converse.js:5992
+msgid "user@server"
+msgstr ""
+
+#: converse.js:5993
+#, fuzzy
+msgid "password"
+msgstr "Пароль:"
+
+#: converse.js:6000
+msgid "Sign in"
+msgstr "Подписать"
+
+#: converse.js:6074
+msgid "Toggle chat"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Reconnecting"
+#~ msgstr "Соединение"
+
+#~ msgid "Contact username"
+#~ msgstr "Имя пользователя"
+
+#~ msgid "Online Contacts"
+#~ msgstr "Cписок собеседников"
+
+#~ msgid "Disconnected"
+#~ msgstr "Отключено"
+
+#~ msgid "Connection Failed"
+#~ msgstr "Не удалось соединится"
+
+#~ msgid "Disconnecting"
+#~ msgstr "Отключаемся"
+
+#, fuzzy
+#~ msgid "Decline"
+#~ msgstr "В сети"
+
+#~ msgid "Private key generated."
+#~ msgstr "Приватный ключ сгенерирован."
