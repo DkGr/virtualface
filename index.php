@@ -99,8 +99,9 @@ if(isset($_SESSION['user']))
     </div>
     <!-- CONNEXION -->
     <div id="login-form" class="container">
-      <div class="jumbotron" style="max-width:800px;margin:auto;padding:10px;">
+      <div class="jumbotron" style="max-width:800px;margin:auto;padding:0px;">
           <img style="margin-left: -20px;" alt="VirtualID" src="img/virtualid-black.png"></img>
+          <h1 style="visibility: hidden;">VirtualID</h1>
           <p class="lead">Le réseau social <b>libre</b> et <b>décentralisé</b> qui respecte votre vie privée !
           <ul>
             <li><b>Pas de revente</b> de vos informations</li>
@@ -179,6 +180,6 @@ if(isset($_SESSION['user']))
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/openpgp.min.js"></script>
-    <script type="text/javascript" src="js/virtualid.js"></script>
+    <script type="text/javascript" alt="github-icon" src="js/virtualid.js"></script>
   </body>
 </html>
