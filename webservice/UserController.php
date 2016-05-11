@@ -25,14 +25,19 @@ class UserController {
 
     /**
      * Gets the user by id or current user
-     *
+     * @noAuth
      * @url GET /users/current
      * @url GET /users/$id
      */
     public function getUser($id = null)
     {
         if ($id != null) {
-            $user = PrivacyController::pleaseShowMeUserInformation($_SESSION['user']['_id'], $id);
+            $uid = '';
+            if(isset($_SESSION['user']))
+            {
+              $uid = (string)$_SESSION['user']['_id'];
+            }
+            $user = PrivacyController::pleaseShowMeUserInformation($uid, $id);
         } else {
             $_SESSION['user'] = PrivacyController::pleaseShowMeUserInformation($_SESSION['user']['_id'], $_SESSION['user']['_id']);
             $user = $_SESSION['user'];
@@ -42,14 +47,19 @@ class UserController {
 
     /**
      * Gets the user posts by id or current user
-     *
+     * @noAuth
      * @url GET /users/$id/posts
      * @url GET /users/current/posts
      */
     public function getUserPosts($id = null)
     {
         if ($id != "current") {
-            $posts = PrivacyController::pleaseShowMeUserPosts((string)$_SESSION['user']['_id'], $id);
+            $uid = '';
+            if(isset($_SESSION['user']))
+            {
+              $uid = (string)$_SESSION['user']['_id'];
+            }
+            $posts = PrivacyController::pleaseShowMeUserPosts($uid, $id);
         } else {
             $posts = PrivacyController::pleaseShowMeUserPosts((string)$_SESSION['user']['_id'], (string)$_SESSION['user']['_id']);
         }

@@ -14,7 +14,9 @@
             <a class="navbar-brand" style="color: #fff;font-size: 20px;padding: initial;" href="stream.php"><img style="height: inherit;" alt="VirtualID" src="img/virtualid-white.png"></img></a>
         </div>
         <div class="navbar-collapse collapse">
+        <script> var anonymous = true; </script>
     <?php if(isset($_SESSION['user'])){ ?>
+      <script> anonymous = false; </script>
     <ul class="nav navbar-nav navbar-left">
       <?php  if(basename($_SERVER['PHP_SELF']) == 'stream.php'){ ?>
       <li class="active"><a href="javascript: void(0);" onclick="loadPosts();"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> Mon flux</a></li>

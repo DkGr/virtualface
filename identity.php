@@ -3,12 +3,6 @@ session_start();
 error_reporting(E_ALL ^ E_DEPRECATED);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
-
-if(!isset($_SESSION['user']))
-{
-    header("Location: index.php");
-    die();
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -20,12 +14,12 @@ if(!isset($_SESSION['user']))
       }
     </style>
     <?php include_once "page_includes/header.php" ?>
-    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.css" />
+    <title>VirtualID - Profil de </title>
+    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.min.css" />
   </head>
 
   <body>
       <input id="myid" value="<?php echo (string)$_SESSION['user']['_id']; ?>" type="hidden" >
-    <?php include_once 'page_includes/facebook-status.php'; ?>
     <?php include_once 'page_includes/navbar.php'; ?>
     <div class="container" style="position:relative;top:50px;">
       <div class="container-fluid">
@@ -33,11 +27,15 @@ if(!isset($_SESSION['user']))
         <div style="width:20%;float:left;padding:10px;">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img id="identity-avatar" class="img-thumbnail" src="" alt="no_avatar" style="width:128px;height:128px;background-color:white;margin-top:-5px;margin-right:5px;"></a>
           <br/><h3 id="identity-name"></h3>
+          <?php if(isset($_SESSION['user']))
+          { ?>
           <div id="identity-actions">
           <div id="identity-actions-buttons" style="margin-top:15px;margin-bottom:15px;" class="btn-group" role="group" aria-label="Identity action group">
             <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></button>
           </div>
           </div>
+          <?php
+          } ?>
           <input id="identity-id" value="<?php echo $_GET['userid']; ?>" type="hidden" >
           <div class="panel panel-info">
             <div class="panel-heading">
@@ -60,15 +58,6 @@ if(!isset($_SESSION['user']))
           <div id="tabContent" class="tab-content">
             <!-- stream content -->
             <div class="tab-pane fade in active" role="tabpanel" id="stream">
-              <!-- Stream post form -->
-<!--              <div id="send-newpost-form">
-                <div style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);" class="panel panel-default">
-                  <textarea id="newpost-content" style="resize:vertical;margin:5px; width:99%;" class="form-control" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..."></textarea>
-                  <div class="panel-footer">
-                    <button id="button-send-newpost" class="btn btn-info">Publier</button>
-                  </div>
-                </div>
-              </div>-->
               <!-- Stream posts list -->
               <div id="posts-stream">
                 <div id="loadingAnimation"><canvas id="c"></canvas></div>
@@ -172,10 +161,12 @@ if(!isset($_SESSION['user']))
             $('[data-toggle="tooltip"]').tooltip();
         }, 500);
         loadIdentity();
-        changeNewpostVisibility();
+        <?php if(isset($_SESSION['user']))
+        { ?>
         updateNotifications();
         setInterval(updateNotifications, 30000);
-        showMyFriendsPanel();
+        <?php
+        } ?>
       });
     </script>
   </body>

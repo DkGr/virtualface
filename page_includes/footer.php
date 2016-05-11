@@ -11,4 +11,4 @@ openpgp.initWorker({ path:'js/openpgp.worker.min.js' }); // set the relative web
 </script>
 <script src="js/converse.min.js"></script>
 <script data-main="js/virtualid" src="js/require.js"></script>
-<script src="js/virtualid.js"></script>
+<script src="js/virtualid.min.js"></script>

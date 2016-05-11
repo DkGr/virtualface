@@ -20,9 +20,10 @@ if(!isset($_SESSION['user']))
       }
     </style>
     <?php include_once "page_includes/header.php" ?>
-    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.css" />
+    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.min.css" />
     <link href="css/cropper.min.css" rel="stylesheet">
     <link href="css/uploadfile.css" rel="stylesheet">
+    <title>VirtualID - Vos paramètres de compte</title>
   </head>
 
   <body>

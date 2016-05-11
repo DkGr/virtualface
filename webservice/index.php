@@ -12,6 +12,7 @@ require 'PostController.php';
 require 'CommentController.php';
 require 'LikeController.php';
 require 'NotificationController.php';
+require 'URLExtractorController.php';
 
 spl_autoload_register();
 $server = new \Jacwright\RestServer\RestServer('debug');
@@ -21,5 +22,5 @@ $server->addClass('PostController');
 $server->addClass('CommentController');
 $server->addClass('LikeController');
 $server->addClass('NotificationController');
+$server->addClass('URLExtractorController');
 $server->handle();
-

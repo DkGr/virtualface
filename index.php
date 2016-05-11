@@ -14,6 +14,7 @@ if(isset($_SESSION['user']))
 <html lang="fr">
   <head>
     <?php include_once "page_includes/header.php" ?>
+    <title>VirtualID - Le réseau social libre qui respecte votre vie privée</title>
   </head>
 
   <body>

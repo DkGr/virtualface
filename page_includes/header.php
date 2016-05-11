@@ -22,10 +22,8 @@
 <meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
 
-<title>VirtualID - Le réseau social libre qui respecte votre vie privée</title>
-
 <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
-<link href="css/home.css" type="text/css" rel="stylesheet">
+<link href="css/home.min.css" type="text/css" rel="stylesheet">
 <link href="css/magicsuggest-min.css" type="text/css" rel="stylesheet">
 
 <?php require_once dirname(__FILE__).'/../config/config.php'; ?>
@@ -40,3 +38,4 @@
   ga('send', 'pageview');
 
 </script>
+<?php header('Access-Control-Allow-Origin: *'); ?>

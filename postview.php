@@ -3,28 +3,24 @@ session_start();
 error_reporting(E_ALL ^ E_DEPRECATED);
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
-
-if(!isset($_SESSION['user']))
-{
-    header("Location: index.php");
-    die();
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <?php include_once "page_includes/header.php" ?>
-    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.css" />
+    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.min.css" />
+    <title>VirtualID - Publication</title>
   </head>
 
   <body>
     <input id="myid" value="<?php echo (string)$_SESSION['user']['_id']; ?>" type="hidden" >
-    <?php include_once 'page_includes/facebook-status.php'; ?>
     <?php include_once 'page_includes/navbar.php'; ?>
     <div class="container" style="position:relative;top:50px;">
       <div class="container-fluid">
         <!-- SIDEBAR -->
         <div style="width:30%;float:left;padding:10px;">
+          <?php if(isset($_SESSION['user']))
+          { ?>
           <div class="panel panel-info">
             <div class="panel-heading">
               <h3 class="panel-title">Vos abonnements</h3>
@@ -42,6 +38,7 @@ if(!isset($_SESSION['user']))
               </div>
             </div>
           </div>
+          <?php } ?>
         </div>
       	<!-- Main content -->
       	<div style="width:67%;float:left;">
@@ -99,10 +96,15 @@ if(!isset($_SESSION['user']))
               $('[data-toggle="tooltip"]').tooltip();
           }, 500);
           loadPost();
-          changeNewpostVisibility();
+          <?php
+          if(isset($_SESSION['user'])) {
+          ?>
           updateNotifications();
           setInterval(updateNotifications, 30000);
           showMyFriendsPanel();
+          <?php
+          }
+          ?>
         });
     </script>
   </body>

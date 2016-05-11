@@ -14,7 +14,8 @@ if(!isset($_SESSION['user']))
 <html lang="fr">
   <head>
     <?php include_once "page_includes/header.php" ?>
-    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.css" />
+    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.min.css" />
+    <title>VirtualID - Votre flux d'actualités</title>
   </head>
 
   <body>
@@ -72,8 +73,8 @@ if(!isset($_SESSION['user']))
 
             <!-- Stream posts list -->
             <div id="posts-stream">
-              <div id="loadingAnimation"><canvas id="c"></canvas></div>
             </div>
+            <div id="loadingAnimation"><canvas id="c"></canvas></div>
           </div>
         </div>
     <!-- SCRIPTS -->
@@ -126,6 +127,19 @@ if(!isset($_SESSION['user']))
         updateNotifications();
         setInterval(updateNotifications, 30000);
         showMyFriendsPanel();
+        var win = $(window);
+
+      	// Each time the user scrolls
+      	win.scroll(function() {
+      		// End of the document reached?
+          if(!endPostStream && !loadingPost)
+          {
+        		if ($(document).height() - win.height() == win.scrollTop()) {
+        			$('#loadingAnimation').show();
+              loadOlderPosts();
+        		}
+          }
+      	});
       });
     </script>
   </body>

@@ -14,7 +14,8 @@ if(!isset($_SESSION['user']))
 <html lang="fr">
   <head>
     <?php include_once "page_includes/header.php" ?>
-    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.css" />
+    <title>VirtualID - Vos E-mails</title>
+    <link type="text/css" rel="stylesheet" media="screen" href="css/converse.min.css" />
   </head>
 
   <body>
@@ -61,7 +62,7 @@ if(!isset($_SESSION['user']))
                     <div class="modal-body">
                             <div>
                                 <p id="errormessage" style="color:red;"></p>
-                                <p>Entrez votre mot de passe afin de déchiffrer les informations privées de votre session. 
+                                <p>Entrez votre mot de passe afin de déchiffrer les informations privées de votre session.
                                     Si vous refusez, vous ne pourrez pas utiliser la messagerie instantanée et vous ne pourrez voir que les messages publics.
                                 </p>
                                 <form class="form-signup" role="form" onsubmit="return false;">
@@ -87,14 +88,14 @@ if(!isset($_SESSION['user']))
               showIdentity(this.getValue());
             });
             $('[data-toggle="tooltip"]').tooltip();
-        }, 500);   
+        }, 500);
         loadPosts();
         changeNewpostVisibility();
         updateNotifications();
         setInterval(updateNotifications, 30000);
         showMyFriendsPanel();
       });
-    </script>    
+    </script>
   </body>
   <?php include_once 'page_includes/instant-message-module.php'; ?>
 </html>
