@@ -181,6 +181,6 @@ if(isset($_SESSION['user']))
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/openpgp.min.js"></script>
-    <script type="text/javascript" src="js/virtualid.js"></script>
+    <script type="text/javascript" src="js/virtualid.min.js"></script>
   </body>
 </html>
