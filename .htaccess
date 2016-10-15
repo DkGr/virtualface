@@ -1,6 +1,0 @@
-Options +FollowSymlinks
-RewriteEngine On    # Turn on the rewriting engine
-RewriteBase /virtualid/
-RewriteRule    ^stream/    stream.php    [NC,L]
-RewriteCond %{HTTP_USER_AGENT} libwww-perl.* 
-RewriteRule .* ? [F,L]

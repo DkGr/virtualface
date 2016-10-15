@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/home.min.css')
+    link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/magicsuggest-min.css')
+  body
+    if (error && error.length > 0)
+      br
+      h4.error-msg= error
+      br
+    block content
+
+  script(src='#{config.appRootFolder}/javascripts/jquery-2.1.4.min.js')
+  script(src='#{config.appRootFolder}/javascripts/bootstrap.min.js')
