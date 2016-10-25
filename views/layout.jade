@@ -1,17 +1,34 @@
 doctype html
-html
+html(ng-app="virtualidApp")
   head
     title= title
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/home.min.css')
-    link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/magicsuggest-min.css')
+    if(config)
+      link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/bootstrap.min.css')
+      link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/home.min.css')
+      link(rel="stylesheet" href="#{config.appRootFolder}/stylesheets/magicsuggest-min.css")
+      link(rel="apple-touch-icon", sizes="57x57", href="#{config.appRootFolder}/images/apple-icon-57x57.png")
+      link(rel="apple-touch-icon", sizes="60x60", href="#{config.appRootFolder}/images/apple-icon-60x60.png")
+      link(rel="apple-touch-icon", sizes="72x72", href="#{config.appRootFolder}/images/apple-icon-72x72.png")
+      link(rel="apple-touch-icon", sizes="76x76", href="#{config.appRootFolder}/images/apple-icon-76x76.png")
+      link(rel="apple-touch-icon", sizes="114x114", href="#{config.appRootFolder}/images/apple-icon-114x114.png")
+      link(rel="apple-touch-icon", sizes="120x120", href="#{config.appRootFolder}/images/apple-icon-120x120.png")
+      link(rel="apple-touch-icon", sizes="144x144", href="#{config.appRootFolder}/images/apple-icon-144x144.png")
+      link(rel="apple-touch-icon", sizes="152x152", href="#{config.appRootFolder}/images/apple-icon-152x152.png")
+      link(rel="apple-touch-icon", sizes="180x180", href="#{config.appRootFolder}/images/apple-icon-180x180.png")
+      link(rel="icon" type="image/png", sizes="192x192", href="#{config.appRootFolder}/images/android-icon-192x192.png")
+      link(rel="icon" type="image/png", sizes="32x32", href="#{config.appRootFolder}/images/favicon-32x32.png")
+      link(rel="icon" type="image/png", sizes="96x96", href="#{config.appRootFolder}/images/favicon-96x96.png")
+      link(rel="icon" type="image/png", sizes="16x16", href="#{config.appRootFolder}/images/favicon-16x16.png")
+      meta(name="msapplication-TileImage", content="#{config.appRootFolder}/images/ms-icon-144x144.png")
+      link(rel="manifest", href="#{config.appRootFolder}/images/manifest.json")
+
   body
-    if (error && error.length > 0)
-      br
-      h4.error-msg= error
-      br
     block content
 
-  script(src='#{config.appRootFolder}/javascripts/jquery-2.1.4.min.js')
-  script(src='#{config.appRootFolder}/javascripts/bootstrap.min.js')
+  if(config)
+    script(src='#{config.appRootFolder}/javascripts/jquery-2.1.4.min.js')
+    script(src='#{config.appRootFolder}/javascripts/bootstrap.min.js')
+    script(src='#{config.appRootFolder}/javascripts/magicsuggest-min.js')
+    script(src='#{config.appRootFolder}/javascripts/angular.min.js')
+    script(src='#{config.appRootFolder}/javascripts/virtualid.app.js')

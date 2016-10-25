@@ -1,6 +1,85 @@
 extends layout
 
 block content
-  .container
-    p You are currently logged in as #{user.username}
-    a(href="#{config.appRootFolder}/logout") Logout
+  .navbar-wrapper
+    .container
+      .navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+        .container
+          .navbar-header
+            button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-collapse")
+              span.sr-only Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand(style="color: #fff;font-size: 20px;padding: initial;" href="#{config.appRootFolder}/stream")
+              img(style="height: inherit;" alt="VirtualID" src="#{config.appRootFolder}/images/virtualid-white-alpha.png")
+          .navbar-collapse.collapse
+            ul.nav.navbar-nav.navbar-left
+              li.active
+                a(href="#{config.appRootFolder}/stream")
+                  span.glyphicon.glyphicon-flash(aria-hidden="true")
+                  |  Mon flux
+              li
+                a(href="#{config.appRootFolder}/emails")
+                  span.glyphicon.glyphicon-inbox(aria-hidden="true")
+                  |  Mon courrier
+            ul.nav.navbar-nav.navbar-right
+              li
+                form.navbar-form.navbar-right
+                  .input-group
+                    span.input-group-addon
+                      span.glyphicon.glyphicon-search(aria-hidden="true")
+                    div.form-control(id="searchFriendBar" style="width:280px;" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1")
+              li(id="notifPanel")
+                a.btn(tabindex="0" role="button" data-toggle="popover" style="width: 250px;" data-content="")
+                  span.glyphicon.glyphicon-bell(aria-hidden="true")
+                  |  Notifications
+              li.dropdown.active(style="margin-right:50px;")
+                a.dropdown-toggle(href="#" data-toggle="dropdown")
+                  img.media-object(src="#{config.appRootFolder}/images/no_avatar.png" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;")
+                  |  #{user.username}
+                  b.caret(style="margin-left:3px;")
+                ul.dropdown-menu
+                  li
+                    a(href="#") Voir ma page
+                  li
+                    a(href="#") Paramètres
+                  li.divider
+                  li
+                    a(href="#{config.appRootFolder}/logout") Déconnexion
+  .container(style="position:relative;top:50px;")
+    .container-fluid
+      div(style="width:30%;float:left;padding:10px;")
+        .panel.panel-info
+          .panel-heading
+            h3.panel-title Vos abonnements
+          .panel-body
+              p Abonnez-vous :
+        .panel.panel-info
+          .panel-heading
+            h3.panel-title Vos amis
+          .panel-body(ng-controller="MyFriendsController")
+            .row
+      div(style="width:67%;float:left;" ng-controller="StreamController")
+        div(id="send-newpost-form")
+          .panel.panel-default(style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;border-radius: 5px;")
+            textarea.form-control(id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" rows="3" placeholder="Inserez votre message, lien, photo, video, etc...")
+            div(id="postPreview")
+            .panel-footer(style="border: 1px solid rgb(221, 221, 221);border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
+              .btn-group(role="group" aria-label="...")
+                button.btn.btn-info(id="button-send-newpost" style="font-weight: bold;font-size: 12px;") Publier
+                  span.glyphicon.glyphicon-send(style="margin-left:3px;")
+                .btn-group(role="group")
+                  button.btn.btn-default.dropdown-toggle(id="newpost-visibility-btn" type="button" style="font-size: 12px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                    span.glyphicon.glyphicon-user(aria-hidden="true")
+                    |  Amis
+                    span.caret(style="margin-left:3px;")
+                  ul.dropdown-menu
+                    li
+                      a(id="newpost-visibility-public-btn" data-toggle="tooltip" data-delay='{ "show": 500, "hide": 0 }' data-placement="right" data-original-title="Tous les internautes du monde pourront voir cette publication." href="#")
+                        span.glyphicon.glyphicon-globe(aria-hidden="true")
+                        |  Tout le monde
+                    li
+                      a(id="newpost-visibility-friend-btn" data-toggle="tooltip" data-delay='{ "show": 500, "hide": 0 }' data-placement="right" data-original-title="Seulement vos amis VirtualID pourront voir cette publication." href="#")
+                        span.glyphicon.glyphicon-user(aria-hidden="true")
+                        |  Mes amis

@@ -1,4 +1,5 @@
 var express = require('express');
+var flash = require('connect-flash');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -11,11 +12,13 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var apiUsers = require('./routes/api/users');
+var apiAllUsers = require('./routes/api/allusers');
 
 var config = require('./config/config');
 
 var app = express();
-
+//test
 // view engine setup
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'jade');
@@ -33,26 +36,40 @@ app.use(require('express-session')({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('//', routes);
+app.use('//api/users', apiUsers);
+app.use('//api/allusers', apiAllUsers);
 
 
 // passport config
 var Account = require('./models/account');
 passport.use(new LocalStrategy(Account.authenticate()));
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
-passport.use(new FacebookStrategy({
-    clientID: config.facebookAppID,
-    clientSecret: config.facebookAPIKey,
-    callbackURL: config.appBaseUrl+config.appRootFolder+"/auth/facebook/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    Account.findOrCreate({ facebookId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
-  }
-));
+//passport.serializeUser(Account.serializeUser());
+//passport.deserializeUser(Account.deserializeUser());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+if(config.useFacebook){
+  passport.use(new FacebookStrategy({
+      clientID: config.facebookAppID,
+      clientSecret: config.facebookAPIKey,
+      callbackURL: config.appBaseUrl+config.appRootFolder+"/auth/facebook/callback"
+    },
+    function(accessToken, refreshToken, profile, cb) {
+      Account.findOrCreate({ facebookId: profile.id }, function (err, user) {
+        return cb(err, user);
+      });
+    }
+  ));
+}
 
 // mongoose
 mongoose.connect(config.mongodbURL);

@@ -1,0 +1,41 @@
+.navbar-wrapper
+  .container
+    .navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+      .container
+        .navbar-header
+          button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-collapse")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(style="color: #fff;font-size: 20px;padding: initial;" href="stream.php")
+            img(style="height: inherit;" alt="VirtualID" src="img/virtualid-white.png")
+        .navbar-collapse.collapse
+          ul.nav.navbar-nav.navbar-left
+            li.active
+              a(href="/stream")
+                span.glyphicon.glyphicon-flash(aria-hidden="true") Mon flux
+            li
+              a(href="/emails")
+                span.glyphicon.glyphicon-inbox(aria-hidden="true") Mon courrier
+          ul.nav.navbar-nav.navbar-right
+            li
+              form.navbar-form.navbar-right
+                .input-group
+                  span.input-group-addon
+                    span.glyphicon.glyphicon-search(aria-hidden="true")
+                  div.form-control(style="width:280px;" type="text" placeholder="Rechercher des amis..." aria-describedby="basic-addon1")
+            li(id="notifPanel")
+            li.dropdown.active(style="margin-right:50px;")
+              a.dropdown-toggle(href="#" data-toggle="dropdown")
+                img.media-object(src="#{config.appRootFolder}/images/no_avatar.png" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;")
+                | #{user.username}
+                b.caret
+              ul.dropdown-menu
+                li
+                  a(href="#") Voir ma page
+                li
+                  a(href="#") Paramètres
+                li.divider
+                li
+                  a(href="#{config.appRootFolder}/logout") Déconnexion

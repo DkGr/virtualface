@@ -1,16 +1,38 @@
 extends layout
 
 block content
-  .container
-    h1 Register Page
-    p.lead Say something worthwhile here.
+  .navbar-wrapper
+    .container
+      .navbar.navbar-inverse.navbar-static-top( style="border-radius: 4px;" role="navigation" )
+        .container
+          .navbar-header
+            a.navbar-brand( style="color: #fff;font-size: 20px;padding: initial;" href="#" )
+              img( style="height: inherit;" alt="VirtualID" src="#{config.appRootFolder}/images/virtualid-white.png" )
+          .navbar-collapse.collapse
+            ul.nav.navbar-nav.navbar-right
+  .container(style="max-width: 800px;")
+    h1 Inscription
+    p.lead Entrez vos informations pour créer votre compte
+    ul
+      li Votre nom d'utilisateur sera visible (non-modifiable)
+      li Les autres informations seront invisibles et cryptées (modifiable)
+    if (error && error.length > 0)
+      br
+      .error-msg(style="color:red;")= error
+      br
     br
-    form(role='form', action="#{config.appRootFolder}/register",method="post", style='max-width: 300px;')
+    form(role='form', action="#{config.appRootFolder}/register", method="post", style='margin: 0 auto;max-width: 300px;')
       .form-group
-          input.form-control(type='text', name="username", placeholder='Enter Username')
+        input.form-control(name="username" type="username" placeholder="Nom d'utilisateur (obligatoire)" title="Peut contenir des caractères alpha-numériques en minuscule (0 à 9 et a à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-z0-9]+[a-z0-9._-]+[a-z0-9]+" required autofocus)
       .form-group
-        input.form-control(type='password', name="password", placeholder='Password')
-      button.btn.btn-default(type='submit') Submit
+        input.form-control(name="displayname" type="text" placeholder="Nom d'affichage")
+      .form-group
+        input.form-control(name="email" type="email" placeholder="E-mail (obligatoire)" required)
+      .form-group
+        input.form-control(name="password" type="password" placeholder="Mot de passe (obligatoire)" required)
+      .form-group
+        input.form-control(name="passwordcheck" type="password" placeholder="Vérification mot de passe (obligatoire)" required)
+      button.btn.btn-primary(type='submit') Valider
       &nbsp;
       a(href='#{config.appRootFolder}/')
-        button.btn.btn-primary(type="button") Cancel
+        button.btn.btn-default(type="button") Annuler
