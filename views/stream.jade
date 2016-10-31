@@ -36,7 +36,7 @@ block content
                   |  Notifications
               li.dropdown.active(style="margin-right:50px;")
                 a.dropdown-toggle(href="#" data-toggle="dropdown")
-                  img.media-object(src="#{config.appRootFolder}/images/no_avatar.png" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;")
+                  img.media-object(src="#{config.appRootFolder}/avatars/#{user.avatar}" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;")
                   |  #{user.username}
                   b.caret(style="margin-left:3px;")
                 ul.dropdown-menu
@@ -54,7 +54,7 @@ block content
           .panel-heading
             h3.panel-title Vos abonnements
           .panel-body
-              p Abonnez-vous :
+              div.form-control(id="subscribeHashTag" type="text" placeholder="Abonnez-vous aux #hashtag" aria-describedby="basic-addon1")
         .panel.panel-info
           .panel-heading
             h3.panel-title Vos amis
@@ -62,12 +62,13 @@ block content
             .row
       div(style="width:67%;float:left;" ng-controller="StreamController")
         div(id="send-newpost-form")
+          input(id="username" type="hidden" value="#{user.username}")
           .panel.panel-default(style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;border-radius: 5px;")
-            textarea.form-control(id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" rows="3" placeholder="Inserez votre message, lien, photo, video, etc...")
+            textarea.form-control(id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..." ng-model="newPostContent")
             div(id="postPreview")
             .panel-footer(style="border: 1px solid rgb(221, 221, 221);border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
               .btn-group(role="group" aria-label="...")
-                button.btn.btn-info(id="button-send-newpost" style="font-weight: bold;font-size: 12px;") Publier
+                button.btn.btn-info(id="button-send-newpost" style="font-weight: bold;font-size: 12px;" ng-click="sendNewPost()") Publier
                   span.glyphicon.glyphicon-send(style="margin-left:3px;")
                 .btn-group(role="group")
                   button.btn.btn-default.dropdown-toggle(id="newpost-visibility-btn" type="button" style="font-size: 12px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
@@ -83,3 +84,17 @@ block content
                       a(id="newpost-visibility-friend-btn" data-toggle="tooltip" data-delay='{ "show": 500, "hide": 0 }' data-placement="right" data-original-title="Seulement vos amis VirtualID pourront voir cette publication." href="#")
                         span.glyphicon.glyphicon-user(aria-hidden="true")
                         |  Mes amis
+        div(ng-include src="'/postList'")
+  script(type="text/ng-template" id="/postList")
+    .panel.panel-default(ng-repeat="post in posts" id="{{post._id}}" style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);")
+      .panel-body(style="border-radius: 5px;")
+        .media
+          .media-left(style="text-align:center;")
+            a(href="identity/{{post.author}}")
+              img.media-object.img-rounded(style="width: 64px; height: 64px;" src="avatars/{{post.authorInfos[0].avatar}}" alt="...")
+            a(href="identity/{{post.author}}")
+              | {{post.author}}
+          .media-body
+            | {{post.content}}
+    p(style="text-align:center;" ng-if="results.length === 0")
+      | Il n'y a rien à afficher ici...

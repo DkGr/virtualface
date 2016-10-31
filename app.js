@@ -14,6 +14,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var apiUsers = require('./routes/api/users');
 var apiAllUsers = require('./routes/api/allusers');
+var apiPosts = require('./routes/api/posts');
 
 var config = require('./config/config');
 
@@ -41,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('//', routes);
 app.use('//api/users', apiUsers);
 app.use('//api/allusers', apiAllUsers);
+app.use('//api/posts', apiPosts);
 
 
 // passport config

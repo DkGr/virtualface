@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="virtualidApp")
+html(style="height:100%" ng-app="virtualidApp")
   head
     title= title
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
@@ -23,12 +23,14 @@ html(ng-app="virtualidApp")
       meta(name="msapplication-TileImage", content="#{config.appRootFolder}/images/ms-icon-144x144.png")
       link(rel="manifest", href="#{config.appRootFolder}/images/manifest.json")
 
-  body
+  body(style="height:100%")
     block content
 
   if(config)
     script(src='#{config.appRootFolder}/javascripts/jquery-2.1.4.min.js')
     script(src='#{config.appRootFolder}/javascripts/bootstrap.min.js')
     script(src='#{config.appRootFolder}/javascripts/magicsuggest-min.js')
+    script(src='#{config.appRootFolder}/javascripts/openpgp.min.js')
     script(src='#{config.appRootFolder}/javascripts/angular.min.js')
+    script(src='#{config.appRootFolder}/javascripts/angular-resource.min.js')
     script(src='#{config.appRootFolder}/javascripts/virtualid.app.js')

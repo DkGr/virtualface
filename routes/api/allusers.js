@@ -14,4 +14,11 @@ router.post('/', function(req, res) {
   });
 });
 
+router.post('/check', function(req, res) {
+  Account.find({ username: req.body.name }, function (err, users) {
+    if (users.length==0) res.status(200).send();
+    else res.status(404).send();
+  });
+});
+
 module.exports = router;

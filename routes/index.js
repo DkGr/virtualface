@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var passport = require('passport');
 var Account = require('../models/account');
 var router = express();
@@ -7,9 +8,7 @@ var router = express();
 var config = require('../config/config');
 
 router.get('/', function (req, res) {
-    console.log('root router');
     if(req.user){
-      console.log(req.user);
       req.session.user = req.user;
       res.redirect(config.appRootFolder+'/stream');
     }else{
@@ -22,26 +21,21 @@ router.get('/register', function(req, res) {
 });
 
 router.post('/register', function(req, res, next) {
-    if(req.body.password === req.body.passwordcheck)
-    {
-      Account.register(new Account({ username: req.body.username, displayname: req.body.displayname, email: req.body.email }), req.body.password, function(err, account) {
-          if (err) {
-            return res.render('register', { config: config, error : err.message });
-          }
-
-          passport.authenticate('local')(req, res, function () {
-              req.session.save(function (err) {
-                  if (err) {
-                      return next(err);
-                  }
-                  res.redirect(config.appRootFolder+'/stream');
-              });
+  var avatarFilename = req.body.username+'-'+new Date().toISOString().replace(/-/g,"").replace(/T/g,"").replace(/:/g,"").slice(0,14);
+  Account.register(new Account({ username: req.body.username, displayname: req.body.displayname, email: req.body.email, avatar: avatarFilename, publicKey: req.body.public_key, privateKey: req.body.private_key }), req.body.password, function(err, account) {
+      if (err) {
+        return res.render('register', { config: config, error : err.message });
+      }
+      fs.createReadStream('./public/images/no_avatar.png').pipe(fs.createWriteStream('./public/avatars/'+avatarFilename));
+      passport.authenticate('local')(req, res, function () {
+          req.session.save(function (err) {
+              if (err) {
+                  return next(err);
+              }
+              res.status(200).send();
           });
       });
-    }
-    else {
-      return res.render('register', { config: config, error : "Les mots de passe ne correspondent pas." });
-    }
+  });
 });
 
 router.get('/stream', function(req, res) {
@@ -54,7 +48,6 @@ router.get('/stream', function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-    console.log('root router login');
     res.render('login', { config: config, user : req.user });
 });
 

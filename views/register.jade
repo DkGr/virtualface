@@ -21,18 +21,30 @@ block content
       .error-msg(style="color:red;")= error
       br
     br
-    form(role='form', action="#{config.appRootFolder}/register", method="post", style='margin: 0 auto;max-width: 300px;')
+    p(id="errormessage" style="color:red;")
+    form(role='form', style='margin: 0 auto;max-width: 300px;')
       .form-group
-        input.form-control(name="username" type="username" placeholder="Nom d'utilisateur (obligatoire)" title="Peut contenir des caractères alpha-numériques en minuscule (0 à 9 et a à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-z0-9]+[a-z0-9._-]+[a-z0-9]+" required autofocus)
+        input.form-control(id="username-sub" name="username" type="username" placeholder="Nom d'utilisateur (obligatoire)" title="Peut contenir des caractères alpha-numériques en minuscule (0 à 9 et a à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-z0-9]+[a-z0-9._-]+[a-z0-9]+" required autofocus)
       .form-group
-        input.form-control(name="displayname" type="text" placeholder="Nom d'affichage")
+        input.form-control(id="displayname-sub" name="displayname" type="text" placeholder="Nom d'affichage")
       .form-group
-        input.form-control(name="email" type="email" placeholder="E-mail (obligatoire)" required)
+        input.form-control(id="email-sub" name="email" type="email" placeholder="E-mail (obligatoire)" required)
       .form-group
-        input.form-control(name="password" type="password" placeholder="Mot de passe (obligatoire)" required)
+        input.form-control(id="password-sub" name="password" type="password" placeholder="Mot de passe (obligatoire)" required)
       .form-group
-        input.form-control(name="passwordcheck" type="password" placeholder="Vérification mot de passe (obligatoire)" required)
-      button.btn.btn-primary(type='submit') Valider
+        input.form-control(id="passwordcheck-sub" name="passwordcheck" type="password" placeholder="Vérification mot de passe (obligatoire)" required)
+      button.btn.btn-primary(id="subscribeButton" type='submit') Valider
       &nbsp;
       a(href='#{config.appRootFolder}/')
         button.btn.btn-default(type="button") Annuler
+  .modal.fade(id="subscribingModal" tabindex="-1" role="dialog" aria-labelledby="subscribingModalLabel" aria-hidden="true")
+    .modal-dialog.modal-sm
+      .modal-content
+        .modal-header
+          h5.modal-title(id="subscribingModalLabel") Chargement
+        .modal-body
+          div
+            p
+              | Génération des clés de chiffrement...
+            .progress
+              .progress-bar.progress-bar-info.progress-bar-striped.active(role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%")
