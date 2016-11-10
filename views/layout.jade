@@ -1,12 +1,18 @@
 doctype html
 html(style="height:100%" ng-app="virtualidApp")
   head
-    title= title
+    if(title)
+      title= title
+    else
+      title
+        | VirtualID - Le réseau social libre qui respecte votre vie privée
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     if(config)
       link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/bootstrap.min.css')
       link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/home.min.css')
       link(rel="stylesheet" href="#{config.appRootFolder}/stylesheets/magicsuggest-min.css")
+      link(rel="stylesheet" href="#{config.appRootFolder}/stylesheets/ng-embed.css")
+      link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
       link(rel="apple-touch-icon", sizes="57x57", href="#{config.appRootFolder}/images/apple-icon-57x57.png")
       link(rel="apple-touch-icon", sizes="60x60", href="#{config.appRootFolder}/images/apple-icon-60x60.png")
       link(rel="apple-touch-icon", sizes="72x72", href="#{config.appRootFolder}/images/apple-icon-72x72.png")
@@ -31,6 +37,10 @@ html(style="height:100%" ng-app="virtualidApp")
     script(src='#{config.appRootFolder}/javascripts/bootstrap.min.js')
     script(src='#{config.appRootFolder}/javascripts/magicsuggest-min.js')
     script(src='#{config.appRootFolder}/javascripts/openpgp.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js")
+    script(src="https://platform.twitter.com/widgets.js")
     script(src='#{config.appRootFolder}/javascripts/angular.min.js')
     script(src='#{config.appRootFolder}/javascripts/angular-resource.min.js')
+    script(src='#{config.appRootFolder}/javascripts/angular-sanitize.min.js')
+    script(src='#{config.appRootFolder}/javascripts/ng-embed.js')
     script(src='#{config.appRootFolder}/javascripts/virtualid.app.js')

@@ -17,7 +17,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/register', function(req, res) {
-    res.render('register', { config: config });
+    res.render('register', { config: config, title: "VirtualID - Créer un compte" });
 });
 
 router.post('/register', function(req, res, next) {
@@ -40,7 +40,7 @@ router.post('/register', function(req, res, next) {
 
 router.get('/stream', function(req, res) {
   if(req.user){
-    res.render('stream', { config: config, user : req.user });
+    res.render('stream', { config: config, user : req.user, title: "VirtualID - Mon flux" });
   }
   else{
     res.redirect(config.appRootFolder);

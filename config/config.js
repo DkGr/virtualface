@@ -4,7 +4,7 @@ var config = {
   useFacebook: false,
   facebookAppID: '',
   facebookAPIKey: '',
-  mongodbURL: 'mongodb://localhost/VirtualID',
+  mongodbURL: '',
   openfireBoschURL: '',
   openfireAPIKey: ''
 }

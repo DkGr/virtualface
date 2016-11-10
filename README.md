@@ -6,7 +6,7 @@ VirtualID is a project prototype to create an open-source and encrypted social n
 - HTTP server with SSL/TLS
 - Node.js with npm
 - MongoDB server
-- Openfire XMPP server with http-bind and CORS enabled
+- Openfire XMPP server with http-bind and CORS enabled for instant messaging
 
 ## Working features
 - Basic account Creation
@@ -36,13 +36,6 @@ VirtualID is a project prototype to create an open-source and encrypted social n
 
 ## Installation
 
-install dependencies :
-cd virtualid/
-npm install
-
-configure virtualid server by editing config/config.js :
-nano config/config.js
-
 ### Required packages
 ```
 git apache2 nodejs npm openjdk-7-jre
@@ -53,6 +46,13 @@ Clone this repository where you want executing this command :
 ```
 $ git clone https://github.com/DkGr/virtualid.git/
 ```
+
+### Install dependencies
+cd /your/virtualid/source/folder/
+npm install
+
+configure virtualid server by editing config/config.js :
+nano config/config.js
 
 ### Apache SSL configuration
 Enable SSL on apache2 with a certificate for your domain (Use magic [letsencrypt](https://letsencrypt.org/) to automate this !)
@@ -81,7 +81,6 @@ Run this command :
 ```
 # npm install -g mongodb
 ```
-Now add extension=mongo.so in php.ini
 
 ### Facebook integration
 You need to create a Facebook application to get a Facebook API key linked to your domain name

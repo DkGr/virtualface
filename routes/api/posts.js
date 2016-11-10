@@ -3,7 +3,7 @@ var path = require('path');
 var passport = require('passport');
 var Account = require('../../models/account');
 var Post = require('../../models/post');
-var PrivacyGuard = require('../../privacyGuard')
+var PrivacyGuard = require('../../privacyGuard');
 var router = express();
 
 var config = require('../../config/config');

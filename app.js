@@ -15,6 +15,7 @@ var users = require('./routes/users');
 var apiUsers = require('./routes/api/users');
 var apiAllUsers = require('./routes/api/allusers');
 var apiPosts = require('./routes/api/posts');
+var apiExtractURL = require('./routes/api/extracturl');
 
 var config = require('./config/config');
 
@@ -43,6 +44,7 @@ app.use('//', routes);
 app.use('//api/users', apiUsers);
 app.use('//api/allusers', apiAllUsers);
 app.use('//api/posts', apiPosts);
+app.use('//api/extracturl', apiExtractURL);
 
 
 // passport config

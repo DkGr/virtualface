@@ -47,9 +47,9 @@ block content
                   li.divider
                   li
                     a(href="#{config.appRootFolder}/logout") Déconnexion
-  .container(style="position:relative;top:50px;")
+  .container(style="position:relative;top:50px;margin-left:12%;")
     .container-fluid
-      div(style="width:30%;float:left;padding:10px;")
+      div(style="position:fixed;top:10%;width:320px;padding:10px;")
         .panel.panel-info
           .panel-heading
             h3.panel-title Vos abonnements
@@ -60,7 +60,7 @@ block content
             h3.panel-title Vos amis
           .panel-body(ng-controller="MyFriendsController")
             .row
-      div(style="width:67%;float:left;" ng-controller="StreamController")
+      div(style="margin-left:30%;width:67%;float:left;" ng-controller="StreamController")
         div(id="send-newpost-form")
           input(id="username" type="hidden" value="#{user.username}")
           .panel.panel-default(style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;border-radius: 5px;")
@@ -84,6 +84,8 @@ block content
                       a(id="newpost-visibility-friend-btn" data-toggle="tooltip" data-delay='{ "show": 500, "hide": 0 }' data-placement="right" data-original-title="Seulement vos amis VirtualID pourront voir cette publication." href="#")
                         span.glyphicon.glyphicon-user(aria-hidden="true")
                         |  Mes amis
+        div(id="loadingIcon" style="margin: 5px;text-align: center;")
+          img(src="images/loader.svg" alt="loading")
         div(ng-include src="'/postList'")
   script(type="text/ng-template" id="/postList")
     .panel.panel-default(ng-repeat="post in posts" id="{{post._id}}" style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);")
@@ -94,7 +96,16 @@ block content
               img.media-object.img-rounded(style="width: 64px; height: 64px;" src="avatars/{{post.authorInfos[0].avatar}}" alt="...")
             a(href="identity/{{post.author}}")
               | {{post.author}}
-          .media-body
-            | {{post.content}}
+          .media-body(style="max-width: 635px;")
+            ng-embed(id="{{post._id+'-content'}}" embed-data="post.content" embed-template-url="templates/embedTemplate.html" embed-options="embedOptions")
+          div(style="float: left;margin: 10px 0 0 75px;") 0 
+            span.glyphicon.glyphicon-thumbs-up(aria-hidden="true")
+            |  - 
+            span.p-date(style="font-size: 12px;color:grey;") Publié
+              | {{formatDate(post.date)}}
+            |  - 
+            span(style="font-size: 12px;color:grey;") visibilité : 
+              span.glyphicon.glyphicon-globe(aria-hidden="true")
+              |  Tout le monde
     p(style="text-align:center;" ng-if="results.length === 0")
       | Il n'y a rien à afficher ici...
