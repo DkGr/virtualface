@@ -14,7 +14,7 @@ var fs = require('fs');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = config.httpListeningPort;
 app.set('port', port);
 
 /**
@@ -93,25 +93,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log('Listening on ' + bind)
-  debug('Listening on ' + bind);
-}
-
-
-// Chat IM
-var io = require('socket.io')(server);
-
-io.sockets.on('connection', function (socket) {
-    //when receiving the data from the server, push the same message to client.
-    socket.on("clientMsg", function (data) {
-        //send the data to the current client requested/sent.
-        socket.emit("serverMsg", data);
-        //send the data to all the clients who are accessing the same site(localhost)
-        socket.broadcast.emit("serverMsg", data);
-    });
-
-    socket.on("sender", function (data) {
-        socket.emit("sender", data);
-        socket.broadcast.emit("sender", data);
-    });
-});   
+  console.log('HTTP server listening on ' + bind)
+  debug('HTTP server listening on ' + bind);
+} 

@@ -1,12 +1,15 @@
 var config = {
   appBaseUrl: '',
+  httpListeningPort: 3000,
   appRootFolder: '',
   useFacebook: false,
   facebookAppID: '',
   facebookAPIKey: '',
   mongodbURL: '',
-  openfireBoschURL: '',
-  openfireAPIKey: ''
+  xmppDomain: '',
+  xmppPort: 5280,
+  SSLPrivateKey: '',
+  SSLCertificateFullChain: ''
 }
 
 module.exports = config;

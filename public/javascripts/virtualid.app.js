@@ -5,61 +5,31 @@
 */
 'use strict';
 
-var xmpp_url = 'https://octeau.fr:5280/http-bind';
+(function (global) {
+  'use strict'
 
-function onConnect(status)
-{
-    if (status == Strophe.Status.CONNECTING) {
-	     console.log('Strophe is connecting.');
-    } else if (status == Strophe.Status.CONNFAIL) {
-	     console.log('Strophe failed to connect.');
-    } else if (status == Strophe.Status.DISCONNECTING) {
-	     console.log('Strophe is disconnecting.');
-    } else if (status == Strophe.Status.DISCONNECTED) {
-	    console.log('Strophe is disconnected.');
-    } else if (status == Strophe.Status.CONNECTED) {
-    	console.log('Strophe is connected.');
-    	connection.disconnect();
-    }
-}
+  var XMPP = global.XMPP
+
+  /* Note these are connection details for a local dev server :) */
+  var client = new XMPP.Client({
+    // websocket: { url: 'ws://localhost:5280/xmpp-websocket/' },
+    bosh: {url: 'https://www.octeau.fr:5280/http-bind/'},
+    jid: 'admin@octeau.fr',
+    password: 'admin'
+  })
+
+  client.on('online', function () {
+    console.log('online')
+  })
+
+  client.on('error', function (err) {
+    console.error(err)
+  })
+}(this))
+
 
 $(document).ready(function() {
-  /*var name = "padman";
-  var socket = io("https://www.octeau.fr:3000");
-  //When send button is clicked on, send the message to server
-  $("#im-send").click(function () {
-      //send to the server with person name and message
-      socket.emit("clientMsg", {
-          "name": name,
-          "msg": $("#im-msg").val()
-      });
-  });
-
-  //After sending message to the server, we'll have to wire up the event for it.
-  //We can do the following. Upon receiving the message print it to the message box
-  //that we've created in our html
-  socket.on("serverMsg", function (data) {
-      //Append the message from the server to the message box
-      $("#im-msgBox").append("<strong>" + data.name + 
-      "</strong>: " + data.msg + "<br/>");
-  });
-
-  $("#im-msg").on("keyup", function (event) {
-      socket.emit("sender", {
-          name: name
-      });
-  });
-
-  socket.on("sender", function (data) {
-      $("#im-status").html(data.name + " is typing");
-      setTimeout(function () {
-          $("#im-status").html('');
-      }, 3000);
-  });*/
-  var xmppClient = null;
-  xmppClient = new Strophe.Connection(xmpp_url);
-  xmppClient.connect("admin@octeau.fr","admin",onConnect);
-  
+    
   setTimeout(function(){
       var searchFriendBar = $('#searchFriendBar').magicSuggest({
           allowFreeEntries: false,

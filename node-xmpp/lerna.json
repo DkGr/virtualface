@@ -1,0 +1,13 @@
+{
+  "lerna": "2.0.0-beta.30",
+  "version": "independent",
+  "publishConfig": {
+    "ignore": [
+      "ava/",
+      "examples/",
+      "test/",
+      "example.js",
+      "test.js"
+    ]
+  }
+}
