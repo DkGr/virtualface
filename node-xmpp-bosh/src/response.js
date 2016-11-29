@@ -100,7 +100,17 @@ Response.prototype = {
             // Increasing the timeout of the underlying socket to allow 
             // wait > 120 sec
             this._res.socket.setTimeout(wait * 1000 + 10);
-            this._res.socket.setKeepAlive(true, this._options.HTTP_SOCKET_KEEPALIVE);
+            // snowmantw @ 2012-10-04 09:23:14+08:00
+            //
+            // Dirty hack to ignore errors caused by HTTPSServer modification.
+            // As a side-effect of my HTTPS/WSS hack, the `_res.socket` become without `setKeepAlive` method.
+            // I just ignore it because we hardly to know which type of server is running in this scope.
+            //
+            // This will be fixed in ... someday, maybe.
+            //
+            try{
+                this._res.socket.setKeepAlive(true, this._options.HTTP_SOCKET_KEEPALIVE);
+            } catch(e){ console.error('[ERROR] Hack HTTPS cause `_res.socket` has no `setKeepAlive` method.') }
         }
     }
 };

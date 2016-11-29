@@ -192,15 +192,43 @@ function main() {
   if (typeof(server_options.trim_default_length) !== 'undefined') {
       dutil.TRIM_DEFAULT_LENGTH = server_options.trim_default_length;
   }
+	
+	// snowmantw @ 2012-10-04 09:30:48+08:00
+	//
+	// Read SSL options for HTTPS/WSS server.
+	// If these options got set, the Bosh server will become HTTPS, unless
+	// you explictly set the `https` option as `false`.
+	//
+	if ( undefined != server_options.cert_path && undefined != server_options.key_path )
+	{
+			server_options.cert = fs.readFileSync( server_options.cert_path )
+			server_options.key  = fs.readFileSync( server_options.key_path  )
+	}
 
-	print_boxed_message(nxb.dutil.sprintf("Starting BOSH server 'v%s' on 'http://%s:%s%s' at '%s'",
+  // snowmantw @ 2012-10-04 10:23:22+08:00
+  // 
+  // Added tips for WS/WSS and HTTP/HTTPS.
+  //
+  if(  ( undefined == server_options.cert && undefined == server_options.key) 
+    || ( undefined != server_options.https && false == server_options.https ) )
+  {
+      var http_protocol = "http"
+      var ws_protocol   = "ws"
+  }
+  else
+  {
+      var http_protocol = "https"
+      var ws_protocol   = "wss"
+  }
+
+	print_boxed_message(nxb.dutil.sprintf("Starting BOSH server 'v%s' on '"+http_protocol+"://%s:%s%s' at '%s'",
 										  get_version(), server_options.host, server_options.port,
 										  server_options.path, new Date())
 					   );
 
 	var bosh_server = nxb.start_bosh(server_options);
 
-	print_boxed_message(nxb.dutil.sprintf("Starting WEBSOCKET server 'v%s' on ws://%s:%s' at '%s'",
+	print_boxed_message(nxb.dutil.sprintf("Starting WEBSOCKET server 'v%s' on "+ws_protocol+"://%s:%s' at '%s'",
 										  get_version(),
                                           server_options.host,
                                           server_options.port,

@@ -37,6 +37,7 @@ var opt         = require('./options.js');
 var path        = require('path');
 var bee         = require('./bosh-event-emitter.js');
 var http        = require('./http-server.js');
+var https        = require('./https-server.js');
 var ejs         = require('ejs');
 
 var toNumber    = us.toNumber;
@@ -72,6 +73,9 @@ var log         = require('./log.js').getLogger(filename);
 // * max_inactivity
 // * http_socket_keepalive
 // * http_headers
+// * cert
+// * key
+// * https
 //
 
 
@@ -287,10 +291,19 @@ exports.createServer = function (options) {
         }
     }
 
+    ssl_options = { 'cert': options.cert, 'key': options.key, 'https': options.https } 
     bosh_options = new opt.BOSH_Options(options);
-    server = new http.HTTPServer(options.port, options.host, get_statistics,
-                                 get_system_info, bosh_request_handler,
-                                 http_error_handler, bosh_options);
+    if(  ( undefined == options.cert && undefined == options.key) 
+      || ( undefined != options.https && false == options.https ) )
+    {
+        server = new http.HTTPServer(options.port, options.host, get_statistics,
+            bosh_request_handler, http_error_handler, bosh_options);
+    }
+    else
+    {
+        server = new https.HTTPSServer(options.port, options.host, get_statistics,
+            bosh_request_handler, http_error_handler, bosh_options, ssl_options);
+    }
     // The BOSH event emitter. People outside will subscribe to
     // events from this guy. We return an instance of BoshEventPipe
     // to the outside world when anyone calls createServer()

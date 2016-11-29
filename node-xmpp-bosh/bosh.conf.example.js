@@ -86,23 +86,32 @@ exports.config = {
 	//
 	route_filter: /.*/,
 
-    // Set to 'true' if you want:
-    //
-    // 1. The session creation response to contain the <stream:features/> tag.
-    // 2. NO multiple streams support (only supports a single stream
-    // per session in this mode).
-    //
-    // Useful to work around a pidgin (libpurple) bug.
-    //
-    pidgin_compatible: true,
+  // Set to 'true' if you want:
+  //
+  // 1. The session creation response to contain the <stream:features/> tag.
+  // 2. NO multiple streams support (only supports a single stream
+  // per session in this mode).
+  //
+  // Useful to work around a pidgin (libpurple) bug.
+  //
+  pidgin_compatible: true,
 
-    // The maximum length of an XML stanza to be printed. Set to -1
-    // for unlimited line length.
-    trim_default_length: 256,
+	// snowmantw @ 2012-10-04 09:36:15+08:00
+	//
+	// SSL options.
+	// If these options got set, the Bosh server will become HTTPS, unless
+	// you explictly set the `https` option as `false`.
+	key_path : "",
+	cert_path: "",
+	https: false, 
 
-    // The password used to protect the /PATH/sysinfo/ URL. The
-    // username to use when prompted for authentication is 'admin'.
-    system_info_password: '',
+  // The maximum length of an XML stanza to be printed. Set to -1
+  // for unlimited line length.
+  trim_default_length: 256,
+
+  // The password used to protect the /PATH/sysinfo/ URL. The
+  // username to use when prompted for authentication is 'admin'.
+  system_info_password: '',
 
 	// The period, in seconds, between sending WebSocket ping frames to each
 	// client. If a client fails to respond with a pong frame twice in a row,
