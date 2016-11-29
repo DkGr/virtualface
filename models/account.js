@@ -11,7 +11,8 @@ var Account = new Schema({
     facebookId: String,
     friends: Array,
     privateKey: String,
-    publicKey: String
+    publicKey: String,
+    xmppToken: String
 });
 
 Account.plugin(passportLocalMongoose);

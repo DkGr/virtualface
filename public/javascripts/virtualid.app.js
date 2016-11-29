@@ -1,13 +1,65 @@
 /*
-   VirtualID Angular Application
+   Virtual iD Angular Application
    author: n.octeau <padman@protonmail.ch>
    version: 0.0.25
 */
 'use strict';
-openpgp.initWorker({ path:'/virtualid/javascripts/openpgp.worker.min.js' });
-openpgp.config.aead_protect = true;
+
+var xmpp_url = 'https://octeau.fr:5280/http-bind';
+
+function onConnect(status)
+{
+    if (status == Strophe.Status.CONNECTING) {
+	     console.log('Strophe is connecting.');
+    } else if (status == Strophe.Status.CONNFAIL) {
+	     console.log('Strophe failed to connect.');
+    } else if (status == Strophe.Status.DISCONNECTING) {
+	     console.log('Strophe is disconnecting.');
+    } else if (status == Strophe.Status.DISCONNECTED) {
+	    console.log('Strophe is disconnected.');
+    } else if (status == Strophe.Status.CONNECTED) {
+    	console.log('Strophe is connected.');
+    	connection.disconnect();
+    }
+}
 
 $(document).ready(function() {
+  /*var name = "padman";
+  var socket = io("https://www.octeau.fr:3000");
+  //When send button is clicked on, send the message to server
+  $("#im-send").click(function () {
+      //send to the server with person name and message
+      socket.emit("clientMsg", {
+          "name": name,
+          "msg": $("#im-msg").val()
+      });
+  });
+
+  //After sending message to the server, we'll have to wire up the event for it.
+  //We can do the following. Upon receiving the message print it to the message box
+  //that we've created in our html
+  socket.on("serverMsg", function (data) {
+      //Append the message from the server to the message box
+      $("#im-msgBox").append("<strong>" + data.name + 
+      "</strong>: " + data.msg + "<br/>");
+  });
+
+  $("#im-msg").on("keyup", function (event) {
+      socket.emit("sender", {
+          name: name
+      });
+  });
+
+  socket.on("sender", function (data) {
+      $("#im-status").html(data.name + " is typing");
+      setTimeout(function () {
+          $("#im-status").html('');
+      }, 3000);
+  });*/
+  var xmppClient = null;
+  xmppClient = new Strophe.Connection(xmpp_url);
+  xmppClient.connect("admin@octeau.fr","admin",onConnect);
+  
   setTimeout(function(){
       var searchFriendBar = $('#searchFriendBar').magicSuggest({
           allowFreeEntries: false,
@@ -116,19 +168,40 @@ function subscribe()
   }
 }
 
-var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', 'ngEmbed'])
+var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', 'ngEmbed', 'infinite-scroll'])
 
-.factory('Posts', ['$resource', function($resource){
-  return $resource('./api/posts/:id', null, {
+.factory('Posts', ['$resource', '$http', function($resource, $http){
+  var Posts = $resource('./api/posts/:id', null, {
     'update': { method:'PUT' }
   });
+  
+  delete Posts.prototype.items;
+  Posts.prototype.items = [];
+  Posts.prototype.busy = false;
+  Posts.prototype.page = 1;
+  
+  Posts.prototype.nextPage = function() {
+    if (this.busy) return;
+    this.busy = true;
+
+    var url = "api/posts/" + this.page;
+    $http.get(url).then(function successCallback(response) {
+      var items = response.data;
+      for (var i = 0; i < items.length; i++) {
+        this.items.push(items[i]);
+      }
+      this.page++;
+      this.busy = false;
+    }.bind(this), function errorCallback(response) {
+      console.log(response);
+    });
+  };
+  return Posts;
 }])
 
 .controller('StreamController', ['$scope', '$http', 'Posts', function StreamController($scope, $http, Posts) {
-  $scope.posts = Posts.query(function(){
-    $("#loadingIcon").remove();
-    console.log("test");
-  });
+  $scope.posts = new Posts();
+  $scope.posts.nextPage();
   $scope.formatDate = prettyDate;
   $scope.embedOptions = {
     fontSmiley       : true,      //convert ascii smileys into font smileys
@@ -145,7 +218,7 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
       embed: true                 //to allow embedding audio player if link to
     },
     code             : {
-        highlight  : true,        //to allow code highlighting of code written in markdown
+        highlight  : false,        //to allow code highlighting of code written in markdown
         //requires highligh.js (https://highlightjs.org/) as dependency.
         lineNumbers: false        //to show line numbers
     },
@@ -193,15 +266,15 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
         download    : true          //Show/Hide download buttons
     },
     spotifyEmbed     : true,
-    codepenEmbed     : true,        //set to true to embed codepen
+    codepenEmbed     : false,        //set to true to embed codepen
     codepenHeight    : 300,
-    jsfiddleEmbed    : true,        //set to true to embed jsfiddle
+    jsfiddleEmbed    : false,        //set to true to embed jsfiddle
     jsfiddleHeight   : 300,
-    jsbinEmbed       : true,        //set to true to embed jsbin
+    jsbinEmbed       : false,        //set to true to embed jsbin
     jsbinHeight      : 300,
-    plunkerEmbed     : true,        //set to true to embed plunker
-    githubgistEmbed  : true,
-    ideoneEmbed      : true,        //set to true to embed ideone
+    plunkerEmbed     : false,        //set to true to embed plunker
+    githubgistEmbed  : false,
+    ideoneEmbed      : false,        //set to true to embed ideone
     ideoneHeight:300
   };
 
@@ -209,7 +282,9 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
     if(!$scope.newPostContent || $scope.newPostContent.length < 1) return;
     var newPost = new Posts({ author: $("#username").val(), date: new Date(), content: $scope.newPostContent });
     newPost.$save(function(){
-      $scope.posts = Posts.query();
+      $scope.posts = newPost;
+      $scope.posts.nextPage();
+      console.log($scope.posts);
       $scope.newPostContent = '';
     });
   }

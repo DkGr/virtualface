@@ -5,7 +5,7 @@ html(style="height:100%" ng-app="virtualidApp")
       title= title
     else
       title
-        | VirtualID - Le réseau social libre qui respecte votre vie privée
+        | Virtual iD - Le réseau social libre qui respecte votre vie privée
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     if(config)
       link(rel='stylesheet', href='#{config.appRootFolder}/stylesheets/bootstrap.min.css')
@@ -33,6 +33,7 @@ html(style="height:100%" ng-app="virtualidApp")
     block content
 
   if(config)
+    script(src="https://cdn.socket.io/socket.io-1.4.5.js")
     script(src='#{config.appRootFolder}/javascripts/jquery-2.1.4.min.js')
     script(src='#{config.appRootFolder}/javascripts/bootstrap.min.js')
     script(src='#{config.appRootFolder}/javascripts/magicsuggest-min.js')
@@ -43,4 +44,8 @@ html(style="height:100%" ng-app="virtualidApp")
     script(src='#{config.appRootFolder}/javascripts/angular-resource.min.js')
     script(src='#{config.appRootFolder}/javascripts/angular-sanitize.min.js')
     script(src='#{config.appRootFolder}/javascripts/ng-embed.js')
+    script(src='#{config.appRootFolder}/javascripts/ng-infinite-scroll.min.js')
+    script(src='#{config.appRootFolder}/javascripts/strophe.min.js')
     script(src='#{config.appRootFolder}/javascripts/virtualid.app.js')
+      | openpgp.initWorker({ path:'#{config.appRootFolder}/javascripts/openpgp.worker.min.js' });
+      | openpgp.config.aead_protect = true;

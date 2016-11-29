@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 var flash = require('connect-flash');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -9,6 +10,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var xmpp = require("./node-xmpp-bosh");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -18,6 +20,9 @@ var apiPosts = require('./routes/api/posts');
 var apiExtractURL = require('./routes/api/extracturl');
 
 var config = require('./config/config');
+
+var privateKey = fs.readFileSync('./privkey.pem').toString();
+var certificate = fs.readFileSync('./fullchain.pem').toString();
 
 var app = express();
 //test
@@ -78,13 +83,33 @@ if(config.useFacebook){
 // mongoose
 mongoose.connect(config.mongodbURL);
 
+var xmppServer = null
+var connectedUser = {
+  'admin@octeau.fr': 'admin'
+};
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+var xmpp_server_options = { };
+
+if (opts.config) {
+	if (opts.config[0] !== '/') {
+		opts.config = "./" + opts.config;
+	}
+
+	try {
+		var _cfg = require(opts.config);
+		xmpp_server_options = _cfg.config;
+	}
+	catch(ex) {
+		if (opts.config !== BOSH_DEFAULT_CONFIG_PATH) {
+			console.error("Caught Exception: '" + ex.toString() + "' while trying to read " +
+				"config file '" + opts.config + "'");
+			process.exit(2);
+		}
+	}
+}
+
+xmppServer = xmpp.start_bosh();
+console.log('XMPP server started');
 
 // error handlers
 

@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var fs = require('fs');
 var passport = require('passport');
+var crypto = require('crypto');
 var Account = require('../models/account');
 var router = express();
 
@@ -17,7 +18,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/register', function(req, res) {
-    res.render('register', { config: config, title: "VirtualID - Créer un compte" });
+    res.render('register', { config: config, title: "Virtual iD - Créer un compte" });
 });
 
 router.post('/register', function(req, res, next) {
@@ -40,7 +41,7 @@ router.post('/register', function(req, res, next) {
 
 router.get('/stream', function(req, res) {
   if(req.user){
-    res.render('stream', { config: config, user : req.user, title: "VirtualID - Mon flux" });
+    res.render('stream', { config: config, user : req.user, title: "Virtual iD - Mon flux" });
   }
   else{
     res.redirect(config.appRootFolder);
@@ -52,7 +53,11 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', passport.authenticate('local', { failureFlash: "Nom d'utilisateur ou mot de passe invalide" }), function(req, res) {
-
+    var dateStr = new Date().toString();
+    var hash = crypto.createHash('md5').update(dateStr).digest('hex');
+    req.user.xmppToken = hash;
+    console.log(hash);
+    console.log(req.user);
     res.redirect(config.appRootFolder);
 });
 

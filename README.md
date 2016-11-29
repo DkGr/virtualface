@@ -1,12 +1,10 @@
-# VirtualID
+# Virtual iD
 
-VirtualID is a project prototype to create an open-source and encrypted social network with no personal datas violation. Encryption/decryption features are powered by OpenPGP.js.
+Virtual iD is a project prototype to create an open-source and encrypted social network with no personal datas violation. Encryption/decryption features are powered by OpenPGP.js.
 
 ## Requirements
-- HTTP server with SSL/TLS
 - Node.js with npm
 - MongoDB server
-- Openfire XMPP server with http-bind and CORS enabled for instant messaging
 
 ## Working features
 - Basic account Creation
@@ -20,11 +18,11 @@ VirtualID is a project prototype to create an open-source and encrypted social n
 - Notification system
 - OpenPGP keys generation at account creation
 - User search
-- XMPP chat
 - Comments system
 - Likes system
 
 ## TODO
+- Instant Messaging
 - Privacy settings
 - Encryption settings
 - Email system
@@ -38,7 +36,7 @@ VirtualID is a project prototype to create an open-source and encrypted social n
 
 ### Required packages
 ```
-git apache2 nodejs npm openjdk-7-jre
+git nodejs npm
 ```
 
 ### Get VirtualID sources
@@ -54,27 +52,6 @@ npm install
 configure virtualid server by editing config/config.js :
 nano config/config.js
 
-### Apache SSL configuration
-Enable SSL on apache2 with a certificate for your domain (Use magic [letsencrypt](https://letsencrypt.org/) to automate this !)
-
-
-### Openfire installation and configuration
-Download the latest openfire deb package on the [official website](http://www.igniterealtime.org/downloads/index.jsp) then install it :
-```
-# dpkg -i openfire_4.0.3_all.deb
-```
-
-Now go to openfire setup page and follow the wizard http://youradresss.com:9090/
-
-After setup finnished connect to the admin interface.
-
-Go to plugin manager tab and install REST API plugin.
-
-Now go to server settings->Rest API and enable it.
-
-Switch to secret key auth and take note of the key.
-
-Now go to SSL/TLS settings and import your apache certificate and private key into the keystore (Very easy with a [letsencrypt](https://letsencrypt.org/) generated)
 
 ### MongoDB installation
 Run this command :
@@ -86,4 +63,4 @@ Run this command :
 You need to create a Facebook application to get a Facebook API key linked to your domain name
 
 ### Setup VirtualID
-Now you can go to https://youradress.com/setup.php and follow the wizard to complete the VirtualID installation.
+Now you can go to https://youradress.com/setup and follow the wizard to complete the Virtual iD installation.

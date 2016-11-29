@@ -12,7 +12,7 @@ block content
               span.icon-bar
               span.icon-bar
             a.navbar-brand(style="color: #fff;font-size: 20px;padding: initial;" href="#{config.appRootFolder}/stream")
-              img(style="height: inherit;" alt="VirtualID" src="#{config.appRootFolder}/images/virtualid-white-alpha.png")
+              img(style="height: inherit;" alt="Virtual iD" src="#{config.appRootFolder}/images/virtualid-white.png")
           .navbar-collapse.collapse
             ul.nav.navbar-nav.navbar-left
               li.active
@@ -84,11 +84,9 @@ block content
                       a(id="newpost-visibility-friend-btn" data-toggle="tooltip" data-delay='{ "show": 500, "hide": 0 }' data-placement="right" data-original-title="Seulement vos amis VirtualID pourront voir cette publication." href="#")
                         span.glyphicon.glyphicon-user(aria-hidden="true")
                         |  Mes amis
-        div(id="loadingIcon" style="margin: 5px;text-align: center;")
-          img(src="images/loader.svg" alt="loading")
-        div(ng-include src="'/postList'")
+        div(ng-include src="'/postList'" infinite-scroll='posts.nextPage()' infinite-scroll-disabled='posts.busy' infinite-scroll-immediate-check='false')
   script(type="text/ng-template" id="/postList")
-    .panel.panel-default(ng-repeat="post in posts" id="{{post._id}}" style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);")
+    .panel.panel-default(ng-repeat="post in posts.items" id="{{post._id}}" style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);")
       .panel-body(style="border-radius: 5px;")
         .media
           .media-left(style="text-align:center;")
@@ -107,5 +105,17 @@ block content
             span(style="font-size: 12px;color:grey;") visibilité : 
               span.glyphicon.glyphicon-globe(aria-hidden="true")
               |  Tout le monde
-    p(style="text-align:center;" ng-if="results.length === 0")
-      | Il n'y a rien à afficher ici...
+      .panel-footer(style="border-bottom-right-radius:5px;border-bottom-left-radius:5px;")
+        a(role="button" data-toggle="collapse" href="#comments-scroll-{{post._id}}" aria-expanded="false" aria-controls="comments-scroll-{{post._id}}") Aucuns commentaires 
+        | - 
+        a(href="javascript:void(0)") J'aime
+      .collapse(id="comments-scroll-{{post._id}}")
+        .panel.panel-default(style="border: none; margin-bottom: 0px;")
+            textarea.form-control(id="newcomment-content-{{post._id}}" style="resize:vertical;border-radius:0px;border-left: 0px;border-right: 0px;" rows="3" placeholder="Inserez votre commentaire...")
+            .panel-footer(style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
+              button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}") Publier 
+                span.glyphicon.glyphicon-send
+    div(ng-show='posts.busy' style="margin: 5px;text-align: center;")
+      img(src="images/loader.svg" alt="loading")
+    p(style="text-align:center;" ng-show="posts.items.length == 0")
+      | Il n'y a rien à afficher ici pour l'instant...

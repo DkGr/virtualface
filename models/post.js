@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
-var supergoose = require('supergoose');
+var mongoosePaginate = require('mongoose-aggregate-paginate');
 var Schema = mongoose.Schema;
-var passportLocalMongoose = require('passport-local-mongoose');
 
 var Post = new Schema({
     author: String,
@@ -11,5 +10,7 @@ var Post = new Schema({
     comments: Array,
     likes: Array
 });
+
+Post.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Post', Post);

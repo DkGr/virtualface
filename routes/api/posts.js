@@ -8,8 +8,8 @@ var router = express();
 
 var config = require('../../config/config');
 
-router.get('/', function(req, res) {
-  Post.aggregate([
+router.get('/:page', function(req, res) {
+  var aggregate = Post.aggregate([
         {
           $lookup:
             {
@@ -18,12 +18,16 @@ router.get('/', function(req, res) {
               foreignField: "username",
               as: "authorInfos"
             }
-       },
-       { "$sort": { "date": -1 } },
-       { "$limit": 5 }
-    ]).allowDiskUse(true).exec(function(err, posts){
+        },
+        { "$sort": { "date": -1 } }
+    ]).allowDiskUse(true);
+  var pageNum = 1;
+  if(req.params.page){
+    pageNum = req.params.page;
+  }
+  Post.aggregatePaginate(aggregate, { page : pageNum, limit: 5 }, function(err, posts, pageCount, count) {
       res.json(posts);
-    });
+  });
 });
 
 router.post('/', function(req, res, next) {
