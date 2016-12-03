@@ -44,6 +44,12 @@ Virtual iD is a project prototype to create an open-source and encrypted social 
 git nodejs npm
 ```
 
+### MongoDB installation
+Run this command :
+```
+# npm install -g mongodb
+```
+
 ### Get Virtual iD sources
 Clone this repository where you want executing this command :
 ```
@@ -60,13 +66,6 @@ $ npm install
 configure virtualid server by editing config/config.js :
 ```
 $ nano config/config.js
-```
-
-
-### MongoDB installation
-Run this command :
-```
-# npm install -g mongodb
 ```
 
 ### (Optional) Facebook connect
