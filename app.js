@@ -25,7 +25,6 @@ var privateKey = fs.readFileSync('./privkey.pem').toString();
 var certificate = fs.readFileSync('./fullchain.pem').toString();
 
 var app = express();
-//test
 // view engine setup
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'jade');
