@@ -55,22 +55,22 @@ $(document).ready(function() {
 });
 
 function prettyDate(time){
-    var d = new Date();
-    var date = new Date(time),
-        diff = ((d.getTime() - date.getTime()) / 1000),
-        day_diff = Math.floor(diff / 86400);
-     if ( isNaN(day_diff) || day_diff < 0 )
-        return;
+  var d = new Date();
+  var date = new Date(time),
+      diff = ((d.getTime() - date.getTime()) / 1000),
+      day_diff = Math.floor(diff / 86400);
+   if ( isNaN(day_diff) || day_diff < 0 )
+      return;
 
-    return day_diff == 0 && (
-            diff < 60 && "à l'instant" ||
-            diff < 120 && "il y a 1 minute" ||
-            diff < 3600 && "il y a " + Math.floor( diff / 60 ) + " minutes" ||
-            diff < 7200 && "il y a 1 heure" ||
-            diff < 86400 && "il y a " + Math.floor( diff / 3600 ) + " heures") ||
-        day_diff == 1 && "Hier" ||
-        day_diff < 7 && "il y a " + day_diff + " jours" ||
-        day_diff >= 7 && "le " + d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear() + " à " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+  return day_diff == 0 && (
+          diff < 60 && "à l'instant" ||
+          diff < 120 && "il y a 1 minute" ||
+          diff < 3600 && "il y a " + Math.floor( diff / 60 ) + " minutes" ||
+          diff < 7200 && "il y a 1 heure" ||
+          diff < 86400 && "il y a " + Math.floor( diff / 3600 ) + " heures") ||
+      day_diff == 1 && "Hier" ||
+      day_diff < 7 && "il y a " + day_diff + " jours" ||
+      day_diff >= 7 && "le " + date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " à " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 }
 
 function subscribe()
@@ -147,20 +147,36 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
   
   delete Posts.prototype.items;
   Posts.prototype.items = [];
+  Posts.prototype.items.commentList = [];
   Posts.prototype.busy = false;
-  Posts.prototype.page = 1;
+  Posts.prototype.page = 0;
   
   Posts.prototype.nextPage = function() {
     if (this.busy) return;
     this.busy = true;
-
-    var url = "api/posts/" + this.page;
-    $http.get(url).then(function successCallback(response) {
-      var items = response.data;
-      for (var i = 0; i < items.length; i++) {
-        this.items.push(items[i]);
+    this.page++;
+    var postsUrl = "api/posts/" + this.page;
+    var commentsUrl = "api/comments/";
+    $http.get(postsUrl).then(function successCallback(response) {
+      var recItems = response.data;
+      if(recItems.length == 0){
+        this.page--;
       }
-      this.page++;
+      for (var i = 0; i < recItems.length; i++) {
+        this.items.push(recItems[i]);
+        (function (i, currentPosts){
+          $http.get(commentsUrl + recItems[i]._id).then(function successCallback(response) {
+            var comments = response.data;
+            var idx = i+((this.page-1)*5);
+            this.items[idx].commentList = [];
+            if(comments.length > 0){
+              this.items[idx].commentList = comments;
+            }
+          }.bind(currentPosts), function errorCallback(response) {
+            console.log(response);
+          });
+        })(i, this);
+      }
       this.busy = false;
     }.bind(this), function errorCallback(response) {
       console.log(response);
@@ -173,6 +189,19 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
   $scope.posts = new Posts();
   $scope.posts.nextPage();
   $scope.formatDate = prettyDate;
+  $scope.printCommentLinkText = function(commentCount) {
+    switch (commentCount) {
+      case 0:
+        return "Aucuns commentaires"
+        break;
+      case 1:
+        return "1 commentaire"
+        break;
+      default:
+        return "" + commentCount + " commentaires"
+        break;
+    }
+  };
   $scope.embedOptions = {
     fontSmiley       : true,      //convert ascii smileys into font smileys
     emoji            : true,      //convert emojis short names into images

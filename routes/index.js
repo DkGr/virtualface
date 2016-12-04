@@ -56,8 +56,6 @@ router.post('/login', passport.authenticate('local', { failureFlash: "Nom d'util
     var dateStr = new Date().toString();
     var hash = crypto.createHash('md5').update(dateStr).digest('hex');
     req.user.xmppToken = hash;
-    console.log(hash);
-    console.log(req.user);
     res.redirect(config.appRootFolder);
 });
 

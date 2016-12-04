@@ -11,13 +11,22 @@ var config = require('../../config/config');
 
 router.get('/:postid', function(req, res) {
   Post.findById(req.params.postid, function(err, post){
-    Comment.find({
-        '_id': { $in: post.comments }
-    },
-    { "$sort": { "date": 1 } },
-    function(err, docs){
-         console.log(docs);
-         res.json(posts);
+    var aggregate = Comment.aggregate([
+          {
+            $lookup:
+              {
+                from: "accounts",
+                localField: "author",
+                foreignField: "username",
+                as: "authorInfos"
+              }
+          },
+          { "$sort": { "date": 1 } }
+      ]).allowDiskUse(true);
+    aggregate.match({ '_id': { $in: post.comments } });
+    Comment.aggregatePaginate(aggregate, {}, function(err, comments, pageCount, count) {  
+      console.log(comments);
+      res.json(comments);
     });
   });
 });

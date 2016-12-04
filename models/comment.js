@@ -9,6 +9,6 @@ var Comment = new Schema({
     likes: Array
 });
 
-Post.plugin(mongoosePaginate);
+Comment.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Comment', Comment);

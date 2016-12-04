@@ -227,15 +227,29 @@ block content
               span.glyphicon.glyphicon-globe(aria-hidden="true")
               |  Tout le monde
       .panel-footer(style="border-bottom-right-radius:5px;border-bottom-left-radius:5px;")
-        a(role="button" data-toggle="collapse" href="#comments-scroll-{{post._id}}" aria-expanded="false" aria-controls="comments-scroll-{{post._id}}") Aucuns commentaires 
+        a(role="button" data-toggle="collapse" href="#comments-scroll-{{post._id}}" aria-expanded="false" aria-controls="comments-scroll-{{post._id}}") {{printCommentLinkText(post.commentList.length)}} 
         | - 
         a(href="javascript:void(0)") J'aime
       .collapse(id="comments-scroll-{{post._id}}")
+        li(ng-repeat="comment in post.commentList" class="list-group-item")
+          .media
+            .media-left(style="text-align:center;width: 12%;")
+              a(href="identity/{{comment.author}}")
+                img.media-object.img-rounded(style="width: 32px; height: 32px; margin: auto;" src="avatars/{{comment.authorInfos[0].avatar}}" alt="...")
+              a(href="identity/{{comment.author}}")
+                | {{comment.author}}
+            .media-body
+              | {{comment.content}}
+            div(style="float: left;margin: 10px 0 0 75px;")
+              a(href="javascript:void(0)") J'aime 
+              | - 
+              span.p-date(style="font-size: 12px;color:grey;") Publié 
+                | {{formatDate(comment.date)}}
         .panel.panel-default(style="border: none; margin-bottom: 0px;")
-            textarea.form-control(id="newcomment-content-{{post._id}}" style="resize:vertical;border-radius:0px;border-left: 0px;border-right: 0px;" rows="3" placeholder="Inserez votre commentaire...")
-            .panel-footer(style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
-              button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}") Publier 
-                span.glyphicon.glyphicon-send
+          textarea.form-control(id="newcomment-content-{{post._id}}" style="resize:vertical;border-radius:0px;border-left: 0px;border-right: 0px;" rows="3" placeholder="Inserez votre commentaire...")
+          .panel-footer(style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
+            button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}") Publier 
+              span.glyphicon.glyphicon-send
     div(ng-show='posts.busy' style="margin: 5px;text-align: center;")
       img(src="images/loader.svg" alt="loading")
     p(style="text-align:center;" ng-show="posts.items.length == 0")
