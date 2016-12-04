@@ -61,7 +61,72 @@ function prettyDate(time){
       day_diff = Math.floor(diff / 86400);
    if ( isNaN(day_diff) || day_diff < 0 )
       return;
-
+  var dayStr = "dimanche";
+  switch (date.getDay()) {
+    case 0:
+      dayStr = "dimanche";
+      break;
+    case 1:
+      dayStr = "lundi";
+      break;
+    case 2:
+      dayStr = "mardi";
+      break;
+    case 3:
+      dayStr = "mercredi";
+      break;
+    case 4:
+      dayStr = "jeudi";
+      break;
+    case 5:
+      dayStr = "vendredi";
+      break;
+    case 6:
+      dayStr = "samedi";
+      break;
+    default:  
+  }
+  var monthStr = "janvier"
+  switch (date.getMonth()) {
+    case 0:
+      monthStr = "janvier";
+      break;
+    case 1:
+      monthStr = "février";
+      break;
+    case 2:
+      monthStr = "mars";
+      break;
+    case 3:
+      monthStr = "avril";
+      break;
+    case 4:
+      monthStr = "mai";
+      break;
+    case 5:
+      monthStr = "juin";
+      break;
+    case 6:
+      monthStr = "juillet";
+      break;
+    case 7:
+      monthStr = "août";
+      break;
+    case 8:
+      monthStr = "septembre";
+      break;
+    case 9:
+      monthStr = "octobre";
+      break;
+    case 10:
+      monthStr = "novembre";
+      break;
+    case 11:
+      monthStr = "décembre";
+      break;
+    default:  
+  }
+  
   return day_diff == 0 && (
           diff < 60 && "à l'instant" ||
           diff < 120 && "il y a 1 minute" ||
@@ -70,7 +135,7 @@ function prettyDate(time){
           diff < 86400 && "il y a " + Math.floor( diff / 3600 ) + " heures") ||
       day_diff == 1 && "Hier" ||
       day_diff < 7 && "il y a " + day_diff + " jours" ||
-      day_diff >= 7 && "le " + ((date.getDate()<10?'0':'')+date.getDate()) + "/" + (((date.getMonth()+1)<10?'0':'')+(date.getMonth()+1)) + "/" + date.getFullYear() + " à " + ((date.getHours()<10?'0':'')+date.getHours()) + ":" + ((date.getMinutes()<10?'0':'')+date.getMinutes()) + ":" + ((date.getSeconds()<10?'0':'')+date.getSeconds());
+      day_diff >= 7 && "le " + dayStr+ " " + ((date.getDate()<10?'0':'')+date.getDate()) + " " + monthStr + " " + date.getFullYear() + " à " + ((date.getHours()<10?'0':'')+date.getHours()) + ":" + ((date.getMinutes()<10?'0':'')+date.getMinutes()) + ":" + ((date.getSeconds()<10?'0':'')+date.getSeconds());
 }
 
 function subscribe()
@@ -164,10 +229,10 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
       }
       for (var i = 0; i < recItems.length; i++) {
         this.items.push(recItems[i]);
-        (function (i, currentPosts){
+        var idx = this.items.length-1;
+        (function (idx, currentPosts){
           $http.get(commentsUrl + recItems[i]._id).then(function successCallback(response) {
             var comments = response.data;
-            var idx = i+((this.page-1)*5);
             this.items[idx].commentList = [];
             if(comments.length > 0){
               this.items[idx].commentList = comments;
@@ -175,7 +240,7 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
           }.bind(currentPosts), function errorCallback(response) {
             console.log(response);
           });
-        })(i, this);
+        })(idx, this);
       }
       this.busy = false;
     }.bind(this), function errorCallback(response) {
@@ -186,6 +251,9 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
 }])
 
 .controller('StreamController', ['$scope', '$http', 'Posts', function StreamController($scope, $http, Posts) {
+  $http.get('api/users/me').then(function successCallback(response) {
+    $scope.user = response.data;
+  });
   $scope.posts = new Posts();
   $scope.posts.nextPage();
   $scope.formatDate = prettyDate;
@@ -281,9 +349,11 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
     if(!$scope.newPostContent || $scope.newPostContent.length < 1) return;
     var newPost = new Posts({ author: $("#username").val(), date: new Date(), content: $scope.newPostContent });
     newPost.$save(function(){
-      $scope.posts = newPost;
-      $scope.posts.nextPage();
-      console.log($scope.posts);
+      newPost.commentList = [];
+      newPost.authorInfos = [];
+      newPost.authorInfos[0] = $scope.user;
+      console.log(newPost);
+      $scope.posts.items.unshift(newPost);
       $scope.newPostContent = '';
     });
   }

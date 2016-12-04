@@ -223,7 +223,7 @@ block content
             span.p-date(style="font-size: 12px;color:grey;") Publié
               | {{formatDate(post.date)}}
             |  - 
-            span(style="font-size: 12px;color:grey;") visibilité : 
+            span(style="font-size: 12px;color:grey;") diffusé pour : 
               span.glyphicon.glyphicon-globe(aria-hidden="true")
               |  Tout le monde
       .panel-footer(style="border-bottom-right-radius:5px;border-bottom-left-radius:5px;")
@@ -242,7 +242,9 @@ block content
               | {{comment.content}}
             div(style="float: left;margin: 10px 0 0 75px;")
               a(href="javascript:void(0)") J'aime 
-              | - 
+              | - 0 
+              span.glyphicon.glyphicon-thumbs-up 
+              |  - 
               span.p-date(style="font-size: 12px;color:grey;") Publié 
                 | {{formatDate(comment.date)}}
         .panel.panel-default(style="border: none; margin-bottom: 0px;")

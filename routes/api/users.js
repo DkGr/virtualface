@@ -15,6 +15,10 @@ router.get('/:username', function(req, res) {
   else{
     console.log("anonymous request");
   }
+  
+  if(req.params.username == "me"){
+    req.params.username = requesterUsername;
+  }
   PrivacyGuard.pleaseShowMeUserInformation(res, requesterUsername, req.params.username);
 });
 
