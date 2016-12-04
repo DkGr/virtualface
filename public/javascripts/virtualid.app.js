@@ -70,7 +70,7 @@ function prettyDate(time){
           diff < 86400 && "il y a " + Math.floor( diff / 3600 ) + " heures") ||
       day_diff == 1 && "Hier" ||
       day_diff < 7 && "il y a " + day_diff + " jours" ||
-      day_diff >= 7 && "le " + date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " à " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+      day_diff >= 7 && "le " + ((date.getDate()<10?'0':'')+date.getDate()) + "/" + (((date.getMonth()+1)<10?'0':'')+(date.getMonth()+1)) + "/" + date.getFullYear() + " à " + ((date.getHours()<10?'0':'')+date.getHours()) + ":" + ((date.getMinutes()<10?'0':'')+date.getMinutes()) + ":" + ((date.getSeconds()<10?'0':'')+date.getSeconds());
 }
 
 function subscribe()
