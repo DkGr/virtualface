@@ -15,9 +15,10 @@ Virtual iD is a project prototype to create an open-source and encrypted social 
 - Photo/Video link embeded into posts
 - OpenPGP keys generation at account creation
 - User search
+- Comments system
 
 ## TODO
-- Comments system
+
 - Likes system
 - Notification system
 - Friendship system

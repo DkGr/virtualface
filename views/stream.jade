@@ -168,9 +168,9 @@ block content
               .panel-body
                 | Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
 
-  .container(style="position:relative;top:50px;margin-left:12%;")
+  .container(style="position:relative;top:50px;")
     .container-fluid
-      div(style="position:fixed;top:10%;width:320px;padding:10px;")
+      div(style="position:fixed;top:10%;left:0px;width:320px;padding:10px;")
         .panel.panel-info
           .panel-heading
             h3.panel-title Vos abonnements
@@ -181,7 +181,7 @@ block content
             h3.panel-title Vos amis
           .panel-body(ng-controller="MyFriendsController")
             .row
-      div(style="margin-left:30%;width:67%;float:left;" ng-controller="StreamController")
+      div(style="margin-left:20%;width:60%;float:left;" ng-controller="StreamController")
         div(id="send-newpost-form")
           .panel.panel-default(style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;border-radius: 5px;")
             textarea.form-control(id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..." ng-model="newPostContent")
@@ -214,7 +214,7 @@ block content
               img.media-object.img-rounded(style="width: 64px; height: 64px;" src="avatars/{{post.authorInfos[0].avatar}}" alt="...")
             a(href="identity/{{post.author}}")
               | {{post.author}}
-          .media-body(style="max-width: 635px;")
+          .media-body(style="max-width: 580px;")
             ng-embed(id="{{post._id+'-content'}}" embed-data="post.content" embed-template-url="templates/embedTemplate.html" embed-options="embedOptions")
           div(style="float: left;margin: 10px 0 0 75px;") 0 
             span.glyphicon.glyphicon-thumbs-up(aria-hidden="true")
