@@ -344,10 +344,37 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
     ideoneEmbed      : false,        //set to true to embed ideone
     ideoneHeight:300
   };
-
+  $scope.sendNewPostComment = function(postid){
+    if(!postid || postid == '') return;
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        var newComment = {
+          author: $scope.user.username,
+          date: new Date(),
+          content: $("#newcomment-content-"+postid).val(),
+          likes: []
+        };
+        var commentsUrl = "api/comments/";
+        $http({
+            url: commentsUrl + postid,
+            method: "POST",
+            data: newComment,
+            headers: {'Content-Type': 'application/json'}
+        }).success(function (data, status, headers, config) {
+            var comment = data;
+            newComment = comment;
+        }).error(function (data, status, headers, config) {
+        });
+        newComment.authorInfos = [];
+        newComment.authorInfos[0] = $scope.user;
+        $scope.posts.items[i].commentList.push(newComment);
+        $("#newcomment-content-"+postid).val('');
+      }
+    }
+  }
   $scope.sendNewPost = function(){
     if(!$scope.newPostContent || $scope.newPostContent.length < 1) return;
-    var newPost = new Posts({ author: $("#username").val(), date: new Date(), content: $scope.newPostContent });
+    var newPost = new Posts({ author: $scope.user.username, date: new Date(), content: $scope.newPostContent });
     newPost.$save(function(){
       newPost.commentList = [];
       newPost.authorInfos = [];

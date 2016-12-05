@@ -33,11 +33,12 @@ router.get('/:postid', function(req, res) {
 
 router.post('/:postid', function(req, res, next) {
   Post.findById(req.params.postid, function(err, post){
-    console.log(post);
-    /*Comment.create(req.body, function (err, post) {
+    Comment.create(req.body, function (err, comment) {
       if (err) return next(err);
-      res.json(post);
-    });*/
+      res.json(comment);
+      post.comments.push(comment._id);
+      post.save();
+    });
   });
 });
 

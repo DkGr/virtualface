@@ -183,7 +183,6 @@ block content
             .row
       div(style="margin-left:30%;width:67%;float:left;" ng-controller="StreamController")
         div(id="send-newpost-form")
-          input(id="username" type="hidden" value="#{user.username}")
           .panel.panel-default(style="box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);border:none;border-radius: 5px;")
             textarea.form-control(id="newpost-content" style="resize:vertical;border-radius: 5px 5px 0 0;" rows="3" placeholder="Inserez votre message, lien, photo, video, etc..." ng-model="newPostContent")
             div(id="postPreview")
@@ -240,7 +239,7 @@ block content
                 | {{comment.author}}
             .media-body
               | {{comment.content}}
-            div(style="float: left;margin: 10px 0 0 75px;")
+            div(style="margin: 10px 0 0 75px;")
               a(href="javascript:void(0)") J'aime 
               | - 0 
               span.glyphicon.glyphicon-thumbs-up 
@@ -250,7 +249,7 @@ block content
         .panel.panel-default(style="border: none; margin-bottom: 0px;")
           textarea.form-control(id="newcomment-content-{{post._id}}" style="resize:vertical;border-radius:0px;border-left: 0px;border-right: 0px;" rows="3" placeholder="Inserez votre commentaire...")
           .panel-footer(style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
-            button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}") Publier 
+            button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}" ng-click="sendNewPostComment(post._id)") Publier 
               span.glyphicon.glyphicon-send
     div(ng-show='posts.busy' style="margin: 5px;text-align: center;")
       img(src="images/loader.svg" alt="loading")
