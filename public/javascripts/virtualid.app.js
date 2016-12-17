@@ -27,6 +27,11 @@
   })
 }(this))
 
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
 
 $(document).ready(function() {
     
@@ -212,7 +217,6 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
   
   delete Posts.prototype.items;
   Posts.prototype.items = [];
-  Posts.prototype.items.commentList = [];
   Posts.prototype.busy = false;
   Posts.prototype.page = 0;
   
@@ -222,6 +226,7 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
     this.page++;
     var postsUrl = "api/posts/" + this.page;
     var commentsUrl = "api/comments/";
+    var likesUrl = "api/likes/post/";
     $http.get(postsUrl).then(function successCallback(response) {
       var recItems = response.data;
       if(recItems.length == 0){
@@ -240,8 +245,18 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
           }.bind(currentPosts), function errorCallback(response) {
             console.log(response);
           });
+          $http.get(likesUrl + recItems[i]._id).then(function successCallback(response) {
+            var likes = response.data;
+            this.items[idx].likeList = [];
+            if(likes.length > 0){
+              this.items[idx].likeList = likes;
+            }
+          }.bind(currentPosts), function errorCallback(response) {
+            console.log(response);
+          });
         })(idx, this);
       }
+      console.log(this);
       this.busy = false;
     }.bind(this), function errorCallback(response) {
       console.log(response);
@@ -270,6 +285,23 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
         break;
     }
   };
+  
+  $scope.printPostLikeLinkText = function(postid) {
+    if(!postid || postid == '') return;
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        if($scope.posts.items[i].likeList){
+          for(var j = 0; j < $scope.posts.items[i].likeList.length; j++){
+            if($scope.posts.items[i].likeList[j].author == $scope.user.username){
+              return "Je n'aime plus";
+            }
+          }
+        }
+      }
+    }
+    return "J'aime";
+  };
+  
   $scope.embedOptions = {
     fontSmiley       : true,      //convert ascii smileys into font smileys
     emoji            : true,      //convert emojis short names into images
@@ -379,10 +411,56 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
       newPost.commentList = [];
       newPost.authorInfos = [];
       newPost.authorInfos[0] = $scope.user;
-      console.log(newPost);
       $scope.posts.items.unshift(newPost);
       $scope.newPostContent = '';
     });
+  }
+  
+  $scope.sendNewPostLike = function(postid){
+    if(!postid || postid == '') return;
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        if($scope.posts.items[i].likeList){
+          for(var j = 0; j < $scope.posts.items[i].likeList.length; j++){
+            if($scope.posts.items[i].likeList[j].author == $scope.user.username){
+              $http.delete('api/likes/post/' + $scope.posts.items[i]._id + '/' + $scope.posts.items[i].likeList[j]._id).then(function successCallback(response) {
+              });
+              $scope.posts.items[i].likes.remove(j);
+              $scope.posts.items[i].likeList.remove(j);
+              console.log($scope.post);
+              $("#postlike-"+postid).html("J'aime");
+              return;
+            }
+          }
+        }
+      }
+    }
+    $("#postlike-"+postid).html("Je n'aime plus");
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        var newLike = {
+          author: $scope.user.username,
+          date: new Date(),
+          target: 'ObjectId("'+postid+'")'
+        };
+        var postLikesUrl = "api/likes/post/";
+        (function (i){
+          $http({
+              url: postLikesUrl + postid,
+              method: "POST",
+              data: newLike,
+              headers: {'Content-Type': 'application/json'}
+          }).success(function (data, status, headers, config) {
+              var like = data;
+              like.authorInfos = [];
+              like.authorInfos[0] = $scope.user;
+              $scope.posts.items[i].likes.push(like._id);
+              $scope.posts.items[i].likeList.push(like);
+          }).error(function (data, status, headers, config) {
+          }); 
+        })(i);       
+      }
+    }
   }
 }])
 
