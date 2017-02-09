@@ -36,6 +36,8 @@ Virtual iD is a project prototype to create an open-source and encrypted social 
 - Personal Virtual iD Calendar sync (caldav) provided by ownCloud
 - Virtual iD Contacts sync (carddav) provided by ownCloud
 - Geolocation sharing
+- Virtual Community pages
+- Free and Premium account system (More cloud storage for premium)
 
 ## Installation
 
