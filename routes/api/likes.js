@@ -14,21 +14,23 @@ var config = require('../../config/config');
 router.get('/post/:postid', function(req, res) {
   Post.findById(req.params.postid, function(err, post){
     if (err) return next(err);
-    var aggregate = Like.aggregate([
-          {
-            $lookup:
-              {
-                from: "accounts",
-                localField: "author",
-                foreignField: "username",
-                as: "authorInfos"
-              }
-          },
-          { "$sort": { "date": -1 } }
-      ]).allowDiskUse(true);
+    var aggregate = Like.aggregate().allowDiskUse(true);
     aggregate.match({ '_id': { $in: post.likes } });
-    Like.aggregatePaginate(aggregate, {}, function(err, likes, pageCount, count) {  
-      res.json(likes);
+    Like.aggregatePaginate(aggregate, {sortBy: {'date': -1}}, function(err, likes, pageCount, count) {  
+      if (err) return next(err);
+      var current = 0;
+      (function getAuthorInfos (likes){
+        if (current == likes.length) {
+          res.json(likes);
+          return;
+        }
+        PrivacyGuard.pleaseShowMeUserInformation(req.user.username, likes[current].author, function(user){
+          likes[current].authorInfos = [];
+          likes[current].authorInfos[0] = user;
+          ++current;
+          getAuthorInfos(likes);
+        });
+      })(likes);
     });
   });
 });

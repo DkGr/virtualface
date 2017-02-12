@@ -9,24 +9,26 @@ var router = express();
 var config = require('../../config/config');
 
 router.get('/:page', function(req, res) {
-  var aggregate = Post.aggregate([
-        {
-          $lookup:
-            {
-              from: "accounts",
-              localField: "author",
-              foreignField: "username",
-              as: "authorInfos"
-            }
-        },
-        { "$sort": { "date": -1 } }
-    ]).allowDiskUse(true);
+  var aggregate = Post.aggregate().allowDiskUse(true);
   var pageNum = 1;
   if(req.params.page){
     pageNum = req.params.page;
   }
-  Post.aggregatePaginate(aggregate, { page : pageNum, limit: 5 }, function(err, posts, pageCount, count) {
-      res.json(posts);
+  Post.aggregatePaginate(aggregate, { page : pageNum, limit: 5, sortBy: {'date': -1} }, function(err, posts, pageCount, count) {
+    if (err) return next(err);
+    var current = 0;
+    (function getAuthorInfos (posts){
+      if (current == posts.length) {
+        res.json(posts);
+        return;
+      }
+      PrivacyGuard.pleaseShowMeUserInformation(req.user.username, posts[current].author, function(user){
+        posts[current].authorInfos = [];
+        posts[current].authorInfos[0] = user;
+        ++current;
+        getAuthorInfos(posts);
+      });
+    })(posts);
   });
 });
 

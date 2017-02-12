@@ -19,7 +19,9 @@ router.get('/:username', function(req, res) {
   if(req.params.username == "me"){
     req.params.username = requesterUsername;
   }
-  PrivacyGuard.pleaseShowMeUserInformation(res, requesterUsername, req.params.username);
+  PrivacyGuard.pleaseShowMeUserInformation(requesterUsername, req.params.username, function(user){
+    res.json(user);
+  });
 });
 
 module.exports = router;

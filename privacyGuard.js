@@ -8,14 +8,13 @@ var visibilityType = {
 };
 
 var privacyGuard = {
-  pleaseShowMeUserInformation : function(res, requester, wantedUser){
+  pleaseShowMeUserInformation : function(requester, wantedUser, callbackGuard){
     Account.findOne({ 'username' : requester }, function (err, user1) {
       if(!user1){
         user1 = { username: '#anonymous#' };
       }
       Account.findOne({ 'username' : wantedUser }, function (err, user2) {
         visibility = privacyGuard.getUserVisibilityTypeBetween(user1, user2);
-        console.log(visibility);
         switch(visibility)
         {
           case visibilityType.Me:
@@ -30,7 +29,7 @@ var privacyGuard = {
                 publicKey: user2.publicKey
             };
             console.log("me");
-            res.json(rtnUser);
+            callbackGuard(rtnUser);
             break;
           case visibilityType.Friends:
             var rtnUser = {
@@ -42,15 +41,16 @@ var privacyGuard = {
                 publicKey: user2.publicKey
             };
             console.log("friends");
-            res.json(rtnUser);
+            callbackGuard(rtnUser);
             break;
           case visibilityType.Everybody:
             var rtnUser = {
                 username: user2.username,
+                avatar: "../images/no_avatar.png",
                 publicKey: user2.publicKey
             };
             console.log("everybody");
-            res.json(rtnUser);
+            callbackGuard(rtnUser);
             break;
         }
       });
