@@ -5,6 +5,7 @@ var Account = require('../../models/account');
 var Post = require('../../models/post');
 var Comment = require('../../models/comment');
 var PrivacyGuard = require('../../privacyGuard');
+var NotificationCenter = require('../../notificationCenter');
 var router = express();
 
 var config = require('../../config/config');
@@ -38,6 +39,7 @@ router.post('/:postid', function(req, res, next) {
       res.json(comment);
       post.comments.push(comment._id);
       post.save();
+      NotificationCenter.notify(req.user.username, post.author, "<a>"+req.user.username+"</a> a commenté votre <a>publication</a>");
     });
   });
 });

@@ -6,6 +6,7 @@ var Post = require('../../models/post');
 var Comment = require('../../models/comment');
 var Like = require('../../models/like');
 var PrivacyGuard = require('../../privacyGuard');
+var NotificationCenter = require('../../notificationCenter');
 var router = express();
 var mongoose = require('mongoose');
 
@@ -65,6 +66,7 @@ router.post('/post/:postid', function(req, res, next) {
       res.json(like);
       post.likes.push(like._id);
       post.save();
+      NotificationCenter.notify(req.user.username, post.author, "<a>"+req.user.username+"</a> aime votre <a>publication</a>");
     });
   });
 });
@@ -77,6 +79,7 @@ router.post('/comment/:commentid', function(req, res, next) {
       res.json(like);
       comment.likes.push(like._id);
       comment.save();
+      NotificationCenter.notify(req.user.username, post.author, "<a>"+req.user.username+"</a> aime votre <a>commentaire</a>");
     });
   });
 });

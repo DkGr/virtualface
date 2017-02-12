@@ -19,6 +19,7 @@ var apiAllUsers = require('./routes/api/allusers');
 var apiPosts = require('./routes/api/posts');
 var apiComments = require('./routes/api/comments');
 var apiLikes = require('./routes/api/likes');
+var apiNotifications = require('./routes/api/notifications');
 var apiExtractURL = require('./routes/api/extracturl');
 
 var config = require('./config/config');
@@ -52,6 +53,7 @@ app.use('//api/allusers', apiAllUsers);
 app.use('//api/posts', apiPosts);
 app.use('//api/comments', apiComments);
 app.use('//api/likes', apiLikes);
+app.use('//api/notifications', apiNotifications);
 app.use('//api/extracturl', apiExtractURL);
 
 

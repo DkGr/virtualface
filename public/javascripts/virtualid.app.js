@@ -7,7 +7,7 @@
 
 (function (global) {
   'use strict'
-
+  
   var XMPP = global.XMPP
 
   /* Note these are connection details for a local dev server :) */
@@ -26,12 +26,100 @@
     console.error(err)
   })
 }(this))
-
+var notifIdsUnread = [];
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
   this.length = from < 0 ? this.length + from : from;
   return this.push.apply(this, rest);
 };
+
+function updateNotifications()
+{
+  $.ajax({
+    type: "GET",
+    url: "api/notifications",
+    complete: function(response) {
+      if((response.status === 401) || (response.status === 403))
+      {
+        window.location = "stream";
+      }
+      var notifContent = '<div style="height:200px;overflow-y:scroll;border: 1px solid #DDD;">';
+      var notifCountUnread = 0;
+      var hasNotifications = false;
+      var htmlNotifications = '';
+      var jsonNotifications = JSON.parse(response.responseText);
+      jsonNotifications.forEach(function(entry) {
+        hasNotifications = true;
+        notifContent += renderNotification(entry);
+        if(!entry['read'])
+        {
+            notifCountUnread++;
+            notifIdsUnread[notifCountUnread-1] = entry['_id'];
+        }
+      });
+      if(!hasNotifications)
+      {
+        notifContent = 'Il n\'y a rien à afficher ici pour l\'instant';
+        htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="' + notifContent + '"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications</a>';
+      }
+      else{
+        notifContent += '</div>';
+        if(notifCountUnread > 0)
+        {
+          document.title = "("+notifCountUnread+") VirtualID - Votre flux d'actualités";
+          htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+
+                htmlEntities('<p style="text-align: center;"><a href="javascript:void(0)" onclick="setAllNotifRead();">Tout marquer comme lu</a></p>'+notifContent)+
+                '"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications <span class="badge" style="background-color:#e60000;">'+notifCountUnread+'</span></a>';
+        }
+        else {
+          htmlNotifications = '<a tabindex="0" class="btn" role="button" data-toggle="popover" style="width: 250px;" data-content="'+htmlEntities(notifContent)+'"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications</a>';
+        }
+      }
+      $("#notifPanel").html(htmlNotifications);
+      $('[data-toggle="popover"]').popover({'html':'true','placement':'bottom','trigger':'focus'});
+    }
+  });
+}
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderNotification(jsonNotif)
+{
+    var postedTimeStr = prettyDate(jsonNotif.date);
+    if(jsonNotif['read'])
+    {
+      return '<div style="display: inline-block;width: 100%;" class="list-group-item"><div>'+jsonNotif['content']+'<p style="margin: 0px 0px 0px 0px;font-size: 12px;color:grey;">'+postedTimeStr+'</p></div></div>';
+    }
+    else {
+      return '<div style="display: inline-block;width: 100%;margin-bottom: -6px;" class="list-group-item"><div style="width: 90%;float: left;">'+jsonNotif['content']+'<p style="margin: 0px 0px 0px 0px;font-size: 12px;color:grey;">'+postedTimeStr+'</p></div><div><a style="float:right;" href="javascript:void(0)" onclick="setNotifRead(\''+jsonNotif['_id']+'\')"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></div></div>';
+    }
+}
+
+function setAllNotifRead(){
+  notifIdsUnread.forEach(function(entry) {
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: "api/notifications/"+entry,
+        complete: function(response) {
+
+        }
+      });
+  });
+  updateNotifications();
+}
+
+function setNotifRead(notifId){
+  $.ajax({
+    type: "POST",
+    url: "api/notifications/"+notifId,
+    complete: function(response) {
+      updateNotifications();
+    }
+  });
+}
 
 $(document).ready(function() {
     
@@ -57,6 +145,8 @@ $(document).ready(function() {
         subscribe();
       });
   }, 500);
+  updateNotifications();
+  setInterval(updateNotifications, 30000);
 });
 
 function prettyDate(time){
