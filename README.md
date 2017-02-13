@@ -17,9 +17,9 @@ Virtual iD is a project prototype to create an open-source and encrypted social 
 - User search
 - Comment system
 - Like system
+- Notification system
 
 ## TODO
-- Notification system
 - Friendship system
 - Instant Messaging
 - Stream posts visibility system
