@@ -1,184 +1,105 @@
-var express = require('express');
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('./main');
+var config = require('./config/config')
+var debug = require('debug')('passport-auth-test:server');
+var https = require('https');
+var http = require('http');
 var fs = require('fs');
-var flash = require('connect-flash');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
-var XMPPLib = require("./node-xmpp/packages/node-xmpp-server");
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var apiUsers = require('./routes/api/users');
-var apiAllUsers = require('./routes/api/allusers');
-var apiPosts = require('./routes/api/posts');
-var apiComments = require('./routes/api/comments');
-var apiLikes = require('./routes/api/likes');
-var apiNotifications = require('./routes/api/notifications');
-var apiExtractURL = require('./routes/api/extracturl');
+/**
+ * Get port from environment and store in Express.
+ */
 
-var config = require('./config/config');
+var port = process.env.PORT || config.httpListeningPort;
+app.set('port', port);
 
-var privateKey = fs.readFileSync('./privkey.pem').toString();
-var certificate = fs.readFileSync('./fullchain.pem').toString();
-
-var app = express();
-// view engine setup
-app.set('views', path.join(__dirname, '/views'));
-app.set('view engine', 'jade');
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(require('express-session')({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('//', routes);
-app.use('//api/users', apiUsers);
-app.use('//api/allusers', apiAllUsers);
-app.use('//api/posts', apiPosts);
-app.use('//api/comments', apiComments);
-app.use('//api/likes', apiLikes);
-app.use('//api/notifications', apiNotifications);
-app.use('//api/extracturl', apiExtractURL);
-
-
-// passport config
-var Account = require('./models/account');
-passport.use(new LocalStrategy(Account.authenticate()));
-//passport.serializeUser(Account.serializeUser());
-//passport.deserializeUser(Account.deserializeUser());
-
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-
-if(config.useFacebook){
-  passport.use(new FacebookStrategy({
-      clientID: config.facebookAppID,
-      clientSecret: config.facebookAPIKey,
-      callbackURL: config.appBaseUrl+config.appRootFolder+"/auth/facebook/callback"
-    },
-    function(accessToken, refreshToken, profile, cb) {
-      Account.findOrCreate({ facebookId: profile.id }, function (err, user) {
-        return cb(err, user);
-      });
-    }
-  ));
+/**
+ * Create HTTP server.
+ */
+var server;
+ 
+if(config.SSLCertificateFullChain != '' && config.SSLPrivateKey != ''){
+	var privateKey = fs.readFileSync(config.SSLPrivateKey).toString();
+	var certificate = fs.readFileSync(config.SSLCertificateFullChain).toString();
+	server = https.createServer({
+		key: privateKey,
+		cert: certificate
+	}, app);
+}
+else{
+	server = http.createServer(app);
 }
 
-// MongoDB Server
-mongoose.connect(config.mongodbURL);
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
-// XMPP Server
-var connectedUser = {
-  'admin': 'admin'
-};
+/**
+ * Normalize a port into a number, string, or false.
+ */
 
-var Server = XMPPLib.C2S.BOSHServer;
+function normalizePort(val) {
+  var port = parseInt(val, 10);
 
-var startServer = function (done) {
-  // Sets up the server.
-  server = new Server({
-    port: config.xmppPort,
-    tls: {
-      keyPath: config.SSLPrivateKey,
-      certPath: config.SSLCertificateFullChain
-    }
-  });
-  // On connection event. When a client connects.
-  server.on('connection', function (client) {
-    // That's the way you add mods to a given server.
-    console.log("new xmpp client connection");
-    // Allows the developer to authenticate users against anything they want.
-    client.on('authenticate', function (opts, cb) {
-      console.log('server:', opts.username, opts.password, 'AUTHENTICATING')
-      if(connectedUser[opts.username]){
-        if (opts.password === connectedUser[opts.username]) {
-          console.log('server:', opts.username, 'AUTH OK')
-          cb(null, opts)
-        } else {
-          console.log('server:', opts.username, 'AUTH FAIL 1')
-          cb(false)
-        }
-      }
-      else {
-        console.log('server:', opts.username, 'AUTH FAIL 2')
-        cb(false)
-      }
-    })
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
 
-    client.on('online', function () {
-      console.log('server:', client.jid.local, 'ONLINE')
-    })
+  if (port >= 0) {
+    // port number
+    return port;
+  }
 
-    // Stanza handling
-    client.on('stanza', function (stanza) {
-      console.log('server:', client.jid.local, 'stanza', stanza.toString())
-      var from = stanza.attrs.from
-      stanza.attrs.from = stanza.attrs.to
-      stanza.attrs.to = from
-      client.send(stanza)
-    })
-
-    // On Disconnect event. When a client disconnects
-    client.on('disconnect', function () {
-      console.log('server: client DISCONNECT')
-    })
-  })
-
-  server.on('listening', done)
+  return false;
 }
 
-// process.on("uncaughtException", function (err) {
-//   console.log('err uncaught Exception  : ', err);
-// })
+/**
+ * Event listener for HTTP server "error" event.
+ */
 
-startServer(function () {
-  console.log('XMPP server listening on port '+config.xmppPort);
-});
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
 
-// error handlers
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
+/**
+ * Event listener for HTTP server "listening" event.
+ */
 
-module.exports = app;
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  console.log('HTTP server listening on ' + bind)
+  debug('HTTP server listening on ' + bind);
+} 
