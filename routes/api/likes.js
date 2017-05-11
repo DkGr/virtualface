@@ -39,21 +39,23 @@ router.get('/post/:postid', function(req, res) {
 router.get('/comment/:commentid', function(req, res) {
   Comment.findById(req.params.commentid, function(err, comment){
     if (err) return next(err);
-    var aggregate = Like.aggregate([
-          {
-            $lookup:
-              {
-                from: "accounts",
-                localField: "author",
-                foreignField: "username",
-                as: "authorInfos"
-              }
-          },
-          { "$sort": { "date": -1 } }
-      ]).allowDiskUse(true);
+    var aggregate = Like.aggregate().allowDiskUse(true);
     aggregate.match({ '_id': { $in: comment.likes } });
-    Like.aggregatePaginate(aggregate, {}, function(err, likes, pageCount, count) {  
-      res.json(likes);
+    Like.aggregatePaginate(aggregate, {sortBy: {'date': -1}}, function(err, likes, pageCount, count) {  
+      if (err) return next(err);
+      var current = 0;
+      (function getAuthorInfos (likes){
+        if (current == likes.length) {
+          res.json(likes);
+          return;
+        }
+        PrivacyGuard.pleaseShowMeUserInformation(req.user.username, likes[current].author, function(user){
+          likes[current].authorInfos = [];
+          likes[current].authorInfos[0] = user;
+          ++current;
+          getAuthorInfos(likes);
+        });
+      })(likes);
     });
   });
 });
@@ -79,7 +81,7 @@ router.post('/comment/:commentid', function(req, res, next) {
       res.json(like);
       comment.likes.push(like._id);
       comment.save();
-      NotificationCenter.notify(req.user.username, post.author, "<a>"+req.user.username+"</a> aime votre <a>commentaire</a>");
+      NotificationCenter.notify(req.user.username, comment.author, "<a>"+req.user.username+"</a> aime votre <a>commentaire</a>");
     });
   });
 });
@@ -93,6 +95,19 @@ router.delete('/post/:postid/:likeid', function(req, res, next) {
       post.likes.remove(objID);
       post.save();
       res.json(post);   
+    });
+  });
+});
+
+router.delete('/comment/:commentid/:likeid', function(req, res, next) {
+  Like.findByIdAndRemove(req.params.likeid, req.body, function (err, comment) {
+    if (err) return next(err);
+    var objID = new mongoose.Types.ObjectId(req.params.likeid);
+    Comment.findById(req.params.commentid, function(err, comment){
+      if (err) return next(err);
+      comment.likes.remove(objID);
+      comment.save();
+      res.json(comment);   
     });
   });
 });

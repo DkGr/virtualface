@@ -241,8 +241,8 @@ block content
             .media-body
               | {{comment.content}}
             div(style="margin: 10px 0 0 75px;")
-              a(href="javascript:void(0)") J'aime
-              |  - 0 
+              a(id="commentlike-{{comment._id}}" href="javascript:void(0)" ng-click="sendNewCommentLike(post._id, comment._id)") {{printCommentLikeLinkText(post._id, comment._id)}}
+              |  - {{comment.likes.length}}  
               span.glyphicon.glyphicon-thumbs-up
               |  - 
               span.p-date(style="font-size: 12px;color:grey;") Publié

@@ -321,7 +321,8 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
     this.page++;
     var postsUrl = "api/posts/" + this.page;
     var commentsUrl = "api/comments/";
-    var likesUrl = "api/likes/post/";
+    var postLikesUrl = "api/likes/post/";
+    var commentLikesUrl = "api/likes/comment/";
     $http.get(postsUrl).then(function successCallback(response) {
       var recItems = response.data;
       if(recItems.length == 0){
@@ -331,30 +332,38 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
         this.items.push(recItems[i]);
         var idx = this.items.length-1;
         (function (idx, currentPosts){
-          $http.get(commentsUrl + recItems[i]._id).then(function successCallback(response) {
-            var comments = response.data;
+          $http.get(commentsUrl + recItems[i]._id).then(function successCallback(responseComs) {
+            var comments = responseComs.data;
             this.items[idx].commentList = [];
             if(comments.length > 0){
+              for (var j = 0; j < comments.length; j++) {
+                (function (j, currentPosts){
+                  $http.get(commentLikesUrl + comments[j]._id).then(function successCallback(response) {
+                    var likes = response.data;
+                    this.items[idx].commentList[j].likeList = [];
+                    if(likes.length > 0){
+                      this.items[idx].commentList[j].likeList = likes;
+                    }
+                  }.bind(currentPosts), function errorCallback(response) {
+                  });
+                })(j, currentPosts);
+              }
               this.items[idx].commentList = comments;
             }
           }.bind(currentPosts), function errorCallback(response) {
-            console.log(response);
           });
-          $http.get(likesUrl + recItems[i]._id).then(function successCallback(response) {
+          $http.get(postLikesUrl + recItems[i]._id).then(function successCallback(response) {
             var likes = response.data;
             this.items[idx].likeList = [];
             if(likes.length > 0){
               this.items[idx].likeList = likes;
             }
           }.bind(currentPosts), function errorCallback(response) {
-            console.log(response);
           });
         })(idx, this);
       }
-      console.log(this);
       this.busy = false;
     }.bind(this), function errorCallback(response) {
-      console.log(response);
     });
   };
   return Posts;
@@ -389,6 +398,26 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
           for(var j = 0; j < $scope.posts.items[i].likeList.length; j++){
             if($scope.posts.items[i].likeList[j].author == $scope.user.username){
               return "Je n'aime plus";
+            }
+          }
+        }
+      }
+    }
+    return "J'aime";
+  };
+
+  $scope.printCommentLikeLinkText = function(postid, commentid) {
+    if(!commentid || commentid == '') return;
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        for(var k = 0; k < $scope.posts.items[i].commentList.length; k++){
+          if($scope.posts.items[i].commentList[k]._id == commentid){
+            if($scope.posts.items[i].commentList[k].likeList){
+              for(var j = 0; j < $scope.posts.items[i].commentList[k].likeList.length; j++){
+                if($scope.posts.items[i].commentList[k].likeList[j].author == $scope.user.username){
+                  return "Je n'aime plus";
+                }
+              }
             }
           }
         }
@@ -522,7 +551,6 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
               });
               $scope.posts.items[i].likes.remove(j);
               $scope.posts.items[i].likeList.remove(j);
-              console.log($scope.post);
               $("#postlike-"+postid).html("J'aime");
               return;
             }
@@ -554,6 +582,60 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
           }).error(function (data, status, headers, config) {
           });
         })(i);
+      }
+    }
+  }
+  
+  $scope.sendNewCommentLike = function(postid, commentid){
+    if(!commentid || commentid == '') return;
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        for(var k = 0; k < $scope.posts.items[i].commentList.length; k++){
+          if($scope.posts.items[i].commentList[k]._id == commentid){
+            if($scope.posts.items[i].commentList[k].likeList){
+              for(var j = 0; j < $scope.posts.items[i].commentList[k].likeList.length; j++){
+                if($scope.posts.items[i].commentList[k].likeList[j].author == $scope.user.username){
+                  $http.delete('api/likes/comment/' + $scope.posts.items[i].commentList[k]._id + '/' + $scope.posts.items[i].commentList[k].likeList[j]._id).then(function successCallback(response) {
+                  });
+                  $scope.posts.items[i].commentList[k].likes.remove(j);
+                  $scope.posts.items[i].commentList[k].likeList.remove(j);
+                  $("#commentlike-"+commentid).html("J'aime");
+                  return;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    $("#commentlike-"+commentid).html("Je n'aime plus");
+    for(var i = 0; i < $scope.posts.items.length; i++){
+      if($scope.posts.items[i]._id == postid){
+        for(var k = 0; k < $scope.posts.items[i].commentList.length; k++){
+          if($scope.posts.items[i].commentList[k]._id == commentid){
+            var newLike = {
+              author: $scope.user.username,
+              date: new Date(),
+              target: 'ObjectId("'+commentid+'")'
+            };
+            var commentLikesUrl = "api/likes/comment/";
+            (function (i, k){
+              $http({
+                  url: commentLikesUrl + commentid,
+                  method: "POST",
+                  data: newLike,
+                  headers: {'Content-Type': 'application/json'}
+              }).success(function (data, status, headers, config) {
+                  var like = data;
+                  like.authorInfos = [];
+                  like.authorInfos[0] = $scope.user;
+                  $scope.posts.items[i].commentList[k].likes.push(like._id);
+                  $scope.posts.items[i].commentList[k].likeList.push(like);
+              }).error(function (data, status, headers, config) {
+              });
+            })(i, k);
+          }
+        }
       }
     }
   }
