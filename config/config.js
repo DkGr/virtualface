@@ -7,6 +7,7 @@ var config = {
   facebookAPIKey: '',
   mongodbURL: '',
   xmppDomain: '',
+  appRootFolder: '/',
   xmppPort: 5280,
   SSLPrivateKey: '',
   SSLCertificateFullChain: ''

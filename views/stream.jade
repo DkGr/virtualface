@@ -11,16 +11,16 @@ block content
               span.icon-bar
               span.icon-bar
               span.icon-bar
-            a.navbar-brand(style="color: #fff;font-size: 20px;padding: initial;" href="#{config.appRootFolder}/stream")
-              img(style="height: inherit;" alt="Virtual iD" src="#{config.appRootFolder}/images/virtualid-white.png")
+            a.navbar-brand(style="color: #fff;font-size: 20px;padding: initial;" href="#{config.appRootFolder}stream")
+              img(style="height: inherit;" alt="Virtual iD" src="#{config.appRootFolder}images/virtualid-white.png")
           .navbar-collapse.collapse
             ul.nav.navbar-nav.navbar-left
               li.active
-                a(href="#{config.appRootFolder}/stream")
+                a(href="#{config.appRootFolder}stream")
                   span.glyphicon.glyphicon-flash(aria-hidden="true")
                   |  Mon flux
               li
-                a(href="#{config.appRootFolder}/emails")
+                a(href="#{config.appRootFolder}emails")
                   span.glyphicon.glyphicon-inbox(aria-hidden="true")
                   |  Mon courrier
             ul.nav.navbar-nav.navbar-right
@@ -36,7 +36,7 @@ block content
                   |  Notifications
               li.dropdown.active(style="margin-right:50px;")
                 a.dropdown-toggle(href="#" data-toggle="dropdown")
-                  img.media-object(src="#{config.appRootFolder}/avatars/#{user.avatar}" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;")
+                  img.media-object(src="#{config.appRootFolder}avatars/#{user.avatar}" alt="no_avatar" style="float:left;width:32px;height:32px;background-color:white;margin-top:-5px;margin-right:5px;")
                   |  #{user.username}
                   b.caret(style="margin-left:3px;")
                 ul.dropdown-menu
@@ -46,17 +46,17 @@ block content
                     a(href="#") Paramètres
                   li.divider
                   li
-                    a(href="#{config.appRootFolder}/logout") Déconnexion
+                    a(href="#{config.appRootFolder}logout") Déconnexion
     .container(id="chatPanel" style="padding-top: 20px;right: 0px;position: fixed;max-width: 300px;max-height: 95%;background-color: #222;color: #eee;bottom: 0px;border-radius: 5px 5px 0px 0px;")
       div(style="cursor: pointer;text-align:center;margin-bottom: 20px;" data-toggle="collapse" data-parent="#chatPanel" href="#collapseChat" aria-expanded="false" aria-controls="collapseChat")
         span.glyphicon.glyphicon-comment
         |  Messagerie instantanée
       .collapse(id="collapseChat")
         .btn-group(style="margin-bottom:10px;width:100%;")
-          | Mon statut : 
+          | Mon statut :
           button.btn.btn-success.dropdown-toggle(style="float: none;" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-            | En ligne 
-            span.caret 
+            | En ligne
+            span.caret
           ul.dropdown-menu
             li
               a(href="#") En ligne
@@ -72,7 +72,7 @@ block content
               .panel-heading(role="tab" id="headingOne")
                 .panel-title(style="font-size:14px;")
                   a(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne")
-                    span.glyphicon.glyphicon-stop(style="color: #ec971f;") 
+                    span.glyphicon.glyphicon-stop(style="color: #ec971f;")
                     |  Padman
               .panel-collapse.collapse(id="collapseOne" role="tabpanel" aria-labelledby="headingOne")
                 .panel-body
@@ -81,8 +81,8 @@ block content
               .panel-heading(role="tab" id="headingTwo")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo")
-                    span.glyphicon.glyphicon-stop(style="color: #00b900;") 
-                    |  Jean Neymar 
+                    span.glyphicon.glyphicon-stop(style="color: #00b900;")
+                    |  Jean Neymar
                     span.badge(style="background-color: #e60000;") 4
               .panel-collapse.collapse(id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo")
                 .panel-body(style="height: 450px;overflow-y: auto;")
@@ -91,7 +91,7 @@ block content
               .panel-heading(role="tab" id="headingThree")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree")
-                    span.glyphicon.glyphicon-stop(style="color: #d20600;") 
+                    span.glyphicon.glyphicon-stop(style="color: #d20600;")
                     |  Taloula
               .panel-collapse.collapse(id="collapseThree" role="tabpanel" aria-labelledby="headingThree")
                 .panel-body
@@ -100,7 +100,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -109,7 +109,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -118,7 +118,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -127,7 +127,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -136,7 +136,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -145,7 +145,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -154,7 +154,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -163,7 +163,7 @@ block content
               .panel-heading(role="tab" id="headingFour")
                 .panel-title(style="font-size:14px;")
                   a.collapsed(role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour")
-                    span.glyphicon.glyphicon-stop 
+                    span.glyphicon.glyphicon-stop
                     |  Toto
               .panel-collapse.collapse(id="collapseFour" role="tabpanel" aria-labelledby="headingFour")
                 .panel-body
@@ -227,9 +227,9 @@ block content
               span.glyphicon.glyphicon-globe(aria-hidden="true")
               |  Tout le monde
       .panel-footer(style="border-bottom-right-radius:5px;border-bottom-left-radius:5px;")
-        a(role="button" data-toggle="collapse" href="#comments-scroll-{{post._id}}" aria-expanded="false" aria-controls="comments-scroll-{{post._id}}") {{printCommentLinkText(post.commentList.length)}} 
-        | - 
-        a(id="postlike-{{post._id}}" href="javascript:void(0)" ng-click="sendNewPostLike(post._id)") {{printPostLikeLinkText(post._id)}} 
+        a(role="button" data-toggle="collapse" href="#comments-scroll-{{post._id}}" aria-expanded="false" aria-controls="comments-scroll-{{post._id}}") {{printCommentLinkText(post.commentList.length)}}
+        |  - 
+        a(id="postlike-{{post._id}}" href="javascript:void(0)" ng-click="sendNewPostLike(post._id)") {{printPostLikeLinkText(post._id)}}
       .collapse(id="comments-scroll-{{post._id}}")
         li(ng-repeat="comment in post.commentList" class="list-group-item")
           .media
@@ -241,16 +241,16 @@ block content
             .media-body
               | {{comment.content}}
             div(style="margin: 10px 0 0 75px;")
-              a(href="javascript:void(0)") J'aime 
-              | - 0 
-              span.glyphicon.glyphicon-thumbs-up 
+              a(href="javascript:void(0)") J'aime
+              |  - 0 
+              span.glyphicon.glyphicon-thumbs-up
               |  - 
-              span.p-date(style="font-size: 12px;color:grey;") Publié 
+              span.p-date(style="font-size: 12px;color:grey;") Publié
                 | {{formatDate(comment.date)}}
         .panel.panel-default(style="border: none; margin-bottom: 0px;")
           textarea.form-control(id="newcomment-content-{{post._id}}" style="resize:vertical;border-radius:0px;border-left: 0px;border-right: 0px;" rows="3" placeholder="Inserez votre commentaire...")
           .panel-footer(style="border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;")
-            button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}" ng-click="sendNewPostComment(post._id)") Publier 
+            button.btn.btn-info(style="font-weight: bold;font-size: 12px;" value="{{post._id}}" ng-click="sendNewPostComment(post._id)") Publier
               span.glyphicon.glyphicon-send
     div(ng-show='posts.busy' style="margin: 5px;text-align: center;")
       img(src="images/loader.svg" alt="loading")

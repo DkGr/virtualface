@@ -7,7 +7,7 @@
 
 (function (global) {
   'use strict'
-  
+
   var XMPP = global.XMPP
 
   /* Note these are connection details for a local dev server :) */
@@ -122,7 +122,7 @@ function setNotifRead(notifId){
 }
 
 $(document).ready(function() {
-    
+
   setTimeout(function(){
       var searchFriendBar = $('#searchFriendBar').magicSuggest({
           allowFreeEntries: false,
@@ -179,7 +179,7 @@ function prettyDate(time){
     case 6:
       dayStr = "samedi";
       break;
-    default:  
+    default:
   }
   var monthStr = "janvier"
   switch (date.getMonth()) {
@@ -219,9 +219,9 @@ function prettyDate(time){
     case 11:
       monthStr = "décembre";
       break;
-    default:  
+    default:
   }
-  
+
   return day_diff == 0 && (
           diff < 60 && "à l'instant" ||
           diff < 120 && "il y a 1 minute" ||
@@ -261,6 +261,9 @@ function subscribe()
         success: function(data) {
           $('#subscribingModal').modal('show');
           var domain = window.location.host;
+          if (domain.includes("localhost") || domain.includes("127.0.0.1")) {
+            domain = "virtualid-dev.fr";
+          }
           var options = {
               numBits: 2048,
               userIds: [{name:username, email:username+'@'+domain}],
@@ -271,7 +274,9 @@ function subscribe()
           var privkey;
           var pubkey;
 
+          console.log("start keygen...");
           openpgp.generateKey(options).then(function(keypair) {
+              console.log("keygen success !");
               // success
               privkey = keypair.privateKeyArmored;
               pubkey = keypair.publicKeyArmored;
@@ -304,12 +309,12 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
   var Posts = $resource('./api/posts/:id', null, {
     'update': { method:'PUT' }
   });
-  
+
   delete Posts.prototype.items;
   Posts.prototype.items = [];
   Posts.prototype.busy = false;
   Posts.prototype.page = 0;
-  
+
   Posts.prototype.nextPage = function() {
     if (this.busy) return;
     this.busy = true;
@@ -375,7 +380,7 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
         break;
     }
   };
-  
+
   $scope.printPostLikeLinkText = function(postid) {
     if(!postid || postid == '') return;
     for(var i = 0; i < $scope.posts.items.length; i++){
@@ -391,7 +396,7 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
     }
     return "J'aime";
   };
-  
+
   $scope.embedOptions = {
     fontSmiley       : true,      //convert ascii smileys into font smileys
     emoji            : true,      //convert emojis short names into images
@@ -505,7 +510,7 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
       $scope.newPostContent = '';
     });
   }
-  
+
   $scope.sendNewPostLike = function(postid){
     if(!postid || postid == '') return;
     for(var i = 0; i < $scope.posts.items.length; i++){
@@ -547,8 +552,8 @@ var virtualidApp = angular.module('virtualidApp', ['ngResource', 'ngSanitize', '
               $scope.posts.items[i].likes.push(like._id);
               $scope.posts.items[i].likeList.push(like);
           }).error(function (data, status, headers, config) {
-          }); 
-        })(i);       
+          });
+        })(i);
       }
     }
   }

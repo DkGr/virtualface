@@ -75,7 +75,7 @@ if(config.useFacebook){
   passport.use(new FacebookStrategy({
       clientID: config.facebookAppID,
       clientSecret: config.facebookAPIKey,
-      callbackURL: config.appBaseUrl+config.appRootFolder+"/auth/facebook/callback"
+      callbackURL: config.appBaseUrl+config.appRootFolder+"auth/facebook/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
       Account.findOrCreate({ facebookId: profile.id }, function (err, user) {

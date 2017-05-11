@@ -7,7 +7,7 @@ block content
         .container
           .navbar-header
             a.navbar-brand( style="color: #fff;font-size: 20px;padding: initial;" href="#" )
-              img( style="height: inherit;" alt="VirtualID" src="#{config.appRootFolder}/images/virtualid-white.png" )
+              img( style="height: inherit;" alt="VirtualID" src="#{config.appRootFolder}images/virtualid-white.png" )
           .navbar-collapse.collapse
             ul.nav.navbar-nav.navbar-right
   .container(style="max-width: 800px;")
@@ -35,7 +35,7 @@ block content
         input.form-control(id="passwordcheck-sub" name="passwordcheck" type="password" placeholder="Vérification mot de passe (obligatoire)" required)
       button.btn.btn-primary(id="subscribeButton" type='submit') Valider
       &nbsp;
-      a(href='#{config.appRootFolder}/')
+      a(href='#{config.appRootFolder}')
         button.btn.btn-default(type="button") Annuler
   .modal.fade(id="subscribingModal" tabindex="-1" role="dialog" aria-labelledby="subscribingModalLabel" aria-hidden="true")
     .modal-dialog.modal-sm

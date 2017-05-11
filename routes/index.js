@@ -11,7 +11,7 @@ var config = require('../config/config');
 router.get('/', function (req, res) {
     if(req.user){
       req.session.user = req.user;
-      res.redirect(config.appRootFolder+'/stream');
+      res.redirect(config.appRootFolder+'stream');
     }else{
       res.render('index', { user : req.user , config: config});
     }
@@ -69,7 +69,7 @@ router.get('/auth/facebook',passport.authenticate('facebook'),function(req, res)
 router.get('/auth/facebook/callback', passport.authenticate('facebook', { config: config, failureRedirect: config.appRootFolder }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect(config.appRootFolder+'/stream');
+    res.redirect(config.appRootFolder+'stream');
   });
 
 router.get('/ping', function(req, res){
