@@ -13,7 +13,7 @@ router.get('/', function (req, res) {
       req.session.user = req.user;
       res.redirect(config.appRootFolder+'stream');
     }else{
-      res.render('index', { user : req.user , config: config});
+      res.render('index', { user : req.user , config: config, loginFailMessage: req.flash('error')});
     }
 });
 
@@ -48,11 +48,7 @@ router.get('/stream', function(req, res) {
   }
 });
 
-router.get('/login', function(req, res) {
-    res.render('login', { config: config, user : req.user });
-});
-
-router.post('/login', passport.authenticate('local', { failureFlash: "Nom d'utilisateur ou mot de passe invalide" }), function(req, res) {
+router.post('/login', passport.authenticate('local', { successRedirect: config.appRootFolder+'stream', failureRedirect: config.appRootFolder, failureFlash: 'Nom d\'utilisateur ou mot de passe incorrect' }), function(req, res) {
     var dateStr = new Date().toString();
     var hash = crypto.createHash('md5').update(dateStr).digest('hex');
     req.user.xmppToken = hash;

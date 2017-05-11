@@ -37,9 +37,8 @@ block content
         input.form-control(name="username" type="username" placeholder="Nom d'utilisateur" title="Peut contenir des caractères alpha-numériques en minuscule (0 à 9 et a à z), des tirets (-), des underscores (_) ou des points (.)" pattern="[a-z0-9]+[a-z0-9._-]+[a-z0-9]+" required autofocus)
       .form-group
         input.form-control(name="password" type="password" placeholder="Mot de passe" required)
-      if (error && error.length > 0)
         br
-        .error-msg(style="color:red;")= error
+        .error-msg(style="color:red;")= loginFailMessage
         br
       button.btn.btn-primary(name="login" value="login" type="submit") Connexion
       &nbsp;

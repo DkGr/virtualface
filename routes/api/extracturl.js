@@ -28,15 +28,17 @@ router.get('/', function(req, res) {
     var titleToSend = externalUrl;
     var descToSend = "Description unavailable."
     var domainToSend = extractDomain(externalUrl);
+    if(meta){
     if(meta.title){
-      titleToSend = meta.title;
-    }
-    if(meta.description){
-      descToSend = meta.description;
-    }
-    
-    if(meta.site_name){
-      domainToSend = meta.site_name;
+        titleToSend = meta.title;
+      }
+      if(meta.description){
+        descToSend = meta.description;
+      }
+      
+      if(meta.site_name){
+        domainToSend = meta.site_name;
+      }
     }
     
     var jsonResp = { 
@@ -45,8 +47,10 @@ router.get('/', function(req, res) {
       url: externalUrl, 
       domain: domainToSend
     };
-    if(meta.image){
-      jsonResp.image = meta.image.url;
+    if(meta){
+      if(meta.image){
+        jsonResp.image = meta.image.url;
+      }
     }
     
     res.json(jsonResp);   
